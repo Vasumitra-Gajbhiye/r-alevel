@@ -12,13 +12,11 @@ const poppins = Poppins({
 
 export default function Home() {
   return (
-    <>
-      <main className={poppins.className}>
-        <Hero />
-        <AboutUs />
-        <OurProgress />
-        <JoinBanner />
-      </main>
-    </>
+    <main className={poppins.className}>
+      <Hero />
+      <AboutUs />
+      <OurProgress />
+      <JoinBanner />
+    </main>
   );
 }
