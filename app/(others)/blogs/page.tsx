@@ -1,3 +1,4 @@
+"use server";
 import Image from "next/image";
 import brain from "@/public/brain.jpg";
 import getAllBlogs from "@/app/controller/getAllBlogs";
