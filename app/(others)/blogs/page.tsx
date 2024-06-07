@@ -1,7 +1,6 @@
 import Image from "next/image";
 import brain from "@/public/brain.jpg";
 import getAllBlogs from "@/app/controller/getAllBlogs";
-import Link from "next/link";
 
 const FeatureAbout = function ({
   date,
