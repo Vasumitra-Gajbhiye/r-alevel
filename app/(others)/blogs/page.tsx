@@ -120,7 +120,8 @@ const LatestPost = function ({
 };
 
 export default async function Blogs() {
-  const allBlogs = await getAllBlogs();
+  let allBlogs = [];
+  allBlogs = await getAllBlogs();
   // console.log(Object.prototype.toString.call(allBlogs) == "[object Array]");
 
   return (
@@ -138,19 +139,21 @@ export default async function Blogs() {
               gridTemplateColumns: "repeat( auto-fit, minmax(300px, 1fr) )",
             }}
           >
-            {allBlogs.map((blog: any, i: number) => {
-              return (
-                <div key={i}>
-                  <LatestPost
-                    tag={blog.tag}
-                    title={blog.mainTitle}
-                    date={blog.date}
-                    author={blog.author}
-                    id={blog._id}
-                  />
-                </div>
-              );
-            })}
+            {allBlogs
+              ? allBlogs.map((blog: any, i: number) => {
+                  return (
+                    <div key={i}>
+                      <LatestPost
+                        tag={blog.tag}
+                        title={blog.mainTitle}
+                        date={blog.date}
+                        author={blog.author}
+                        id={blog._id}
+                      />
+                    </div>
+                  );
+                })
+              : null}
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import getSingleBlog from "@/app/controller/getSingleBlog";
 
 export default async function Post({ params: { id } }: any) {
-  const blog = await getSingleBlog(id);
+  let blog = [];
+  blog = await getSingleBlog(id);
   return (
     <div className="flex flex-col my-16  justify-center items-center">
       <div className="w-1/2 ">
@@ -25,21 +26,29 @@ export default async function Post({ params: { id } }: any) {
                 alt={blog.introSection.imageAlt}
               />
             </div>
-            {blog.introSection.paragraphs.map((para: string, i: number) => {
-              return <h3 key={i}>{para}</h3>;
-            })}
+            {blog
+              ? blog.introSection.paragraphs.map((para: string, i: number) => {
+                  return <h3 key={i}>{para}</h3>;
+                })
+              : null}
           </div>
 
-          {blog.sections.map((section: any, i: number) => {
-            return (
-              <div key={i} className="flex flex-col gap-4  mb-12">
-                <h2 className="text-3xl font-semibold">{section.title}</h2>
-                {section.paragraphs.map((paragraph: string, i: number) => {
-                  return <h3 key={i}>{paragraph}</h3>;
-                })}
-              </div>
-            );
-          })}
+          {blog
+            ? blog.sections.map((section: any, i: number) => {
+                return (
+                  <div key={i} className="flex flex-col gap-4  mb-12">
+                    <h2 className="text-3xl font-semibold">{section.title}</h2>
+                    {section
+                      ? section.paragraphs.map(
+                          (paragraph: string, i: number) => {
+                            return <h3 key={i}>{paragraph}</h3>;
+                          }
+                        )
+                      : null}
+                  </div>
+                );
+              })
+            : null}
 
           {/* 
           <div className="flex flex-col gap-4  mb-12 ">
