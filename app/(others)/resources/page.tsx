@@ -33,7 +33,7 @@ import { useState, useEffect } from "react";
 //   return data;
 // }
 
-export function Search() {
+function Search() {
   // const subjects = await getAllSubjects();
 
   // const items = subjects.map((subject: any) => {
