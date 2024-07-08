@@ -3,9 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import style from "@/app/(others)/layout ui/layout.module.css";
-import discordLogo from "@/public/contact/discord-ic-b.png";
-import redditLogo from "@/public/contact/reddit-ic-b.png";
-import gmailLogo from "@/public/contact/gmail-ic-b.png";
 import Image from "next/image";
 
 const MainContact = function () {
@@ -74,7 +71,8 @@ const MainContact = function () {
         </h3>
         <div>
           <div className="flex gap-1 items-center ">
-            <Image src={discordLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/discord-ic-b.png" alt="logo" className="w-4" />
+
             <a
               href=" https://discord.com/users/1058932081629069363"
               target="_blank"
@@ -83,7 +81,8 @@ const MainContact = function () {
             </a>
           </div>
           <div className="flex gap-1 items-center ">
-            <Image src={discordLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/discord-ic-b.png" alt="logo" className="w-4" />
+
             <h4>
               <a
                 href=" https://discord.com/users/702284046893580328"
@@ -94,7 +93,8 @@ const MainContact = function () {
             </h4>
           </div>
           <div className="flex gap-1 items-center">
-            <Image src={redditLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/reddit-ic-b.png" alt="logo" className="w-4" />
+
             <h4>
               <a
                 href="https://www.reddit.com/user/VasumitraGajbhiye/"
@@ -105,7 +105,8 @@ const MainContact = function () {
             </h4>
           </div>
           <div className="flex gap-1 items-center ">
-            <Image src={gmailLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/gmail-ic-b.png" alt="logo" className="w-4" />
+
             <h4>
               <a href="mailto:r.alevelserver@gmail.com">
                 r.alevelserver@gmail.com

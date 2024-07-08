@@ -4,9 +4,6 @@ import { link } from "fs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import style from "@/app/(home)/layout ui/layout.module.css";
-import discordLogo from "@/public/contact/discordLogo.png";
-import redditLogo from "@/public/contact/redditLogo.png";
-import gmailLogo from "@/public/contact/gmailLogo.png";
 import Image from "next/image";
 
 const MainContact = function () {
@@ -76,19 +73,21 @@ const MainContact = function () {
         </h3>
         <div>
           <div className="flex gap-1 items-center ">
-            <Image src={discordLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/discordLogo.png" alt="logo" className="w-4" />
             <h4>_vasumitra</h4>
           </div>
           <div className="flex gap-1 items-center ">
-            <Image src={discordLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/discordLogo.png" alt="logo" className="w-4" />
             <h4>s_kush</h4>
           </div>
           <div className="flex gap-1 items-center">
-            <Image src={redditLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/redditLogo.png" alt="logo" className="w-4" />
+
             <h4>Vasumitra Gajbhiye</h4>
           </div>
           <div className="flex gap-1 items-center ">
-            <Image src={gmailLogo} width={15} height={15} alt="logo" />
+            <img src="/contact/gmailLogo.png" alt="logo" className="w-4" />
+
             <h4>
               <a href="mailto:r.alevelserver@gmail.com">
                 r.alevelserver@gmail.com
