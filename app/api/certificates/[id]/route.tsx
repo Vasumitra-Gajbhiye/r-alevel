@@ -1,6 +1,8 @@
 import mongoDBConnect from "@/libs/mongodb";
-import ResourcesData from "@/models/resourcesData";
+import CertsData from "@/models/certsData";
+import { AnyCnameRecord } from "dns";
 import { NextResponse, NextRequest } from "next/server";
+// import { useSearchParams } from "next/navigation";
 
 // GET ALL SUBJECTS
 export async function GET(req: NextRequest, { params: { id } }: any) {
@@ -13,12 +15,12 @@ export async function GET(req: NextRequest, { params: { id } }: any) {
 
     await mongoDBConnect();
 
-    const subject = await ResourcesData.findOne({ _id: id });
+    const cert = await CertsData.findOne({ certId: id });
 
     return NextResponse.json(
       {
-        message: "Successfully fetched single subjects",
-        data: subject,
+        message: "Successfully fetched single cert",
+        data: cert,
       },
       {
         status: 200,
@@ -27,7 +29,7 @@ export async function GET(req: NextRequest, { params: { id } }: any) {
   } catch (error) {
     return NextResponse.json(
       {
-        message: "Failed to fetch single subjects",
+        message: "Failed to fetch single cert",
         error: error,
       },
       {
@@ -42,28 +44,28 @@ export async function PUT(req: NextRequest, { params: { id } }: any) {
   let pramasID = id;
   try {
     const {
-      newTitle: title,
-      newEmoji: emoji,
-      newLinks: links,
-      newId: id,
+      newName: name,
+      newCertType: certType,
+      newCertId: certId,
+      newIssueDate: issueDate,
     } = await req.json();
 
-    const newResourcesData = {
-      title: title,
-      emoji: emoji,
-      links: links,
-      id: id,
+    const newCertsData = {
+      name: name,
+      certType: certType,
+      certId: certId,
+      issueDate: issueDate,
     };
     console.log(pramasID);
 
     await mongoDBConnect();
 
-    await ResourcesData.findByIdAndUpdate(pramasID, newResourcesData);
+    await CertsData.findByIdAndUpdate(pramasID, newCertsData);
 
     return NextResponse.json(
       {
-        message: "Successfully updated a new subject",
-        data: newResourcesData,
+        message: "Successfully updated a new cert",
+        data: newCertsData,
       },
       {
         status: 201,
@@ -71,7 +73,7 @@ export async function PUT(req: NextRequest, { params: { id } }: any) {
     );
   } catch (error) {
     return NextResponse.json({
-      message: "Cannot update a subject",
+      message: "Cannot update a cert",
       error: error,
     });
   }

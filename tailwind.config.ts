@@ -8,8 +8,9 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        hero: "url(../public/hero-bg-2.png)",
-        contact: "url(../public/contact.png)",
+        hero: "url(../public/home_img/hero-bg-2.png)",
+        contact: "url(../public/contact/contact.png)",
+        join: "url(../public/home_img/Rectangle-11.png)",
       },
       fontFamily: {
         poppins: ["var(--font-poppins)"],
@@ -30,6 +31,11 @@ const config: Config = {
         },
         oran: {
           100: "#F59631",
+        },
+        themBlue: {
+          100: "#a4b7d7",
+          200: "#5f8cdb",
+          300: "#1b4a9b",
         },
       },
       screens: {

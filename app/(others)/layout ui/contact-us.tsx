@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import style from "@/app/(others)/layout ui/layout.module.css";
-import discordLogo from "@/public/discordLogo.png";
-import redditLogo from "@/public/redditLogo.png";
-import gmailLogo from "@/public/gmailLogo.png";
+import discordLogo from "@/public/contact/discord-ic-b.png";
+import redditLogo from "@/public/contact/reddit-ic-b.png";
+import gmailLogo from "@/public/contact/gmail-ic-b.png";
 import Image from "next/image";
 
 const MainContact = function () {
@@ -75,19 +75,42 @@ const MainContact = function () {
         <div>
           <div className="flex gap-1 items-center ">
             <Image src={discordLogo} width={15} height={15} alt="logo" />
-            <h4>_vasumitra</h4>
+            <a
+              href=" https://discord.com/users/1058932081629069363"
+              target="_blank"
+            >
+              _vasumitra
+            </a>
           </div>
           <div className="flex gap-1 items-center ">
             <Image src={discordLogo} width={15} height={15} alt="logo" />
-            <h4>s_kush</h4>
+            <h4>
+              <a
+                href=" https://discord.com/users/702284046893580328"
+                target="_blank"
+              >
+                s_kush
+              </a>
+            </h4>
           </div>
           <div className="flex gap-1 items-center">
             <Image src={redditLogo} width={15} height={15} alt="logo" />
-            <h4>Vasumitra Gajbhiye</h4>
+            <h4>
+              <a
+                href="https://www.reddit.com/user/VasumitraGajbhiye/"
+                target="_blank"
+              >
+                Vasumitra Gajbhiye
+              </a>
+            </h4>
           </div>
           <div className="flex gap-1 items-center ">
             <Image src={gmailLogo} width={15} height={15} alt="logo" />
-            <h4>r.alevelserver@gmail.com</h4>
+            <h4>
+              <a href="mailto:r.alevelserver@gmail.com">
+                r.alevelserver@gmail.com
+              </a>
+            </h4>
           </div>
         </div>
       </div>
@@ -100,10 +123,10 @@ const Credit = function () {
     <>
       <div className="text-sm flex-col items-center gap-2 mb-5 text-center   flex ">
         <h4 className="hidden xxs:block">
-          Website developed with 🖤 by Vasumitra and Bhavesh
+          Website designed & developed with 🖤 by Vasumitra
         </h4>
         <h4 className="xxs:hidden block">
-          Website developed with 💜 <br></br> by Vasumitra & Bhavesh
+          Website designed & developed with 🖤 <br></br> by Vasumitra
         </h4>
         <h4>© 2024 r/alevel  • All Rights Reserved</h4>
       </div>

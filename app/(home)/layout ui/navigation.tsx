@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import logo from "@/public/Logo only.svg";
+import logo from "@/public/logo/Logo only.svg";
 import style from "@/app/(home)/layout ui/layout.module.css";
 
 export default function Navigation() {
@@ -24,7 +24,9 @@ export default function Navigation() {
     >
       <div className="flex justify-between lg:w-2/3 md:w-full items-center font-medium">
         <div>
-          <Image src={logo} alt="Logo" width={70} />
+          <Link href={"/"}>
+            <Image src={logo} alt="Logo" width={70} />
+          </Link>
         </div>
         <div className={`hidden md:flex justify-around w-full`}>
           <div className="hover:border-b-white transition-all border-b-2 border-b-transparent">
@@ -52,10 +54,12 @@ export default function Navigation() {
         </div>
       </div>
       <div className="hidden bg-cy-500 text-white font-bold px-3 py-1 rounded-full min-w-32 md:flex justify-center items-center hover:scale-105	 transition-all cursor-pointer	">
-        Join Now
+        <a href="https://www.reddit.com/r/alevel/" target="_blank">
+          Join Now
+        </a>
       </div>
       <div className="md:hidden mobile-btn cursor-pointer hover:bg-cy-100/[0.2] transition-all rounded-md p-1">
-        <img src="/hamburger.svg" alt="hamburger" className="w-9 " />
+        <img src="/home_img/hamburger.svg" alt="hamburger" className="w-9 " />
       </div>
     </nav>
   );

@@ -1,6 +1,6 @@
 "use server";
 import Image from "next/image";
-import brain from "@/public/brain.jpg";
+import brain from "@/public/blogs/b1-brain.jpg";
 import getAllBlogs from "@/app/controller/getAllBlogs";
 
 const FeatureAbout = function ({

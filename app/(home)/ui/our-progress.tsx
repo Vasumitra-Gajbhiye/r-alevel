@@ -1,5 +1,5 @@
 import Image from "next/image";
-import cloudImg from "@/public/blue-cloudss.jpg";
+import cloudImg from "@/public/home_img/blue-clouds.jpg";
 
 export default function OurProgress() {
   type propType = {

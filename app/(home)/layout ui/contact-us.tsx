@@ -4,9 +4,9 @@ import { link } from "fs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import style from "@/app/(home)/layout ui/layout.module.css";
-import discordLogo from "@/public/discordLogo.png";
-import redditLogo from "@/public/redditLogo.png";
-import gmailLogo from "@/public/gmailLogo.png";
+import discordLogo from "@/public/contact/discordLogo.png";
+import redditLogo from "@/public/contact/redditLogo.png";
+import gmailLogo from "@/public/contact/gmailLogo.png";
 import Image from "next/image";
 
 const MainContact = function () {
@@ -89,7 +89,11 @@ const MainContact = function () {
           </div>
           <div className="flex gap-1 items-center ">
             <Image src={gmailLogo} width={15} height={15} alt="logo" />
-            <h4>r.alevelserver@gmail.com</h4>
+            <h4>
+              <a href="mailto:r.alevelserver@gmail.com">
+                r.alevelserver@gmail.com
+              </a>
+            </h4>
           </div>
         </div>
       </div>
@@ -102,10 +106,10 @@ const Credit = function () {
     <>
       <div className="text-sm flex-col items-center gap-2 mb-5 text-center   flex ">
         <h4 className="hidden xxs:block">
-          Website developed with 🖤 by Vasumitra and Bhavesh
+          Website designed & developed with 🖤 by Vasumitra
         </h4>
         <h4 className="xxs:hidden block">
-          Website developed with 💜 <br></br> by Vasumitra & Bhavesh
+          Website designed & developed with 🖤 <br></br> by Vasumitra
         </h4>
         <h4>© 2024 r/alevel  • All Rights Reserved</h4>
       </div>
