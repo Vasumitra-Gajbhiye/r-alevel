@@ -186,7 +186,7 @@ const CertContent = function () {
           certificates can serve as a proof of extra curricular activity by the
           student. They can be submitted with university application and on
           social media profiles (e.g. linkedin). <br /> <br /> Have a look at
-          all the certificates we offer below.
+          all the certificates we offer below!
         </p>
         <img
           className="w-1/6 hidden md:block"
