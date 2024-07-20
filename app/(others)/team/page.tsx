@@ -1,6 +1,8 @@
 "use client";
 
 import getAllMembers from "@/app/controller/getAllTeam";
+import { useEffect, useState } from "react";
+
 const Profile = function ({
   name,
   title,
@@ -23,8 +25,24 @@ const Profile = function ({
   );
 };
 
-export default async function Team() {
-  const members = await getAllMembers();
+export default function Team() {
+  const [members, setMembers] = useState([]);
+
+  // const members = await getAllMembers();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const allMembers = await getAllMembers();
+        setMembers(allMembers);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  });
+
   return (
     <div className="my-24 px-16">
       <h1 className="text-center text-5xl font-bold">Our Team</h1>
