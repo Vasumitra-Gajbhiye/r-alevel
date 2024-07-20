@@ -1,3 +1,5 @@
+"use client";
+
 import getAllMembers from "@/app/controller/getAllTeam";
 const Profile = function ({
   name,

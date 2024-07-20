@@ -1,7 +1,8 @@
-"use server";
+"use client";
 import Image from "next/image";
 import brain from "@/public/blogs/b1-brain.jpg";
 import getAllBlogs from "@/app/controller/getAllBlogs";
+import { useEffect, useState } from "react";
 
 const FeatureAbout = function ({
   date,
@@ -121,10 +122,25 @@ const LatestPost = function ({
   );
 };
 
-export default async function Blogs() {
-  let allBlogs = [];
-  allBlogs = await getAllBlogs();
+export default function Blogs() {
+  // let allBlogs = [];
+
+  const [data, setData] = useState([]);
+  // allBlogs = await getAllBlogs();
   // console.log(Object.prototype.toString.call(allBlogs) == "[object Array]");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const allBlogs = await getAllBlogs();
+        setData(allBlogs);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  });
 
   return (
     <div className="px-8 sm:px-16 mt-16  ">
@@ -141,8 +157,8 @@ export default async function Blogs() {
               gridTemplateColumns: "repeat( auto-fit, minmax(250px, 1fr) )",
             }}
           >
-            {allBlogs
-              ? allBlogs.map((blog: any, i: number) => {
+            {data
+              ? data.map((blog: any, i: number) => {
                   return (
                     <div key={i}>
                       <LatestPost
@@ -162,3 +178,45 @@ export default async function Blogs() {
     </div>
   );
 }
+
+// export default async function Blogs() {
+//   let allBlogs = [];
+//   allBlogs = await getAllBlogs();
+//   // console.log(Object.prototype.toString.call(allBlogs) == "[object Array]");
+
+//   return (
+//     <div className="px-8 sm:px-16 mt-16  ">
+//       <h1 className="text-5xl font-bold text-center">Blogs</h1>
+//       <div>
+//         <Feature />
+//         <div className="my-36">
+//           <h1 className="text-xl font-bold uppercase border-t-4 border-black pt-2">
+//             Latest
+//           </h1>
+//           <div
+//             className="grid mt-10 gap-x-5 gap-y-20"
+//             style={{
+//               gridTemplateColumns: "repeat( auto-fit, minmax(250px, 1fr) )",
+//             }}
+//           >
+//             {allBlogs
+//               ? allBlogs.map((blog: any, i: number) => {
+//                   return (
+//                     <div key={i}>
+//                       <LatestPost
+//                         tag={blog.tag}
+//                         title={blog.mainTitle}
+//                         date={blog.date}
+//                         author={blog.author}
+//                         id={blog._id}
+//                       />
+//                     </div>
+//                   );
+//                 })
+//               : null}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
