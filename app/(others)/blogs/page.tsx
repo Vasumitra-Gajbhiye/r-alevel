@@ -55,7 +55,8 @@ const Feature = function () {
               raining cats and dogs. Kids know what both cats and dogs are."
           />
         </div>
-        <div>
+
+        <div className="hidden lg:block">
           <div className="overflow-hidden max-h-56  rounded-lg">
             <Image src={brain} alt="brain img" className="-translate-y-16" />
           </div>
@@ -66,7 +67,8 @@ const Feature = function () {
               both cats and dogs."
           />
         </div>
-        <div>
+
+        <div className="hidden lg:block">
           <div className="overflow-hidden max-h-56  rounded-lg">
             <Image src={brain} alt="brain img" className="-translate-y-16" />
           </div>
@@ -104,7 +106,7 @@ const LatestPost = function ({
         <h3 className="uppercase text-sky-600 font-semibold text-sm mt-2">
           {tag}
         </h3>
-        <h4 className="font-semibold text-lg">{title}</h4>
+        <h4 className="font-semibold text-lg text-center">{title}</h4>
         <h5 className="text-xs">
           {date} by <span className="text-blue-600">{author}</span>
           {/* <a
@@ -125,7 +127,7 @@ export default async function Blogs() {
   // console.log(Object.prototype.toString.call(allBlogs) == "[object Array]");
 
   return (
-    <div className="px-16 mt-16  ">
+    <div className="px-8 sm:px-16 mt-16  ">
       <h1 className="text-5xl font-bold text-center">Blogs</h1>
       <div>
         <Feature />
@@ -136,7 +138,7 @@ export default async function Blogs() {
           <div
             className="grid mt-10 gap-x-5 gap-y-20"
             style={{
-              gridTemplateColumns: "repeat( auto-fit, minmax(300px, 1fr) )",
+              gridTemplateColumns: "repeat( auto-fit, minmax(250px, 1fr) )",
             }}
           >
             {allBlogs

@@ -113,7 +113,7 @@ function Search() {
   return (
     <div className="App">
       <header className="App-header">
-        <div style={{ width: 400 }}>
+        <div style={{ width: 375 }}>
           <ReactSearchAutocomplete
             items={items}
             onSearch={handleOnSearch}
@@ -131,7 +131,9 @@ function Search() {
 export default function Resources() {
   return (
     <div className="flex flex-col items-center min-h-lvh">
-      <h1 className="text-6xl font-bold mt-32 mb-16">Resource Repository</h1>
+      <h1 className="text-4xl xs:text-5xl sm:text-6xl font-bold mt-32 mb-16 text-center">
+        Resource Repository
+      </h1>
       <Search />
     </div>
   );

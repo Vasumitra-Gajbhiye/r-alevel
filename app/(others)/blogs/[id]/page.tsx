@@ -5,7 +5,7 @@ export default async function Post({ params: { id } }: any) {
   blog = await getSingleBlog(id);
   return (
     <div className="flex flex-col my-16  justify-center items-center">
-      <div className="w-1/2 ">
+      <div className=" w-5/6 xs:w-4/5 md:w-3/5 lg:w-1/2 ">
         {/* POST INFO */}
         <div>
           <h1 className="text-3xl font-bold">{blog.mainTitle}</h1>

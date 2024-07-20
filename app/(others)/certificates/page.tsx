@@ -101,7 +101,15 @@ const Step2 = function ({
   if (link)
     return (
       <div className="h-bullet-text">
-        Fill <a href={actualLink}>this</a> {linkText}
+        Fill{" "}
+        <a
+          href={actualLink}
+          className="text-blue-700 underline hover:text-violet-800"
+          target="_blank"
+        >
+          this
+        </a>{" "}
+        {linkText}
       </div>
     );
   else return <h1>Start Helping!</h1>;
@@ -135,31 +143,42 @@ const InfoCon = function ({
             <p className="text-xl text-gray-700 my-6">{info}</p>
           </div>
           <div className="flex gap-2 text-lg mb-4 ">
-            <div className="bg-cy-500 rounded-full text-white font-bold w-8 h-8 flex justify-center items-center">
+            <div className="bg-cy-500 rounded-full text-white font-bold min-w-8 min-h-8 max-h-8 flex justify-center items-center">
               1
             </div>
             <div className="h-bullet-text">
               Join our community on{" "}
-              <a href="https://discord.gg/r-alevel-1114437735692902481">
+              <a
+                href="https://discord.gg/r-alevel-1114437735692902481"
+                target="_blank"
+                className="text-blue-700 underline hover:text-violet-800"
+              >
                 Discord
               </a>{" "}
-              and <a href="https://www.reddit.com/r/alevel/">Reddit</a>{" "}
+              and{" "}
+              <a
+                href="https://www.reddit.com/r/alevel/"
+                target="_blank"
+                className="text-blue-700 underline hover:text-violet-800"
+              >
+                Reddit
+              </a>{" "}
             </div>
           </div>
           <div className="flex gap-2 text-lg mb-4 ">
-            <div className="bg-cy-500 rounded-full text-white font-bold w-8 h-8 flex justify-center items-center">
+            <div className="bg-cy-500 rounded-full text-white font-bold min-w-8 min-h-8 max-h-8 flex justify-center items-center">
               2
             </div>
             <Step2 link={link} linkText={linkText} actualLink={actualLink} />
           </div>
           <div className="flex gap-2 text-lg mb-4 ">
-            <div className="bg-cy-500 rounded-full text-white font-bold w-8 h-8 flex justify-center items-center">
+            <div className="bg-cy-500 rounded-full text-white font-bold min-w-8 min-h-8 max-h-8 flex justify-center items-center">
               3
             </div>
             <div className="h-bullet-text">Eligibility criteria: {s3}</div>
           </div>
           <div className="flex gap-2 text-lg mb-4 ">
-            <div className="bg-cy-500 rounded-full text-white font-bold w-8 h-8 flex justify-center items-center">
+            <div className="bg-cy-500 rounded-full text-white font-bold min-w-8 min-h-8 max-h-8  flex justify-center items-center">
               4
             </div>
             <div className="h-bullet-text">{s4}</div>
@@ -211,7 +230,7 @@ export default function Cert() {
           heading="Helper"
           info="Given to members who are show incredible helpfulness towards others"
           link={false}
-          s3="minimum 80 karmas on Reddit or 80 reps on Discord from helping"
+          s3="minimum 100 reps on Discord from helping"
           s4="Certificates will be awarded on the basis of overall activity in the community"
           imgSrc="/cert_pg/svg-1.png"
         />

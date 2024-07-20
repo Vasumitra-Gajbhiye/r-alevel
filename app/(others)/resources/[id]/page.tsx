@@ -22,8 +22,8 @@ export default async function SingleResource({ params: { id } }: any) {
     //   </div>
     // </div>
 
-    <div className="px-16 font-poppins">
-      <div className="w-full h-80 overflow-hidden	rounded-xl mt-24 flex items-center">
+    <div className="px-4 md:px-16 font-poppins">
+      <div className="w-full h-80 overflow-hidden	rounded-xl mt-4 xs:mt-12 md:mt-20 flex items-center">
         <img
           src={
             "/res-img/" +
@@ -34,7 +34,7 @@ export default async function SingleResource({ params: { id } }: any) {
           className="object-contain -z-10 "
         />
       </div>
-      <div className="px-10 -mt-6">
+      <div className="px-3 xs:px-5 md2:px-10 -mt-20 xs:-mt-12 md2:-mt-6">
         <div className="mb-16">
           <h1 className="text-7xl mb-5 ">{subject.emoji}</h1>
           <h1 className="text-6xl font-semibold 	">{subject.title}</h1>
