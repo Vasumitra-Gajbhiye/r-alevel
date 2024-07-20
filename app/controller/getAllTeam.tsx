@@ -1,7 +1,7 @@
 export default async function getAllSubjects() {
   try {
     const res = await fetch("http://localhost:3000/api/team", {
-      cache: "no-store",
+      cache: "no-cache",
     });
     const sub = await res.json();
     return sub.data;
