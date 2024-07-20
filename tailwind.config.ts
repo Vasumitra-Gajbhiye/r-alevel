@@ -25,6 +25,7 @@ const config: Config = {
         cy: {
           100: "#e3fafc",
           200: "#E7F5FF",
+          300: "#A5D8FF",
           500: "#22b8cf",
           700: "#1098ad",
           400: "#0078D4",

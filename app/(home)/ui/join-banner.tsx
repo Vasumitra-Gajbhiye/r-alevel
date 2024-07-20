@@ -7,9 +7,22 @@ export default function JoinBanner() {
         team. Team members receive certificates that can be showcased while
         applying to universities. Contact us via our email below.
       </h4>
-      <div className=" flex gap-2 bg-cy-100 w-max text-black justify-center items-center rounded-2xl  p-2">
-        <div className="w-6 h-6 bg-cyan-300 rounded-full"></div>
-        <h5 className="text-xl">r.alevelserver@gmail.com</h5>
+      <div className="flex gap-4">
+        <div className=" flex gap-2 bg-cy-100 w-max text-black justify-center items-center rounded-2xl  p-2">
+          <div className="w-6 h-6 bg-cy-300 rounded-full"></div>
+          <h5 className="text-xl">r.alevelserver@gmail.com</h5>
+        </div>
+        <div className=" flex gap-2 bg-cy-100 w-max text-black justify-center items-center rounded-2xl  p-2">
+          <div className="w-6 h-6 bg-cy-300 rounded-full"></div>
+          <h4 className="text-xl">
+            <a
+              href=" https://discord.com/users/1058932081629069363"
+              target="_blank"
+            >
+              Vasumitra
+            </a>
+          </h4>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 export default function AboutUs() {
   return (
-    <div className="flex flex-col gap-6 px-8 md:px-16 mb-20 text-left tracking-wide xs:tracking-widest mx-auto">
+    <div className="flex flex-col gap-6 px-8 md:px-16 mb-52 mt-24 text-left tracking-wide xs:tracking-widest mx-auto">
       <div>
         <h1 className="font-extrabold text-5xl">About Us</h1>
       </div>

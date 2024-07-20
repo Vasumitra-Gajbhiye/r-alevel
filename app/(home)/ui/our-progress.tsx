@@ -1,5 +1,6 @@
 import Image from "next/image";
-import cloudImg from "@/public/home_img/blue-clouds.jpg";
+// import cloudImg from "@/public/home_img/blue-clouds.jpg";
+import cloudImg from "@/public/home_img/progress bannar.png";
 
 export default function OurProgress() {
   type propType = {
@@ -25,13 +26,13 @@ export default function OurProgress() {
     );
   };
   return (
-    <div className="bg-cy-200 flex flex-col items-center py-20 mb-20 ">
-      <div className="w-11/12 max-h-80 overflow-hidden rounded-lg">
-        <Image src={cloudImg} alt="background image" />
+    <div className="bg-cy-200 flex flex-col items-center py-20 mb-52 ">
+      <div className="w-11/12 max-h-96 overflow-hidden rounded-lg">
+        <Image src={cloudImg} alt="background image" className="w-full" />
       </div>
 
       <div className="flex flex-col items-center -mt-28 xs:-mt-48 md2:-mt-52 md:-mt-48  gap-10 w-5/6 ">
-        <div className="flex flex-col items-center gap-4 text-center leading-3	">
+        <div className="flex flex-col items-center gap-4 text-center leading-3	text-white">
           <h1 className="font-extrabold text-3xl md2:text-4xl md:5xl">
             Our Standout Progress
           </h1>
