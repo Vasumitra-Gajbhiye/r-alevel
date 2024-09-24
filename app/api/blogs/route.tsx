@@ -34,16 +34,25 @@ export async function GET(req: NextRequest) {
 // CREATE A SUBJECT
 export async function POST(req: NextRequest) {
   try {
-    const { mainTitle, date, author, introSection, sections, id } =
+    // const { mainTitle, date, author, introSection, sections, id } =
+    const { mainTitle, description, date, timeToRead, tag, author } =
       await req.json();
+
+    // const newBlogsData = {
+    //   mainTitle: mainTitle,
+    //   date: date,
+    //   author: author,
+    //   introSection: introSection,
+    //   sections: sections,
+    // };
 
     const newBlogsData = {
       mainTitle: mainTitle,
+      description: description,
       date: date,
+      timeToRead: timeToRead,
+      tag: tag,
       author: author,
-      introSection: introSection,
-      sections: sections,
-      id: id,
     };
 
     await mongoDBConnect();

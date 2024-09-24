@@ -1,6 +1,11 @@
 "use client";
+//////////////////////////////////////////////////////////////
+// IMPORTANT NOTE: EVERY PUBLIC BLOG FOLDER THAT CONTAINS THE ASSETS, MUST HAVE A MAIN IMAGE CALLED "mainImg.jpg"
+//////////////////////////////////////////////////////////////
+
 import Image from "next/image";
 import brain from "@/public/blogs/b1-brain.jpg";
+// import brain from `@/public/blogs/`
 import getAllBlogs from "@/app/controller/getAllBlogs";
 import { useEffect, useState } from "react";
 
@@ -99,10 +104,20 @@ const LatestPost = function ({
   id: string;
 }) {
   return (
-    <a href={`/blogs/${id}`}>
-      <div className="flex flex-col items-center gap-1 border-b-2 border-gray-300 pb-4">
-        <div className="max-h-64 overflow-hidden rounded-lg">
-          <Image src={brain} alt="image" />
+    // <a href={`/blogs/${id}`}>
+    <a href={`/blogs/tb/${id}`}>
+      <div className="flex flex-col items-center gap-1  pb-1">
+        <div className="overflow-hidden rounded-lg w-full max-h-64">
+          {/* <Image src={brain} alt="image" /> */}
+          <img
+            src={`/blogs/${id}/mainImgThumb.jpg`}
+            alt="Hero Image"
+            className="object-cover text-left"
+            style={{
+              height: "250px",
+              width: "100%",
+            }}
+          />
         </div>
         <h3 className="uppercase text-sky-600 font-semibold text-sm mt-2">
           {tag}
@@ -140,10 +155,10 @@ export default function Blogs() {
     };
 
     fetchData();
-  });
+  }, []);
 
   return (
-    <div className="px-8 sm:px-16 mt-16  ">
+    <div className="px-5 md:px-8 sm:px-16 mt-16  ">
       <h1 className="text-5xl font-bold text-center">Blogs</h1>
       <div>
         <Feature />
@@ -154,13 +169,14 @@ export default function Blogs() {
           <div
             className="grid mt-10 gap-x-5 gap-y-20"
             style={{
-              gridTemplateColumns: "repeat( auto-fit, minmax(250px, 1fr) )",
+              gridTemplateColumns: "repeat( auto-fit, minmax(350px, 1fr) )",
+              gridAutoRows: "1fr",
             }}
           >
             {data
               ? data.map((blog: any, i: number) => {
                   return (
-                    <div key={i}>
+                    <div key={i} className="border-b-2 border-gray-300">
                       <LatestPost
                         tag={blog.tag}
                         title={blog.mainTitle}

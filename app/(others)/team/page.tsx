@@ -41,7 +41,7 @@ export default function Team() {
     };
 
     fetchData();
-  });
+  }, []);
 
   return (
     <div className="my-24 px-16">

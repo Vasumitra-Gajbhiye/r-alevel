@@ -1,5 +1,6 @@
 import getSingleCert from "@/app/controller/getSingleCert";
 import Image from "next/image";
+import style from "@/app/(others)/certificates/[id]/layout.module.css";
 import verticalLog from "@/public/logo/Vertical logo.png";
 import group39 from "@/public/certificateImages/Group 39.png";
 import group40 from "@/public/certificateImages/Group 40.png";
@@ -23,7 +24,7 @@ export default async function SingleResource({ params: { id } }: any) {
       };
   };
   return (
-    <div>
+    <div className="main-cert-con scale-30 xs:scale-40 md:scale-50 lg:scale-70 xl:scale-80">
       <div
         className="cert-con flex justify-center flex-col items-center scale-50"
         style={{ marginTop: "-40rem", marginBottom: "-35rem" }}

@@ -1,6 +1,12 @@
 import Navigation from "./layout ui/navigation";
 import "../globals.css";
 import ContactUs from "./layout ui/contact-us";
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({
+  weight: ["100", "300", "400", "500", "700", "900"],
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: "r/alevel",
@@ -14,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={roboto.className}>
         <Navigation />
         {children}
         <ContactUs />
