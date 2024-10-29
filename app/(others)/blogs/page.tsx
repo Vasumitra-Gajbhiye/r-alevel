@@ -46,7 +46,7 @@ const FeatureText = function ({
 
 const Feature = function () {
   return (
-    <div className="mt-12">
+    <div className="mt-12 hidden">
       <h1 className="text-xl font-bold uppercase border-t-4 border-black pt-2">
         Feature
       </h1>
