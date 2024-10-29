@@ -3,6 +3,7 @@ export default async function getSingleSubject(id: any) {
     console.log(id);
     const res = await fetch(
       `https://r-alevel.netlify.app/api/certificates/${id}`,
+      // `http://localhost:3000/api/certificates/${id}`,
       {
         cache: "no-store",
       }
