@@ -25,6 +25,8 @@ export const metadata: Metadata = {
         width: 960,
         height: 540,
         alt: "r/alevel",
+        secureUrl: "https://r-alevel.netlify.app/opengraph-image.png",
+        type: "image/png",
       },
     ],
   },
