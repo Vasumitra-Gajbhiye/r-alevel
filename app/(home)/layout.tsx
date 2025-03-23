@@ -12,23 +12,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "r/alevel",
   description: "World's Largest A-Level Community",
-  keywords:
-    "alevel, a-level, a level, alevel community, a-level community, cambridge, edexcel",
+  // keywords:
+  // "alevel, a-level, a level, alevel community, a-level community, cambridge, edexcel",
+
   openGraph: {
-    type: "website",
-    url: "https://alevel.netlify.app",
-    title: "r/alevel",
-    description: "World's Largest A-Level Community",
-    images: [
-      {
-        url: "https://r-alevel.netlify.app/opengraph-image.png",
-        width: 960,
-        height: 540,
-        alt: "r/alevel",
-        secureUrl: "https://r-alevel.netlify.app/opengraph-image.png",
-        type: "image/png",
-      },
-    ],
+    images: ["https://r-alevel.netlify.app/opengraph-image.png"],
   },
 };
 
@@ -39,6 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head></head>
       <body className={poppins.className + " tracking-widest	"}>
         <Navigation />
         {children}
