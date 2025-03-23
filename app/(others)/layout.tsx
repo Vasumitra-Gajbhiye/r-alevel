@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   // "alevel, a-level, a level, alevel community, a-level community, cambridge, edexcel",
 
   openGraph: {
-    images: ["https://r-alevel.netlify.app/opengraph-image.png"],
+    images: ["https://r-alevel.netlify.app/opengraph-image.jpg"],
   },
 };
 export default function RootLayout({
