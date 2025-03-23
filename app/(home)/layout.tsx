@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description: "World's Largest A-Level Community",
     images: [
       {
-        url: "https://r-alevel.netlify.app/logo/alevel-og-banner.png",
+        url: "https://r-alevel.netlify.app/opengraph-image.png",
         width: 960,
         height: 540,
         alt: "r/alevel",
