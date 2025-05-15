@@ -9,6 +9,7 @@ const Search = function () {
     { name: "2g00of311lek", id: "2g00of311lek" },
     { name: "2d00io308jke", id: "2d00io308jke" },
     { name: "2h00vd310gdf", id: "2h00vd310gdf" },
+    {name: "2t00ml394ndi", id: "2t00ml394ndi"},
   ];
 
   const items = [
@@ -16,6 +17,7 @@ const Search = function () {
     { name: "2g00of311lek", id: 2 },
     { name: "2d00io308jke", id: 3 },
     { name: "2h00vd310gdf", id: 4 },
+    { name: "2t00ml394ndi", id: 5 },
   ];
 
   const handleOnSearch = (string: any, results: any) => {

@@ -22,6 +22,11 @@ export default async function SingleResource({ params: { id } }: any) {
         lineOne: "FOR MAKING ACADEMIC RESOURCES AND HELPING",
         lineTwo: "THE STUDENTS OF r/alevel COMMUNITY",
       };
+      if (cert.certType === "2024WriterCompFirstPlace")
+      return {
+        lineOne: "For First Place",
+        lineTwo: "2024 Creative & Essay Writing Competition",
+      };
   };
   return (
     <div className="main-cert-con scale-30 xs:scale-40 md:scale-50 lg:scale-70 xl:scale-80">
