@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../libs"
+		},
+		{
+			"path": "../models"
+		},
+		{
+			"path": "../node_modules"
+		},
+		{
+			"path": "../public"
+		}
+	]
+}
