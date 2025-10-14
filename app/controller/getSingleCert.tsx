@@ -1,18 +1,12 @@
 export default async function getSingleSubject(id: any) {
   try {
     console.log(id);
-<<<<<<< HEAD
-    const res = await fetch(
-      // `https://r-alevel.netlify.app/api/certificates/${id}`,
-      `https://alevel.netlify.app/certificates/${id}`,
-=======
     const apiLink =process.env.NEXT_PUBLIC_GETSINGLECERT;
         const res = await fetch(`${apiLink}/${id}`);
 
     // const res = await fetch(
       // `https://r-alevel.netlify.app/api/certificates/${id}`,
       // `https://alevel.netlify.app/certificates/${id}`,
->>>>>>> f09491a (new hope)
       // `http://localhost:3000/api/certificates/${id}`,
       // {
         // cache: "no-store",
