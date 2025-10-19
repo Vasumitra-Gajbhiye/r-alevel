@@ -1,4 +1,4 @@
-export default async function getSingleSubject(id: any) {
+export default async function getSingleCert(id: any) {
   try {
     console.log(id);
     const apiLink =process.env.NEXT_PUBLIC_GETSINGLECERT;
