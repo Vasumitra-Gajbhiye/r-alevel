@@ -24,7 +24,7 @@ export default function Hero() {
         </div>
         <div className="bg-cy-700 px-4 rounded-lg py-2 text-2xl font-bold flex justify-center items-center hover:scale-105 hover:bg-cy-500 min-w-32 transition-all cursor-pointer">
           <a href="https://www.reddit.com/r/alevel/" target="_blank">
-            Join Now
+            Join Now!
           </a>
         </div>
       </div>
