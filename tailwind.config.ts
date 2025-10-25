@@ -8,9 +8,9 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        hero: "url(../public/home_img/hero-bg-2.png)",
+        hero: "url(../public/home_img/hero-bg.png)",
         contact: "url(../public/contact/contact.png)",
-        join: "url(../public/home_img/Rectangle-11.png)",
+        join: "url(../public/home_img/Rectangle.png)",
       },
       fontFamily: {
         poppins: ["var(--font-poppins)"],
