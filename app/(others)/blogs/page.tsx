@@ -8,6 +8,9 @@ import brain from "@/public/blogs/b1-brain.jpg";
 // import brain from `@/public/blogs/`
 import getAllBlogs from "@/app/controller/getAllBlogs";
 import { useEffect, useState } from "react";
+import Skeleton from "@/app/skeleton";
+import { ImageSkeleton } from "@/app/skeleton";
+
 
 const FeatureAbout = function ({
   date,
@@ -141,6 +144,7 @@ export default function Blogs() {
   // let allBlogs = [];
 
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   // allBlogs = await getAllBlogs();
   // console.log(Object.prototype.toString.call(allBlogs) == "[object Array]");
 
@@ -151,6 +155,8 @@ export default function Blogs() {
         setData(allBlogs);
       } catch (error) {
         console.error("Error fetching data:", error);
+      }finally {
+        setLoading(false);
       }
     };
 
@@ -173,7 +179,17 @@ export default function Blogs() {
               gridAutoRows: "1fr",
             }}
           >
-            {data
+            {loading ?  // 🩶 Skeleton placeholders
+                [...Array(11)].map((_, i) => (
+                  <div key={i} className="border-b-2 border-gray-200 pb-5">
+                    <ImageSkeleton className="w-full h-64 rounded-lg mb-3" />
+                    <Skeleton className="h-4 w-16 mb-2 rounded-md" />
+                    <Skeleton className="h-5 w-3/4 mb-2 rounded-md" />
+                    <Skeleton className="h-3 w-1/2 rounded-md" />
+                  </div>
+                )):
+            
+            data
               ? data.map((blog: any, i: number) => {
                   return (
                     <div key={i} className="border-b-2 border-gray-300">
