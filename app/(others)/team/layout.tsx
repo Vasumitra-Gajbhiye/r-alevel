@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
-  title: "Certificates | r/alevel",
+  title: "Team | r/alevel",
   description: "World's Largest A-Level Community",
   // keywords:
   // "alevel, a-level, a level, alevel community, a-level community, cambridge, edexcel",
@@ -18,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     
-      <main>
+      <main className={poppins.className}>
         {children}
       </main>
   );

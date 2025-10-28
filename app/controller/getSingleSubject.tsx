@@ -2,7 +2,7 @@ export default async function getSingleSubject(id: any) {
   try {
     console.log(id);
     const apiLink =process.env.NEXT_PUBLIC_GETSINGLESUBJECT;
-        const res = await fetch(`${apiLink}/${id}`, {cache:"no-store"});
+        const res = await fetch(`${apiLink}/${id}`);
 
     // const res = await fetch(`https://r-alevel.netlify.app/api/resources/${id}`);
     // const res = await fetch(`http://localhost:3000/api/resources/${id}`);
