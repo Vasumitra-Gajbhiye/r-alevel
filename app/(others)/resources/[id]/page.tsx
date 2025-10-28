@@ -1,4 +1,5 @@
 import getSingleSubject from "@/app/controller/getSingleSubject";
+import Image from "next/image";
 
 export default async function SingleResource({ params: { id } }: any) {
   const subject = await getSingleSubject(id);
@@ -24,7 +25,7 @@ export default async function SingleResource({ params: { id } }: any) {
 
     <div className="px-4 md:px-16 font-poppins">
       <div className="w-full h-80 overflow-hidden	rounded-xl mt-4 xs:mt-12 md:mt-20 flex items-center">
-        <img
+        {/* <img
           src={
             "/res-img/" +
             subject.title.toLowerCase().replace(/ /g, "-") +
@@ -32,7 +33,17 @@ export default async function SingleResource({ params: { id } }: any) {
           }
           alt="image"
           className="object-contain -z-10 "
-        />
+        /> */}
+        {/* <img
+          src=
+"@/public/res-img/chemistry_comp.jpg"
+          
+          alt="image"
+          className="object-contain -z-10 "
+        /> */}
+      <Image src={"/res-img/" +
+            subject.title.toLowerCase().replace(/ /g, "-") +
+            "_comp.jpg"} alt="img" width={2000} height={1000} />
       </div>
       <div className="px-3 xs:px-5 md2:px-10 -mt-20 xs:-mt-12 md2:-mt-6">
         <div className="mb-16">

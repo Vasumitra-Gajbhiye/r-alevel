@@ -1,3 +1,4 @@
+import Image from "next/image";
 export default function Blog() {
   return (
     <>
@@ -25,10 +26,12 @@ export default function Blog() {
                 className="overflow-hidden flex items-center mt-10 mb-5"
                 style={{ maxHeight: "20rem" }}
               >
-                <img
-                  src="/blogs/66c09bbf885c6d954427fb59/mainImg.jpg"
-                  alt="illustraion of a brain"
-                />
+                <Image
+                                  src="/blogs/66c09bbf885c6d954427fb59/mainImg.jpg"
+                                  alt="illustraion of a brain"
+                                  height={1260}
+                                  width={2240}
+                                />
               </div>
 
               {/* INTRO PARAGRAPHS */}

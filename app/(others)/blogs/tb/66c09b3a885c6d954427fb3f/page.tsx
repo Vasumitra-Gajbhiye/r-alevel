@@ -1,3 +1,4 @@
+import Image from "next/image";
 export default function Blog() {
   // Photo by <a href="https://unsplash.com/@thepaintedsquarejessica?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jessica Lewis 🦋 thepaintedsquare</a> on <a href="https://unsplash.com/photos/person-holding-white-printer-paper-8T-lK9FkzyI?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
 
@@ -26,10 +27,12 @@ export default function Blog() {
                 className="overflow-hidden flex items-center mt-10 mb-5"
                 style={{ maxHeight: "30rem" }}
               >
-                <img
-                  src="/blogs/66c09b3a885c6d954427fb3f/mainImg.jpg"
-                  alt="illustraion of a brain"
-                />
+                <Image
+                                  src="/blogs/66c09b3a885c6d954427fb3f/mainImg.jpg"
+                                  alt="illustraion of a brain"
+                                  height={1260}
+                                  width={2240}
+                                />
               </div>
 
               {/* INTRO PARAGRAPHS */}
