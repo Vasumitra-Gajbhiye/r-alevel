@@ -16,12 +16,17 @@ const Search = function () {
 
   const items = [
     { name: "2a00sg309itg", id: 1 },
+    { name: "Martin Fernando Pramanik", id: 1 },
     { name: "2g00of311lek", id: 2 },
+    { name: "Abdur Rafay Khan", id: 2 },
     { name: "2d00io308jke", id: 3 },
+    { name: "Kyaw Nyi Nyi", id: 3 },
     { name: "2h00vd310gdf", id: 4 },
+    { name: "Syed Ibrahim Ali", id: 4 },
     { name: "2t00ml394ndi", id: 5 },
+    { name: "Molly Bonsall", id: 5 },
     { name: "2f00bk313iru", id: 6 },
-    { name: "2a00rt412uji", id: 7 },
+    { name: "Jake Schwegler", id: 6 },
   ];
 
   const handleOnSearch = (string: any, results: any) => {
@@ -32,12 +37,22 @@ const Search = function () {
     // if (newSearch[newSearch].length - 1])
     // navigate(newSearch[newSearch.length - 1].id);
     // if ((results.length = 1)) console.log(results[0]);
-    console.log(string);
+    // navigate(results);
+    // for (let i = 0; i < items.length; i++) {
+    //   const element = items[i];
+    //   if(items[i].name==string){
+    //     console.log(`recieved ${string}`)
+    //   }
+    // }
+    console.log("results " + results);
+    console.log("string " + string);
+
   };
 
   const handleOnSelect = (item: any) => {
     // the item selected
     // console.log("selected " + item.id);
+    console.log(item)
     navigate(uuid[item.id - 1].id);
   };
 
@@ -60,6 +75,7 @@ const Search = function () {
             autoFocus
             formatResult={formatResult}
             maxResults={4}
+            placeholder="Enter Certificate ID or your name"
           />
         </div>
       </header>
@@ -198,7 +214,7 @@ const CertContent = function () {
 export default function Cert() {
   return (
     <div className="flex flex-col items-center min-h-lvh ">
-      <div>
+      <div className="flex flex-col items-center">
         <h1 className="text-6xl font-bold mt-32 mb-16">Certificates</h1>
         <Search />
       </div>

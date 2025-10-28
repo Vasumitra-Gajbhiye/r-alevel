@@ -1,7 +1,7 @@
 const CardInfo = function ({ name, role }: { name: string; role: string }) {
   return (
-    <div className="flex-col bg-cy-200 p-8 rounded-xl items-center w-full">
-      <div className="max-w-48 mb-2">
+    <div className="flex-col flex bg-cy-200 p-8 rounded-xl justify-center items-center w-full max-h-72">
+      <div className="w-44 mb-2">
         <svg
           className="t-profile-svg"
           viewBox="0 0 225 225"
@@ -40,13 +40,15 @@ export default function OurTeam() {
         </p>
       </div>
 
-      <div className=" w-full xs:w-3/4 lg:w-3/5 grid justify-items-center gap-y-12 gap-x-7 grid-cols-2 sm:grid-cols-3">
+      <div className=" w-full xs:w-3/4 lg:w-3/5 grid justify-items-center gap-y-12 gap-x-7 grid-cols-2 sm:grid-cols-3 mb-10">
         <CardInfo name="Vasumitra" role="Community lead" />
-        <CardInfo name="Kush" role="Administrator" />
-        <CardInfo name="Rage" role="Administrator" />
-        <CardInfo name="Spiedy" role="Administrator" />
+        <CardInfo name="Jake" role="Chief Administrator" />
+        <CardInfo name="Abu Bakar" role="Administrator" />
+      </div>
+        <div className=" w-full xs:w-3/4 lg:w-3/5 grid justify-items-center gap-y-12 gap-x-7 grid-cols-2 sm:grid-cols-2">
+      
+        <CardInfo name="Haz" role="Administrator" />
         <CardInfo name="Alen" role="Administrator" />
-        <CardInfo name="Myz" role="Bot dev & Admin" />
       </div>
 
       <div className="mt-10 text-blue-600 underline hover:text-purple-800 transition-all">

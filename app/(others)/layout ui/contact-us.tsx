@@ -9,9 +9,9 @@ const MainContact = function () {
   const pathname = usePathname();
 
   const communityItems = [
-    { id: 1, title: "Discord", link: "/" },
-    { id: 1, title: "Reddit", link: "/" },
-    { id: 1, title: "r.alevelserver@gmail.com", link: "/" },
+    { id: 1, title: "Discord", link: "https://discord.gg/vS7eTFKZfD" },
+    { id: 1, title: "Reddit", link: "https://www.reddit.com/r/alevel/" },
+    { id: 1, title: "r.alevelserver@gmail.com", link: "mailto:r.alevelserver@gmail.com" },
   ];
   const navigationItems = [
     { id: 1, title: "Certificates" },
@@ -70,29 +70,29 @@ const MainContact = function () {
           Talk to us
         </h3>
         <div>
-          <div className="flex gap-1 items-center ">
+          <div className="flex gap-2 items-center ">
             <img src="/contact/discord-ic-b.png" alt="logo" className="w-4" />
 
             <a
               href=" https://discord.com/users/1058932081629069363"
               target="_blank"
             >
-              _vasumitra
+              Vasumitra Gajbhiye
             </a>
           </div>
-          <div className="flex gap-1 items-center ">
+          <div className="flex gap-2 items-center ">
             <img src="/contact/discord-ic-b.png" alt="logo" className="w-4" />
 
             <h4>
               <a
-                href=" https://discord.com/users/702284046893580328"
+                href=" https://discord.com/users/503876266844356628"
                 target="_blank"
               >
-                s_kush
+                Jake Schwegler
               </a>
             </h4>
           </div>
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-2 items-center">
             <img src="/contact/reddit-ic-b.png" alt="logo" className="w-4" />
 
             <h4>
@@ -104,7 +104,7 @@ const MainContact = function () {
               </a>
             </h4>
           </div>
-          <div className="flex gap-1 items-center ">
+          <div className="flex gap-2 items-center ">
             <img src="/contact/gmail-ic-b.png" alt="logo" className="w-4" />
 
             <h4>
@@ -129,7 +129,7 @@ const Credit = function () {
         <h4 className="xxs:hidden block">
           Website designed & developed with 🖤 <br></br> by Vasumitra
         </h4>
-        <h4>© 2024 r/alevel  • All Rights Reserved</h4>
+        <h4>© 2025 r/alevel  • All Rights Reserved</h4>
       </div>
     </>
   );

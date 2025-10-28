@@ -48,6 +48,8 @@ export async function PUT(req: NextRequest, { params: { id } }: any) {
       newCertType: certType,
       newCertId: certId,
       newIssueDate: issueDate,
+      newAdmin: admin,
+      newOwner: owner,
     } = await req.json();
 
     const newCertsData = {
@@ -55,6 +57,8 @@ export async function PUT(req: NextRequest, { params: { id } }: any) {
       certType: certType,
       certId: certId,
       issueDate: issueDate,
+      admin: admin, 
+      owner: owner,
     };
     console.log(pramasID);
 

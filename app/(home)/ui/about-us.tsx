@@ -18,7 +18,7 @@ export default function AboutUs() {
           <br />
           <br /> Our discussions, study tips, and resource sharing have
           supported thousands of students. We launched our Discord server on
-          11th June 2023 and it has over 10,000 members, all working together to
+          11th June 2023 and it has over 40,000 members, all working together to
           ace those A Levels.
           <br />
           <br />

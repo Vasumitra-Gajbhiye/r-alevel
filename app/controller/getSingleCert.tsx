@@ -2,7 +2,7 @@ export default async function getSingleCert(id: any) {
   try {
     console.log(id);
     const apiLink =process.env.NEXT_PUBLIC_GETSINGLECERT;
-        const res = await fetch(`${apiLink}/${id}`);
+        const res = await fetch(`${apiLink}/${id}`, { cache: 'no-store' });
 
     // const res = await fetch(
       // `https://r-alevel.netlify.app/api/certificates/${id}`,

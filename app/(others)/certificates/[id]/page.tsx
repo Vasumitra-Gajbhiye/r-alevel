@@ -7,16 +7,38 @@ import group40 from "@/public/certificateImages/Group 40.png";
 import group41 from "@/public/certificateImages/Group 41.png";
 import group42 from "@/public/certificateImages/Group 42.png";
 import kushSign from "@/public/certificateImages/Kush_sign.png";
+import jakeSign from "@/public/certificateImages/Jake_sign.jpg";
 import vasuSign from "@/public/certificateImages/Vasu_sign.jpg";
 
 export default async function SingleResource({ params: { id } }: any) {
   const cert = await getSingleCert(id);
+  console.log(cert.admin)
+  let admin;
+  let adminSign;
+  let height;
+  let width;
+  if(cert.admin=="kush") {
+    admin="Kush";
+    adminSign="Kush_sign.png"
+    width=300
+    height=200
+    } 
+  if(cert.admin=="scrim") {
+    admin = "Jake Schwegler";
+     adminSign="Jake_sign.jpg"
+     width=1263
+    height=360
+  }
+  
+const src = adminSign ? `/certificateImages/${adminSign}` : "/fallback.png";
+
   const typeMessage = function () {
     if (cert.certType === "helper")
       return {
         lineOne: "FOR HELPING AND GUIDING THE STUDENTS OF",
         lineTwo: "r/alevel COMMUNITY",
       };
+      
     if (cert.certType === "resource")
       return {
         lineOne: "FOR MAKING ACADEMIC RESOURCES AND HELPING",
@@ -104,7 +126,7 @@ export default async function SingleResource({ params: { id } }: any) {
             {typeMessage()?.lineOne} <br></br> {typeMessage()?.lineTwo}
           </h2>
           <div className="auth w-full flex items-center justify-between">
-            <div className="owner-info flex flex-col items-center gap-12">
+            <div className=" owner-info flex flex-col items-center gap-12">
               <Image
                 className="owner-sign max-w-96 border-1 border-black pb-12"
                 src={vasuSign}
@@ -127,20 +149,22 @@ export default async function SingleResource({ params: { id } }: any) {
                 alt="Signature"
               />
             </div>
-            <div className="admin-info -mt-36 flex flex-col items-center gap-12">
+            <div className={`admin-info flex  flex-col items-center gap-12 ${admin=="Kush" ? "-mt-40" : ""}`}>
               <Image
-                className="admin-sign max-w-96 border-1 border-black"
-                src={kushSign}
+                className={`admin-sign max-w-96 border-1 border-black ${admin=="Kush" ? "" : "pb-12"}`}
+               src={src}
+               height={height}
+               width={width}
                 alt="Signature"
               />
               <h4 className="admin-name text-themBlue-300 text-5xl font-semibold">
-                Kush
+                {admin}
               </h4>
               <h6
                 className="admin-title text-themBlue-100 text-4xl font-medium"
                 style={{ letterSpacing: "0.3rem" }}
               >
-                ADMINISTRATOR
+                CHIEF ADMINISTRATOR
               </h6>
             </div>
           </div>
@@ -155,16 +179,16 @@ export default async function SingleResource({ params: { id } }: any) {
             <path
               d="M12 3V16M12 16L16 11.625M12 16L8 11.625"
               stroke="#fff"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M15 21H9C6.17157 21 4.75736 21 3.87868 20.1213C3 19.2426 3 17.8284 3 15M21 15C21 17.8284 21 19.2426 20.1213 20.1213C19.8215 20.4211 19.4594 20.6186 19 20.7487"
               stroke="#fff"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
           <a

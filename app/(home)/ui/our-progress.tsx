@@ -49,19 +49,19 @@ export default function OurProgress() {
           <CardProgress
             title="Reddit Members"
             titleAlt="Reddit"
-            data="100k+"
+            data="175k+"
             subtitle="The number of members on our subreddit"
           />
           <CardProgress
             title="Discord Members"
             titleAlt="Discord"
-            data="20k+"
+            data="40k+"
             subtitle="The number of members on our discord server"
           />
           <CardProgress
             title="Avg Views"
             titleAlt="Avg Views"
-            data="500k+"
+            data="3M+"
             subtitle="The number of views on our subreddit per day"
           />
           <CardProgress

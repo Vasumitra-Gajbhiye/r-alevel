@@ -35,13 +35,15 @@ export async function GET(req: NextRequest) {
 // CREATE A SUBJECT
 export async function POST(req: NextRequest) {
   try {
-    const { name, certType, certId, issueDate } = await req.json();
+    const { name, certType, certId, issueDate, admin, owner } = await req.json();
 
     const newCertData = {
       name: name,
       certType: certType,
       certId: certId,
       issueDate: issueDate,
+      adimn: admin, 
+      owner: owner,
     };
 
     await mongoDBConnect();

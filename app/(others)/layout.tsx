@@ -2,12 +2,12 @@ import Navigation from "./layout ui/navigation";
 import type { Metadata } from "next";
 import "../globals.css";
 import ContactUs from "./layout ui/contact-us";
-import { Roboto } from "next/font/google";
+import { Poppins } from "next/font/google";
 import Script from "next/script";
 
-const roboto = Roboto({
-  weight: ["100", "300", "400", "500", "700", "900"],
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -48,7 +48,7 @@ export default function RootLayout({
       </Script>
       <link rel="icon" href="/favicon.png" />
       </head>
-      <body className={roboto.className}>
+      <body className={poppins.className}>
         <Navigation />
         {children}
         <ContactUs />
