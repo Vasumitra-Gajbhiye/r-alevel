@@ -1,4 +1,4 @@
-export default async function getAllMembers() {
+export default async function getAllSubjects() {
   try {
     const apiLink =process.env.NEXT_PUBLIC_GETALLSUBJECTS;
     // const res = await fetch(`https://r-alevel.netlify.app/api/resources`);
