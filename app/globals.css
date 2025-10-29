@@ -19,6 +19,7 @@
     margin-top: -1090px;
     margin-bottom: -990px;
   }
+
 }
 
 @media (min-width: 1280px) {
@@ -47,3 +48,4 @@
   background-size: 400px 100%;
   animation: shimmer 1.5s infinite linear;
 }
+

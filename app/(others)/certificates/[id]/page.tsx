@@ -1,3 +1,4 @@
+"use client";
 import getSingleCert from "@/app/controller/getSingleCert";
 import Image from "next/image";
 import style from "@/app/(others)/certificates/[id]/layout.module.css";
@@ -9,10 +10,55 @@ import group42 from "@/public/certificateImages/Group 42.png";
 import kushSign from "@/public/certificateImages/Kush_sign.png";
 import jakeSign from "@/public/certificateImages/Jake_sign.jpg";
 import vasuSign from "@/public/certificateImages/Vasu_sign.jpg";
+import { useEffect, useState } from "react";
+import { CertImgSkeleton } from "@/app/skeleton";
 
-export default async function SingleResource({ params: { id } }: any) {
-  const cert = await getSingleCert(id);
-  console.log(cert.admin)
+
+export default function SingleResource({ params: { id } }: any) {
+
+  const [cert, setCert] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      const fetchCert = async () => {
+        try {
+          const data = await getSingleCert(id);
+          setCert(data);
+        } catch (err) {
+          console.error("Error loading subject:", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchCert();
+    }, [id]);
+
+ 
+// 🔹 SKELETON PLACEHOLDER
+if (loading || !cert) {
+    return (
+      <div className="scale-30 xs:scale-40 md:scale-50 lg:scale-70 xl:scale-80 px-4 md:px-16 font-poppins animate-pulse" style={{height:"75rem", marginTop:"-22rem", marginBottom:"10rem"} }>
+        <CertImgSkeleton className="w-full h-full bg-gray-200 rounded-xl mt-4 xs:mt-12 md:mt-20" />
+        {/* <div className="w-full bg-gray-200 rounded-xl mt-4 xs:mt-12 md:mt-20"  style={{height:"100rem", marginTop:"-10rem"} }></div> */}
+        <div className=" -mt-20 xs:-mt-12 md2:-mt-6">
+          <div className="mb-16">
+            
+            <div className="h-10 bg-gray-200 rounded w-2/3 mb-3 mt-24"></div>
+          </div>
+          <div className="flex flex-col mb-32 space-y-4">
+            <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-5 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-5 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+///////////////////
+
+ console.log(cert.admin)
   let admin;
   let adminSign;
   let height;
@@ -50,11 +96,15 @@ const src = adminSign ? `/certificateImages/${adminSign}` : "/fallback.png";
         lineTwo: "2024 Creative & Essay Writing Competition",
       };
   };
+
+
+  // 🔹 ACTUAL CONTENT
   return (
-    <div className="main-cert-con scale-30 xs:scale-40 md:scale-50 lg:scale-70 xl:scale-80">
+    <div className="main-cert-con scale-30 xs:scale-40 md:scale-50 lg:scale-70 xl:scale-80"
+    >
       <div
         className="cert-con flex justify-center flex-col items-center scale-50"
-        style={{ marginTop: "-40rem", marginBottom: "-35rem" }}
+        // style={{ marginTop: "-40rem", marginBottom: "-35rem" }}
       >
         <div
           className="cert border-2 border-themBlue-100  flex flex-col items-center rounded-xl relative overflow-hidden mb-40"
