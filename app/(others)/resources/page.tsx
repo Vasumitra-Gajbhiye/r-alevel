@@ -121,6 +121,7 @@ function Search() {
             autoFocus
             formatResult={formatResult}
             maxResults={4}
+            placeholder="Enter Subject Name"
           />
         </div>
       </header>

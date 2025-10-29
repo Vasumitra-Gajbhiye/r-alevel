@@ -1,7 +1,7 @@
-const CardInfo = function ({ name, role }: { name: string; role: string }) {
+const CardInfo = function ({ name, role, className }: { name: string; role: string, className?:string }) {
   return (
-    <div className="flex-col flex bg-cy-200 p-8 rounded-xl justify-center items-center w-full max-h-72">
-      <div className="w-44 mb-2">
+    <div className={`flex-col flex bg-cy-200 p-8 max-lg:p-4 max-xxs:p-3 rounded-xl justify-center items-center w-full max-h-72 ${className}`}>
+      <div className="w-44 max-lg:w-32 max-xs:w-28 max-xl:w-36 mb-2">
         <svg
           className="t-profile-svg"
           viewBox="0 0 225 225"
@@ -18,8 +18,8 @@ const CardInfo = function ({ name, role }: { name: string; role: string }) {
         </svg>
       </div>
       <div className="flex flex-col items-center ">
-        <div className="font-semibold text-lg">{name}</div>
-        <div className="text-sm tracking-widest text-gray-600 text-center">
+        <div className="font-semibold text-lg max-xs:text-base">{name}</div>
+        <div className="text-sm tracking-widest max-sm:tracking-wide text-gray-600 text-center">
           {role}
         </div>
       </div>
@@ -40,14 +40,15 @@ export default function OurTeam() {
         </p>
       </div>
 
-      <div className=" w-full xs:w-3/4 lg:w-3/5 grid justify-items-center gap-y-12 gap-x-7 grid-cols-2 sm:grid-cols-3 mb-10">
-        <CardInfo name="Vasumitra" role="Community lead" />
+      <div className=" w-4/5 max-xs:w-full max-lg:w-11/12 grid justify-items-center gap-y-5 gap-x-7 max-xxs:gap-y-3 max-lg:gap-x-5 max-xxs:grid-cols-1 max-md:grid-cols-2 grid-cols-3 mb-10 max-md:mb-5">
+        <CardInfo name="Vasumitra" role="Community leader" />
         <CardInfo name="Jake" role="Chief Administrator" />
         <CardInfo name="Abu Bakar" role="Administrator" />
+        <CardInfo className="max-md:flex hidden" name="Haz" role="Administrator" />
+
       </div>
-        <div className=" w-full xs:w-3/4 lg:w-3/5 grid justify-items-center gap-y-12 gap-x-7 grid-cols-2 sm:grid-cols-2">
-      
-        <CardInfo name="Haz" role="Administrator" />
+        <div className=" w-4/5 max-xs:w-full max-lg:w-4/5 grid justify-items-center gap-y-12 gap-x-7 max-lg:gap-x-3 max-md:grid-cols-1 grid-cols-2 ">
+        <CardInfo className="max-md:hidden flex" name="Haz" role="Administrator" />
         <CardInfo name="Alen" role="Administrator" />
       </div>
 
