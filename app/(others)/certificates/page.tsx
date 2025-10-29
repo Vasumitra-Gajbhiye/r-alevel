@@ -67,7 +67,7 @@ const Search = function () {
   return (
     <div className="App">
       <header className="App-header">
-        <div style={{ width: 400 }}>
+        <div className="w-[400px] max-sm:w-[300px]" >
           <ReactSearchAutocomplete
             items={items}
             onSearch={handleOnSearch}
@@ -215,10 +215,10 @@ export default function Cert() {
   return (
     <div className="flex flex-col items-center min-h-lvh ">
       <div className="flex flex-col items-center">
-        <h1 className="text-6xl font-bold mt-32 mb-16">Certificates</h1>
+        <h1 className="text-6xl max-xs:text-5xl font-bold mt-32 mb-16">Certificates</h1>
         <Search />
       </div>
-      <div className="px-16">
+      <div className="px-16 max-xs:px-8">
         <CertContent />
         <InfoCon
           heading="Helper"
