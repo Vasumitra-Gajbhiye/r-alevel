@@ -1,10 +1,6 @@
-"use client";
-
+"use client"
 import { navigate } from "./action";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
-
-import { useState, useEffect } from "react";
-
 // function Profile() {
 //   const [data, setData] = useState(null);
 //   const [isLoading, setLoading] = useState(true);

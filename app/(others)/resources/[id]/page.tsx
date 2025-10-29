@@ -85,7 +85,7 @@ export default async function SingleResource({ params: { id } }: any) {
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import getSingleSubject from "@/app/controller/getSingleSubject";
+// import getSingleSubject from "@/app/controller/getSingleSubject";
 
 export default function SingleResource({ params: { id } }: any) {
   const [subject, setSubject] = useState<any>(null);
@@ -94,7 +94,11 @@ export default function SingleResource({ params: { id } }: any) {
   useEffect(() => {
     const fetchSubject = async () => {
       try {
-        const data = await getSingleSubject(id);
+        // const data = await getSingleSubject(id);
+         const apiLink =process.env.NEXT_PUBLIC_GETSINGLESUBJECT;
+        const res = await fetch(`${apiLink}/${id}`);
+        const sub = await res.json();
+        const data = sub.data
         setSubject(data);
       } catch (err) {
         console.error("Error loading subject:", err);

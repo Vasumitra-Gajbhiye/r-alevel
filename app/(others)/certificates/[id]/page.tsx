@@ -1,5 +1,3 @@
-"use client";
-import getSingleCert from "@/app/controller/getSingleCert";
 import Image from "next/image";
 import verticalLog from "@/public/logo/Vertical logo.png";
 import group39 from "@/public/certificateImages/Group 39.png";
@@ -7,35 +5,11 @@ import group40 from "@/public/certificateImages/Group 40.png";
 import group41 from "@/public/certificateImages/Group 41.png";
 import group42 from "@/public/certificateImages/Group 42.png";
 import vasuSign from "@/public/certificateImages/Vasu_sign.jpg";
-import { useEffect, useState } from "react";
 import { CertImgSkeleton } from "@/app/skeleton";
+import { Suspense } from "react";
 
-
-
-export default function SingleResource({ params: { id } }: any) {
-
-  const [cert, setCert] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-  
-    useEffect(() => {
-      const fetchCert = async () => {
-        try {
-          const data = await getSingleCert(id);
-          setCert(data);
-        } catch (err) {
-          console.error("Error loading subject:", err);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchCert();
-    }, [id]);
-
- 
-// 🔹 SKELETON PLACEHOLDER
-if (loading || !cert) {
-    return (
+export const Skeleton = function (){
+  return (
       <div className="font-poppins animate-pulse min-h-[200px] max-xxs:h-[400px] max-xs:h-[550px] max-sm:h-[720px] max-md:h-[950px] max-lg:h-[1200px] max-xl:h-[1300px] max-2xl:h-[1500px]" style={{ maxWidth:"70rem", margin:"2rem auto", padding:"0 2rem", marginBottom:"30rem"} }>
         <CertImgSkeleton className="w-full h-full bg-gray-200 rounded-xl" />
         {/* <div className="w-full bg-gray-200 rounded-xl mt-4 xs:mt-12 md:mt-20"  style={{height:"100rem", marginTop:"-10rem"} }></div> */}
@@ -53,21 +27,67 @@ if (loading || !cert) {
         </div>
       </div>
     );
+}
+
+export default function SingleResource({ params: { id } }: any) {
+  return (
+    <div className="bg-white min-h-screen">
+      {/* You can keep Navbar here */}
+      <Suspense fallback={<Skeleton />}>
+        <CertificateDisplay id={id} />
+      </Suspense>
+      {/* You can keep Footer here */}
+    </div>
+  );
+}
+
+interface Certificate{
+  _id: any;
+  name: string;
+  certType: string;
+  certId: string;
+  issueDate: string;
+  __v: Int32Array;
+admin: string;
+owner: string;
+}
+
+export async function CertificateDisplay({ id }:  { id: string }) {
+let cert: Certificate | null = null;
+
+        try {
+    const apiLink = process.env.NEXT_PUBLIC_GETSINGLECERT!;
+    const res = await fetch(`${apiLink}/${id}`);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch certificate with ID ${id}`);
+    }
+
+    const certi = await res.json();
+    const data: Certificate = certi.data;
+    cert = data;
+  } catch (err) {
+    console.error("Error loading certificate:", err);
   }
+
+ 
+// 🔹 SKELETON PLACEHOLDER
+
+    
+  
 ///////////////////
 
- console.log(cert.admin)
   let admin;
   let adminSign;
   let height;
   let width;
-  if(cert.admin=="kush") {
+  if(cert?.admin=="kush") {
     admin="Kush";
     adminSign="Kush_sign.png"
     width=300
     height=200
     } 
-  if(cert.admin=="scrim") {
+  if(cert?.admin=="scrim") {
     admin = "Jake Schwegler";
      adminSign="Jake_sign.jpg"
      width=1263
@@ -77,27 +97,27 @@ if (loading || !cert) {
 const src = adminSign ? `/certificateImages/${adminSign}` : "/fallback.png";
 
   const typeMessage = function () {
-    if (cert.certType === "helper")
+    if (cert?.certType === "helper")
       return {
         lineOne: "FOR HELPING AND GUIDING THE STUDENTS OF",
         lineTwo: "r/alevel COMMUNITY",
       };
       
-    if (cert.certType === "resource")
+    if (cert?.certType === "resource")
       return {
         lineOne: "FOR MAKING ACADEMIC RESOURCES AND HELPING",
         lineTwo: "THE STUDENTS OF r/alevel COMMUNITY",
       };
-      if (cert.certType === "2024WriterCompFirstPlace")
+      if (cert?.certType === "2024WriterCompFirstPlace")
       return {
         lineOne: "For First Place",
         lineTwo: "2024 Creative & Essay Writing Competition",
       };
   };
-console.log("Loaded from: /app/(path)/page.tsx");
 
   // 🔹 ACTUAL CONTENT
   return (
+    <Suspense fallback={<Skeleton/>}>
     <div className="min-h-[200px] max-xxs:h-[400px] max-xs:h-[550px] max-sm:h-[720px] max-md:h-[950px] max-lg:h-[1200px] max-xl:h-[1300px] max-2xl:h-[1500px] flex justify-center items-start  bg-white">
   <div className="inline-block transform origin-top transition-transform duration-300 scale-[0.2] xxs:scale-[0.3] xs:scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.7] xl:scale-[0.8] 2xl:scale-[1]">
        
@@ -171,7 +191,7 @@ console.log("Loaded from: /app/(path)/page.tsx");
             className="c-name border-themBlue-300 text-themBlue-300 text-5xl border-b text-center font-bold w-fit"
             style={{ padding: "0 2.8rem 2rem 2rem", margin:"0 auto 3rem auto" }}
           >
-            {cert.name ? cert.name : null}
+            {cert?.name ? cert.name : null}
           </h1>
           <h2
             className="c-subtitle text-themBlue-200 text-center text-2xl font-medium"
@@ -203,7 +223,7 @@ console.log("Loaded from: /app/(path)/page.tsx");
                 alt="Signature"
               />
             </div>
-            <div className={`admin-info flex min-w-fit flex-col items-center gap-4 ${admin=="Kush" ? "-mt-40" : ""}`}>
+            <div className={`admin-info flex min-w-fit flex-col items-center gap-4 ${admin=="Kush" ? "-mt-16" : ""}`}>
               <Image
                 className={`admin-sign max-w-52 border-1 border-black ${admin=="Kush" ? "" : ""}`}
                src={src}
@@ -211,7 +231,7 @@ console.log("Loaded from: /app/(path)/page.tsx");
                width={width}
                 alt="Signature"
               />
-              <h4 className="admin-name text-themBlue-300 text-2xl font-semibold">
+              <h4 className={`admin-name text-themBlue-300 text-2xl font-semibold ${admin=="Kush" ? "-mt-8" : ""}`}>
                 {admin}
               </h4>
               <h6
@@ -248,7 +268,7 @@ console.log("Loaded from: /app/(path)/page.tsx");
             />
           </svg>
           <a
-            href={`/cert_pdf_doc/${cert.certId}-pdf.pdf`}
+            href={`/cert_pdf_doc/${cert?.certId}-pdf.pdf`}
             target="_blank"
             className="download-btn-text text-white text-3xl font-bold no-underline"
             style={{ letterSpacing: "0.5rem" }}
@@ -259,7 +279,7 @@ console.log("Loaded from: /app/(path)/page.tsx");
     </div>
     </div>
     </div>
-    
+    </Suspense>
   );
 
   return (
@@ -336,7 +356,7 @@ console.log("Loaded from: /app/(path)/page.tsx");
             className="c-name border-themBlue-300 text-themBlue-300 text-5xl border-b text-center font-bold w-fit"
             style={{ padding: "0 2.8rem 2rem 2rem", margin:"0 auto 3rem auto" }}
           >
-            {cert.name ? cert.name : null}
+            {cert?.name ? cert?.name : null}
           </h1>
           <h2
             className="c-subtitle text-themBlue-200 text-center text-2xl font-medium"
@@ -413,7 +433,7 @@ console.log("Loaded from: /app/(path)/page.tsx");
             />
           </svg>
           <a
-            href={`/cert_pdf_doc/${cert.certId}-pdf.pdf`}
+            href={`/cert_pdf_doc/${cert?.certId}-pdf.pdf`}
             target="_blank"
             className="download-btn-text text-white text-3xl font-bold no-underline"
             style={{ letterSpacing: "0.5rem" }}
