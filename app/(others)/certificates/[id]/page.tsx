@@ -52,7 +52,7 @@ admin: string;
 owner: string;
 }
 
-export async function CertificateDisplay({ id }:  { id: string }) {
+async function CertificateDisplay({ id }:  { id: string }) {
 let cert: Certificate | null = null;
 
         try {
@@ -96,7 +96,7 @@ let cert: Certificate | null = null;
   
 const src = adminSign ? `/certificateImages/${adminSign}` : "/fallback.png";
 
-  const typeMessage = function () {
+const typeMessage = function () {
     if (cert?.certType === "helper")
       return {
         lineOne: "FOR HELPING AND GUIDING THE STUDENTS OF",
@@ -108,11 +108,31 @@ const src = adminSign ? `/certificateImages/${adminSign}` : "/fallback.png";
         lineOne: "FOR MAKING ACADEMIC RESOURCES AND HELPING",
         lineTwo: "THE STUDENTS OF r/alevel COMMUNITY",
       };
-      if (cert?.certType === "2024WriterCompFirstPlace")
+
+    if (cert?.certType === "management")
       return {
-        lineOne: "For First Place",
-        lineTwo: "2024 Creative & Essay Writing Competition",
+        lineOne: "FOR MANAGING AND DIRECTING",
+        lineTwo: "THE r/alevel ACADEMIC COMMUNITY",
       };
+
+    if (cert?.certType === "writer")
+      return {
+        lineOne: "FOR WRITING INFORMATIVE AND CERATIVE PIECES",
+        lineTwo: "FOR THE r/alevel ACADEMIC COMMUNITY",
+      };
+
+    if (cert?.certType === "graphic")
+      return {
+        lineOne: "FOR ARTISTICALLY DEVELOPING GRAPHIC DESIGN",
+        lineTwo: "FOR THE r/alevel ACADEMIC COMMUNITY",
+      };
+
+    if (cert?.certType === "2024WriterCompFirstPlace")
+      return {
+        lineOne: "FOR FIRST PLACE IN",
+        lineTwo: "r/alevel 2024 CREATIVE & ESSAY WRITING COMPETITION",
+      };
+
   };
 
   // 🔹 ACTUAL CONTENT
