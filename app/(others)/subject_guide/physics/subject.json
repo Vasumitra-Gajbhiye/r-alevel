@@ -221,10 +221,10 @@
         {
           "title": "9.1 Electric Current, Charge, and p.d.",
           "subtopics": [
-            "Current and Charge ($Q=It$)",
+            "Current and Charge",
             "Quantised Charge and The Coulomb",
             "Potential Difference (p.d.) and Volt",
-            "Resistance, Ohm's Law ($V=IR$)"
+            "Resistance, Ohm's Law"
           ]
         },
         {
@@ -252,7 +252,7 @@
           "subtopics": [
             "Defining Electromotive Force (e.m.f.)",
             "e.m.f. vs. p.d.",
-            "Internal Resistance ($E = I(R + r)$)",
+            "Internal Resistance",
             "Potential Dividers (LDRs, Thermistors)"
           ]
         }

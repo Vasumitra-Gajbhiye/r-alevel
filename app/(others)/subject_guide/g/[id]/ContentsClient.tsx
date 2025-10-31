@@ -274,7 +274,7 @@ function sanitizeForUrl(str: string) {
     .trim()
     .toLowerCase()
     .replace(/[\s/]+/g, "_")
-    .replace(/[^\w.\-:(),]+/g, "");
+    .replace(/[^\w.\-:(),']+/g, "");
 }
 
 export default function ContentsClient({ subject }: { subject: SubjectDoc }) {
