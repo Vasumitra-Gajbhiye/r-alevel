@@ -130,7 +130,7 @@
 //   );
 // }
 
-////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////
 "use client";
 
 import Link from "next/link";
@@ -280,3 +280,143 @@ export default function ContactUs() {
     </div>
   );
 }
+
+// "use client";
+
+// import Link from "next/link";
+// import { usePathname } from "next/navigation";
+
+// const communityItems = [
+//   { id: 1, title: "Discord", link: "https://discord.gg/vS7eTFKZfD" },
+//   { id: 2, title: "Reddit", link: "https://www.reddit.com/r/alevel/" },
+//   { id: 3, title: "r.alevelserver@gmail.com", link: "mailto:r.alevelserver@gmail.com" },
+// ];
+
+// const navigationItems = [
+//   { id: 1, title: "Certificates" },
+//   { id: 2, title: "Resources" },
+//   { id: 3, title: "Blogs" },
+// ];
+
+// const contactItems = [
+//   {
+//     id: 1,
+//     icon: "/contact/discord-ic-b.png",
+//     title: "Vasumitra Gajbhiye",
+//     link: "https://discord.com/users/1058932081629069363",
+//   },
+//   {
+//     id: 2,
+//     icon: "/contact/discord-ic-b.png",
+//     title: "Jake Schwegler",
+//     link: "https://discord.com/users/503876266844356628",
+//   },
+//   {
+//     id: 3,
+//     icon: "/contact/reddit-ic-b.png",
+//     title: "Vasumitra Gajbhiye",
+//     link: "https://www.reddit.com/user/VasumitraGajbhiye/",
+//   },
+//   {
+//     id: 4,
+//     icon: "/contact/gmail-ic-b.png",
+//     title: "r.alevelserver@gmail.com",
+//     link: "mailto:r.alevelserver@gmail.com",
+//   },
+// ];
+
+// function MainContact() {
+//   const pathname = usePathname();
+
+//   return (
+//     <div className="w-11/12 md:w-4/5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-0 py-12 border-b border-gray-300 text-gray-800 animate-fadeIn">
+//       {/* Community */}
+//       <div>
+//         <h3 className="text-lg font-semibold mb-4 underline underline-offset-4">Community</h3>
+//         <ul className="space-y-2">
+//           {communityItems.map((item) => (
+//             <li key={item.id}>
+//               <a
+//                 href={item.link}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 className="hover:text-gray-600 transition-colors duration-200"
+//               >
+//                 {item.title}
+//               </a>
+//             </li>
+//           ))}
+//         </ul>
+//       </div>
+
+//       {/* Navigation */}
+//       <div>
+//         <h3 className="text-lg font-semibold mb-4 underline underline-offset-4">Navigation</h3>
+//         <ul className="space-y-2">
+//           <li>
+//             <Link
+//               href="/"
+//               className={`hover:text-gray-600 transition-colors duration-200 ${
+//                 pathname === "/" ? "font-medium" : ""
+//               }`}
+//             >
+//               Home
+//             </Link>
+//           </li>
+//           {navigationItems.map((item) => (
+//             <li key={item.id}>
+//               <Link
+//                 href={`/${item.title.toLowerCase()}`}
+//                 className={`hover:text-gray-600 transition-colors duration-200 ${
+//                   pathname === `/${item.title.toLowerCase()}` ? "font-medium" : ""
+//                 }`}
+//               >
+//                 {item.title}
+//               </Link>
+//             </li>
+//           ))}
+//         </ul>
+//       </div>
+
+//       {/* Talk to us */}
+//       <div>
+//         <h3 className="text-lg font-semibold mb-4 underline underline-offset-4">Talk to us</h3>
+//         <ul className="space-y-3">
+//           {contactItems.map((contact) => (
+//             <li key={contact.id} className="flex items-center gap-2">
+//               <img src={contact.icon} alt="icon" className="w-5 h-5 opacity-80" />
+//               <a
+//                 href={contact.link}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 className="hover:text-gray-600 transition-colors duration-200"
+//               >
+//                 {contact.title}
+//               </a>
+//             </li>
+//           ))}
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// }
+
+// function Credit() {
+//   return (
+//     <div className="flex flex-col items-center justify-center text-center gap-1 py-6 text-sm text-gray-700 animate-fadeIn">
+//       <p className="text-gray-800 font-medium">
+//         Website designed & developed with 🖤 by <span className="font-semibold">Vasumitra</span>
+//       </p>
+//       <p className="text-gray-600">© 2025 r/alevel • All Rights Reserved</p>
+//     </div>
+//   );
+// }
+
+// export default function Footer() {
+//   return (
+//     <footer className="bg-gray-100 flex flex-col items-center justify-center">
+//       <MainContact />
+//       <Credit />
+//     </footer>
+//   );
+// }

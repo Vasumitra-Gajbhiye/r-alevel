@@ -108,6 +108,190 @@
 // }
 
 
+// "use client";
+
+// import React, { useEffect, useState } from "react";
+// import { createPortal } from "react-dom";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { usePathname } from "next/navigation";
+// import logo from "@/public/logo/Logo only.svg";
+// import { Menu, X } from "lucide-react";
+
+// export default function Navigation() {
+//   const pathname = usePathname();
+//   const [isActive, setIsActive] = useState(false);
+//   const [mounted, setMounted] = useState(false);
+
+//   useEffect(() => setMounted(true), []);
+
+//   // lock body scroll when menu open
+//   useEffect(() => {
+//     if (typeof window === "undefined") return;
+//     document.body.style.overflow = isActive ? "hidden" : "";
+//     return () => {
+//       document.body.style.overflow = "";
+//     };
+//   }, [isActive]);
+
+//   const navListItems = [
+//     { title: "Home", href: "/" },
+//     { title: "Certificates", href: "/certificates" },
+//     { title: "Resources", href: "/resources" },
+//     { title: "Blogs", href: "/blogs" },
+//     { title: "Team", href: "/team" },
+//   ];
+
+//   // MobileOverlay now handles its own show/hide animation state, and calls onClose
+//   const MobileOverlay = ({ onClose }: { onClose: () => void }) => {
+//     if (!mounted) return null;
+
+//     const [visible, setVisible] = useState(false);
+
+//     useEffect(() => {
+//       // enter animation: set visible shortly after mount so CSS transition runs
+//       const t = setTimeout(() => setVisible(true), 20);
+//       return () => clearTimeout(t);
+//     }, []);
+
+//     const handleClose = () => {
+//       // play exit animation, then notify parent after animation duration
+//       setVisible(false);
+//       // match duration used in classes (300ms)
+//       setTimeout(() => onClose(), 320);
+//     };
+
+//     return createPortal(
+//       <div className="fixed inset-0 z-[9999] pointer-events-auto">
+//         {/* backdrop */}
+//         <div
+//           onClick={handleClose}
+//           aria-hidden="true"
+//           className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
+//             visible ? "opacity-100" : "opacity-0"
+//           }`}
+//         />
+
+//         {/* sliding panel (from right) */}
+//         <div
+//           className={`absolute inset-0 flex flex-col transform transition-transform duration-300 ease-out ${
+//             visible ? "translate-x-0" : "translate-x-full"
+//           }`}
+//         >
+//           {/* header */}
+//           <div className="h-[72px] flex items-center justify-between px-4 border-b bg-white/90 backdrop-blur-sm z-10">
+//             <Link href="/" onClick={handleClose} className="flex items-center gap-3">
+//               <Image src={logo} alt="Logo" width={44} height={44} />
+//               <span className="font-semibold text-grey-800">r/alevel</span>
+//             </Link>
+
+//             <button
+//               onClick={handleClose}
+//               aria-label="Close menu"
+//               className="p-2 rounded-md hover:bg-gray-100 transition"
+//             >
+//               <X size={24} />
+//             </button>
+//           </div>
+
+//           {/* content */}
+//           <div className={`overflow-auto flex-1 bg-white transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}>
+//             <ul className="flex flex-col gap-2 p-6">
+//               {navListItems.map((item) => (
+//                 <li key={item.title}>
+//                   <Link
+//                     href={item.href}
+//                     onClick={handleClose}
+//                     className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
+//                       pathname === item.href ? "text-blue-600 bg-blue-50" : "text-gray-800 hover:bg-gray-100"
+//                     }`}
+//                   >
+//                     {item.title}
+//                   </Link>
+//                 </li>
+//               ))}
+//             </ul>
+
+//             <div className="p-6 border-t">
+//               <a
+//                 href="https://www.reddit.com/r/alevel/"
+//                 target="_blank"
+//                 rel="noreferrer"
+//                 onClick={handleClose}
+//                 className="block w-full text-center bg-blue-600 text-white font-semibold py-3 rounded-full hover:bg-blue-700 transition"
+//               >
+//                 Join Now
+//               </a>
+//             </div>
+//           </div>
+//         </div>
+//       </div>,
+//       document.body
+//     );
+//   };
+
+//   return (
+//     <>
+//       <nav className="fixed top-0 left-0 right-0 z-50  backdrop-blur-md  shadow-sm transition-all duration-300">
+//         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
+//           {/* logo */}
+//           <Link href="/" className="flex items-center gap-3">
+//             <Image src={logo} alt="Logo" width={56} height={56} />
+//             <span className="hidden sm:block font-semibold text-lg text-white">r/alevel</span>
+//           </Link>
+
+//           {/* desktop nav */}
+//           <div className="hidden lg2:flex items-center gap-8">
+//             {navListItems.map((item) => {
+//               const isCurrent = pathname === item.href;
+//               return (
+//                 <Link
+//                   key={item.title}
+//                   href={item.href}
+//                   className={`relative px-1 py-1 text-sm font-medium transition-all duration-300 ${
+//                     isCurrent ? "text-white" : "text-white hover:scale-110"
+//                   }`}
+//                 >
+//                   {item.title}
+//                   <span
+//                     className={`absolute left-0 -bottom-1 h-[2px] w-full bg-white transform origin-left transition-transform duration-300 ${
+//                       isCurrent ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+//                     }`}
+//                   />
+//                 </Link>
+//               );
+//             })}
+//           </div>
+
+//           {/* join button (desktop) */}
+//           <a
+//             href="https://www.reddit.com/r/alevel/"
+//             target="_blank"
+//             rel="noreferrer"
+//             className="hidden lg2:inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-sm hover:scale-105 hover:bg-blue-700 transition-all duration-300"
+//           >
+//             Join Now
+//           </a>
+
+//           {/* mobile button */}
+//           <button
+//             onClick={() => setIsActive(true)}
+//             aria-label="Open menu"
+//             className="lg2:hidden p-2 rounded-md hover:bg-gray-100 transition"
+            
+//           >
+//             <Menu size={22} color="#ffffff"/>
+//           </button>
+//         </div>
+//       </nav>
+
+//       {/* render overlay only when active & after mount */}
+//       {isActive && mounted && <MobileOverlay onClose={() => setIsActive(false)} />}
+//     </>
+//   );
+// }
+
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -122,10 +306,11 @@ export default function Navigation() {
   const pathname = usePathname();
   const [isActive, setIsActive] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  // lock body scroll when menu open
+  // Lock scroll when mobile menu is open
   useEffect(() => {
     if (typeof window === "undefined") return;
     document.body.style.overflow = isActive ? "hidden" : "";
@@ -133,6 +318,20 @@ export default function Navigation() {
       document.body.style.overflow = "";
     };
   }, [isActive]);
+
+  // Detect scroll to toggle color
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > window.innerHeight * 0.8) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navListItems = [
     { title: "Home", href: "/" },
@@ -142,22 +341,18 @@ export default function Navigation() {
     { title: "Team", href: "/team" },
   ];
 
-  // MobileOverlay now handles its own show/hide animation state, and calls onClose
   const MobileOverlay = ({ onClose }: { onClose: () => void }) => {
     if (!mounted) return null;
 
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-      // enter animation: set visible shortly after mount so CSS transition runs
       const t = setTimeout(() => setVisible(true), 20);
       return () => clearTimeout(t);
     }, []);
 
     const handleClose = () => {
-      // play exit animation, then notify parent after animation duration
       setVisible(false);
-      // match duration used in classes (300ms)
       setTimeout(() => onClose(), 320);
     };
 
@@ -195,7 +390,11 @@ export default function Navigation() {
           </div>
 
           {/* content */}
-          <div className={`overflow-auto flex-1 bg-white transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}>
+          <div
+            className={`overflow-auto flex-1 bg-white transition-opacity duration-300 ${
+              visible ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <ul className="flex flex-col gap-2 p-6">
               {navListItems.map((item) => (
                 <li key={item.title}>
@@ -203,7 +402,9 @@ export default function Navigation() {
                     href={item.href}
                     onClick={handleClose}
                     className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
-                      pathname === item.href ? "text-blue-600 bg-blue-50" : "text-gray-800 hover:bg-gray-100"
+                      pathname === item.href
+                        ? "text-blue-600 bg-blue-50"
+                        : "text-gray-800 hover:bg-gray-100"
                     }`}
                   >
                     {item.title}
@@ -232,12 +433,22 @@ export default function Navigation() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50  backdrop-blur-md  shadow-sm transition-all duration-300">
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-sm transition-all duration-300 ${
+          scrolled ? "bg-white" : "bg-transparent"
+        }`}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
           {/* logo */}
           <Link href="/" className="flex items-center gap-3">
             <Image src={logo} alt="Logo" width={56} height={56} />
-            <span className="hidden sm:block font-semibold text-lg text-white">r/alevel</span>
+            <span
+              className={`hidden sm:block font-semibold text-lg transition-colors duration-300 ${
+                scrolled ? "text-black" : "text-white"
+              }`}
+            >
+              r/alevel
+            </span>
           </Link>
 
           {/* desktop nav */}
@@ -249,14 +460,20 @@ export default function Navigation() {
                   key={item.title}
                   href={item.href}
                   className={`relative px-1 py-1 text-sm font-medium transition-all duration-300 ${
-                    isCurrent ? "text-white" : "text-white hover:scale-110"
+                    isCurrent
+                      ? scrolled
+                        ? "text-blue-600"
+                        : "text-white"
+                      : scrolled
+                      ? "text-black hover:text-blue-600"
+                      : "text-white hover:scale-110"
                   }`}
                 >
                   {item.title}
                   <span
-                    className={`absolute left-0 -bottom-1 h-[2px] w-full bg-white transform origin-left transition-transform duration-300 ${
-                      isCurrent ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                    }`}
+                    className={`absolute left-0 -bottom-1 h-[2px] w-full transform origin-left transition-transform duration-300 ${
+                      scrolled ? "bg-blue-600" : "bg-white"
+                    } ${isCurrent ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
                   />
                 </Link>
               );
@@ -268,7 +485,11 @@ export default function Navigation() {
             href="https://www.reddit.com/r/alevel/"
             target="_blank"
             rel="noreferrer"
-            className="hidden lg2:inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-sm hover:scale-105 hover:bg-blue-700 transition-all duration-300"
+            className={`hidden lg2:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold shadow-sm hover:scale-105 transition-all duration-300 ${
+              scrolled
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-white/20 text-white hover:bg-white/30"
+            }`}
           >
             Join Now
           </a>
@@ -278,14 +499,12 @@ export default function Navigation() {
             onClick={() => setIsActive(true)}
             aria-label="Open menu"
             className="lg2:hidden p-2 rounded-md hover:bg-gray-100 transition"
-            
           >
-            <Menu size={22} color="#ffffff"/>
+            <Menu size={22} color={scrolled ? "#000000" : "#ffffff"} />
           </button>
         </div>
       </nav>
 
-      {/* render overlay only when active & after mount */}
       {isActive && mounted && <MobileOverlay onClose={() => setIsActive(false)} />}
     </>
   );

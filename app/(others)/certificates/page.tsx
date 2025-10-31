@@ -1,9 +1,95 @@
-"use client";
+// "use client";
 
-import { navigate } from "./action";
+// import { navigate } from "./action";
+// import { ReactSearchAutocomplete } from "react-search-autocomplete";
+
+// const Search = function () {
+//   const uuid = [
+//     { name: "2a00sg309itg", id: "2a00sg309itg" },
+//     { name: "2g00of311lek", id: "2g00of311lek" },
+//     { name: "2d00io308jke", id: "2d00io308jke" },
+//     { name: "2h00vd310gdf", id: "2h00vd310gdf" },
+//     { name: "2t00ml394ndi", id: "2t00ml394ndi" },
+//     { name: "2f00bk313iru", id: "2f00bk313iru" },
+//     { name: "2a00rt412uji", id: "2a00rt412uji" },
+//   ];
+
+//   const items = [
+//     { name: "2a00sg309itg", id: 1 },
+//     { name: "Martin Fernando Pramanik", id: 1 },
+//     { name: "2g00of311lek", id: 2 },
+//     { name: "Abdur Rafay Khan", id: 2 },
+//     { name: "2d00io308jke", id: 3 },
+//     { name: "Kyaw Nyi Nyi", id: 3 },
+//     { name: "2h00vd310gdf", id: 4 },
+//     { name: "Syed Ibrahim Ali", id: 4 },
+//     { name: "2t00ml394ndi", id: 5 },
+//     { name: "Molly Bonsall", id: 5 },
+//     { name: "2f00bk313iru", id: 6 },
+//     { name: "Jake Schwegler", id: 6 },
+//   ];
+
+//   const handleOnSearch = (string: any, results: any) => {
+//     // let newSearch = uuid.filter((item) => {
+//     // if (item.name === string) return true;
+//     // else return false;
+//     // });
+//     // if (newSearch[newSearch].length - 1])
+//     // navigate(newSearch[newSearch.length - 1].id);
+//     // if ((results.length = 1)) console.log(results[0]);
+//     // navigate(results);
+//     // for (let i = 0; i < items.length; i++) {
+//     //   const element = items[i];
+//     //   if(items[i].name==string){
+//     //     console.log(`recieved ${string}`)
+//     //   }
+//     // }
+//     console.log("results " + results);
+//     console.log("string " + string);
+
+//   };
+
+//   const handleOnSelect = (item: any) => {
+//     // the item selected
+//     // console.log("selected " + item.id);
+//     console.log(item)
+//     navigate(uuid[item.id - 1].id);
+//   };
+
+//   const formatResult = (item: any) => {
+//     return (
+//       <>
+//         <span style={{ display: "block", textAlign: "left" }}>{item.name}</span>
+//       </>
+//     );
+//   };
+
+//   return (
+//     <div className="App">
+//       <header className="App-header">
+//         <div className="w-[400px] max-sm:w-[300px]" >
+//           <ReactSearchAutocomplete
+//             items={items}
+//             onSearch={handleOnSearch}
+//             onSelect={handleOnSelect}
+//             autoFocus
+//             formatResult={formatResult}
+//             maxResults={4}
+//             placeholder="Enter Certificate ID or your name"
+//           />
+//         </div>
+//       </header>
+//     </div>
+//   );
+// };
+
+"use client";
+import { useRouter } from "next/navigation";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
 const Search = function () {
+  const router = useRouter();
+
   const uuid = [
     { name: "2a00sg309itg", id: "2a00sg309itg" },
     { name: "2g00of311lek", id: "2g00of311lek" },
@@ -29,48 +115,20 @@ const Search = function () {
     { name: "Jake Schwegler", id: 6 },
   ];
 
-  const handleOnSearch = (string: any, results: any) => {
-    // let newSearch = uuid.filter((item) => {
-    // if (item.name === string) return true;
-    // else return false;
-    // });
-    // if (newSearch[newSearch].length - 1])
-    // navigate(newSearch[newSearch.length - 1].id);
-    // if ((results.length = 1)) console.log(results[0]);
-    // navigate(results);
-    // for (let i = 0; i < items.length; i++) {
-    //   const element = items[i];
-    //   if(items[i].name==string){
-    //     console.log(`recieved ${string}`)
-    //   }
-    // }
-    console.log("results " + results);
-    console.log("string " + string);
-
-  };
-
   const handleOnSelect = (item: any) => {
-    // the item selected
-    // console.log("selected " + item.id);
-    console.log(item)
-    navigate(uuid[item.id - 1].id);
+    router.push(`/certificates/${uuid[item.id - 1].id}`);
   };
 
-  const formatResult = (item: any) => {
-    return (
-      <>
-        <span style={{ display: "block", textAlign: "left" }}>{item.name}</span>
-      </>
-    );
-  };
+  const formatResult = (item: any) => (
+    <span style={{ display: "block", textAlign: "left" }}>{item.name}</span>
+  );
 
   return (
     <div className="App">
       <header className="App-header">
-        <div className="w-[400px] max-sm:w-[300px]" >
+        <div className="w-[400px] max-sm:w-[300px]">
           <ReactSearchAutocomplete
             items={items}
-            onSearch={handleOnSearch}
             onSelect={handleOnSelect}
             autoFocus
             formatResult={formatResult}
