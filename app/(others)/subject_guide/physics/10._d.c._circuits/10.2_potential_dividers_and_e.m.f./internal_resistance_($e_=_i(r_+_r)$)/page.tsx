@@ -1,0 +1,8 @@
+export default function Page() {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-2">Internal Resistance ($E = I(R + r)$)</h1>
+      <p>This is the page for <strong>10. D.C. circuits → 10.2 Potential Dividers and e.m.f. → Internal Resistance ($E = I(R + r)$)</strong>.</p>
+    </div>
+  );
+}

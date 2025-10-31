@@ -241,7 +241,7 @@ interface Resource{
   id: string;
 }
 
-async function SubjectDisplay({ id }:  { id: string }) {
+export async function SubjectDisplay({ id }:  { id: string }) {
 
   let subject: Resource | null = null;
 

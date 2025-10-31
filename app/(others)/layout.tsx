@@ -50,7 +50,9 @@ export default function RootLayout({
       </head>
       <body className={poppins.className}>
         <Navigation />
+        <div className="pt-11">
         {children}
+        </div>
         <ContactUs />
       </body>
     </html>

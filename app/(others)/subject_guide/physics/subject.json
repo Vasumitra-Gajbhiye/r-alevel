@@ -1,0 +1,566 @@
+{
+  "subjectName": "Physics",
+  "examCode": "9702",
+  "chapters": [
+    {
+      "title": "1. Physical quantities and units",
+      "topics": [
+        {
+          "title": "1.1 Physical quantities",
+          "subtopics": [
+            "Physical Quantities: Magnitude and Unit",
+            "Estimating Physical Quantities"
+          ]
+        },
+        {
+          "title": "1.2 SI units",
+          "subtopics": [
+            "SI Base Quantities and Units",
+            "Derived Units",
+            "Checking Equation Homogeneity",
+            "SI Prefixes (pico to tera)"
+          ]
+        },
+        {
+          "title": "1.3 Errors and uncertainties",
+          "subtopics": [
+            "Systematic and Random Errors",
+            "Precision vs. Accuracy",
+            "Calculating Uncertainty in Derived Quantities"
+          ]
+        },
+        {
+          "title": "1.4 Scalars and vectors",
+          "subtopics": [
+            "Scalars and Vectors Defined",
+            "Adding and Subtracting Vectors",
+            "Vector Components"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "2. Kinematics",
+      "topics": [
+        {
+          "title": "2.1 Equations of motion",
+          "subtopics": [
+            "Defining Motion Terms (d, s, v, a)",
+            "Representing Motion Graphically",
+            "Displacement from v-t Graph Area",
+            "Velocity from d-t Graph Gradient",
+            "Acceleration from v-t Graph Gradient",
+            "Deriving Uniform Acceleration Equations",
+            "Solving Uniform Acceleration Problems (Suvat)",
+            "Free Fall Acceleration Experiment",
+            "Projectile Motion"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "3. Dynamics",
+      "topics": [
+        {
+          "title": "3.1 Momentum and Newton’s laws of motion",
+          "subtopics": [
+            "Mass as Inertia",
+            "Using",
+            "Defining Linear Momentum",
+            "Force and Rate of Momentum Change",
+            "Newton's Three Laws",
+            "Weight and Gravitational Field"
+          ]
+        },
+        {
+          "title": "3.2 Non-uniform motion",
+          "subtopics": [
+            "Frictional and Drag Forces",
+            "Motion with Air Resistance",
+            "Terminal Velocity"
+          ]
+        },
+        {
+          "title": "3.3 Linear momentum and its conservation",
+          "subtopics": [
+            "Conservation of Momentum Principle",
+            "Momentum Conservation in Collisions",
+            "Elastic Collisions: KE and Relative Speed",
+            "Momentum vs. Kinetic Energy Conservation"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "4. Forces, density and pressure",
+      "topics": [
+        {
+          "title": "4.1 Turning effects of forces",
+          "subtopics": [
+            "Centre of Gravity (CG)",
+            "Moments of a Force",
+            "Defining a Force Couple",
+            "Torque of a Couple"
+          ]
+        },
+        {
+          "title": "4.2 Equilibrium of forces",
+          "subtopics": [
+            "Principle of Moments",
+            "Conditions for Equilibrium (Forces and Torque)",
+            "Vector Triangle for Equilibrium"
+          ]
+        },
+        {
+          "title": "4.3 Density and pressure",
+          "subtopics": [
+            "Defining Density",
+            "Defining Pressure",
+            "Deriving Hydrostatic Pressure",
+            "Using Hydrostatic Pressure Formula",
+            "Upthrust and Hydrostatic Pressure",
+            "Archimedes’ Principle and Upthrust"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "5. Work, energy and power",
+      "topics": [
+        {
+          "title": "5.1 Energy conservation",
+          "subtopics": [
+            "Defining Work Done",
+            "Conservation of Energy Principle",
+            "Defining Efficiency",
+            "Solving Efficiency Problems",
+            "Defining Power",
+            "Using Power Formula",
+            "Deriving and Using Power Formula"
+          ]
+        },
+        {
+          "title": "5.2 Gravitational potential energy and kinetic energy",
+          "subtopics": [
+            "Gravitational Potential Energy",
+            "Kinetic Energy",
+            "Applying Energy Conservation"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "6. Deformation of solids",
+      "topics": [
+        {
+          "title": "6.1 Stress and Strain",
+          "subtopics": [
+            "Extension and Compression",
+            "Hooke’s Law",
+            "Stress, Strain, and Young Modulus",
+            "Calculating Young Modulus"
+          ]
+        },
+        {
+          "title": "6.2 Elastic and Plastic Behaviour",
+          "subtopics": [
+            "Elastic vs. Plastic Deformation",
+            "Interpreting Force-Extension Graphs",
+            "Strain Energy (Elastic Potential Energy)"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "7. Waves",
+      "topics": [
+        {
+          "title": "7.1 Progressive Waves",
+          "subtopics": [
+            "Wave Motion: Energy Transfer",
+            "Wave Terminology",
+            "Wave Equation",
+            "Wave Graphs and Interpretation",
+            "Wave Intensity and Amplitude"
+          ]
+        },
+        {
+          "title": "7.2 Transverse and Longitudinal Waves",
+          "subtopics": [
+            "Transverse and Longitudinal Waves",
+            "Polarisation of Transverse Waves",
+            "Malus’s Law"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "8. Superposition",
+      "topics": [
+        {
+          "title": "8.1 Interference",
+          "subtopics": [
+            "Principle of Superposition",
+            "Coherence, Path and Phase Difference",
+            "Wave Interference and Young’s Slits"
+          ]
+        },
+        {
+          "title": "8.2 Stationary Waves",
+          "subtopics": [
+            "Stationary vs. Progressive Waves",
+            "Nodes and Antinodes",
+            "Stationary Wave Patterns (Strings and Air)"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "9. Electricity",
+      "topics": [
+        {
+          "title": "9.1 Electric Current, Charge, and p.d.",
+          "subtopics": [
+            "Current and Charge ($Q=It$)",
+            "Quantised Charge and The Coulomb",
+            "Potential Difference (p.d.) and Volt",
+            "Resistance, Ohm's Law ($V=IR$)"
+          ]
+        },
+        {
+          "title": "9.2 Electrical Energy and Power",
+          "subtopics": [
+            "Calculating Electrical Power",
+            "Kilowatt-hour (kW h) as Energy Unit"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "10. D.C. circuits",
+      "topics": [
+        {
+          "title": "10.1 Circuit Laws",
+          "subtopics": [
+            "Kirchhoff’s First Law (KCL)",
+            "Kirchhoff’s Second Law (KVL)",
+            "Resistors in Series and Parallel"
+          ]
+        },
+        {
+          "title": "10.2 Potential Dividers and e.m.f.",
+          "subtopics": [
+            "Defining Electromotive Force (e.m.f.)",
+            "e.m.f. vs. p.d.",
+            "Internal Resistance ($E = I(R + r)$)",
+            "Potential Dividers (LDRs, Thermistors)"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "11. Particle Physics",
+      "topics": [
+        {
+          "title": "11.1 Particle Classification",
+          "subtopics": [
+            "Quarks and Leptons",
+            "Quark Composition of Protons/Neutrons",
+            "Types and Charges of Leptons"
+          ]
+        },
+        {
+          "title": "11.2 Fundamental Forces",
+          "subtopics": [
+            "The Four Fundamental Forces",
+            "Exchange Particles"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "12. Motion in a circle",
+      "topics": [
+        {
+          "title": "12.1 Kinematics of Circular Motion",
+          "subtopics": [
+            "Angular Displacement and Velocity",
+            "Angular Velocity Equation",
+            "Linear and Angular Speed Relation"
+          ]
+        },
+        {
+          "title": "12.2 Centripetal Force",
+          "subtopics": [
+            "Force Required for Circular Motion",
+            "Centripetal Acceleration",
+            "Centripetal Force Formulas"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "13. Gravitational fields",
+      "topics": [
+        {
+          "title": "13.1 Gravitational Force",
+          "subtopics": [
+            "Newton’s Law of Gravitation",
+            "Gravitational Field and Field Strength"
+          ]
+        },
+        {
+          "title": "13.2 Gravitational Potential",
+          "subtopics": [
+            "Defining Gravitational Potential",
+            "Potential Energy and Potential Relation",
+            "Circular and Geostationary Orbits"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "14. Ideal gases",
+      "topics": [
+        {
+          "title": "14.1 The Ideal Gas Equation",
+          "subtopics": [
+            "The Ideal Gas Equation",
+            "Avogadro Constant and The Mole",
+            "Using the Kelvin Temperature Scale"
+          ]
+        },
+        {
+          "title": "14.2 Kinetic Theory",
+          "subtopics": [
+            "Assumptions of Kinetic Theory",
+            "The Kinetic Theory Equation",
+            "Molecular Kinetic Energy"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "15. Temperature",
+      "topics": [
+        {
+          "title": "15.1 Thermal Equilibrium",
+          "subtopics": [
+            "Thermal Energy Transfer Direction",
+            "Defining Thermal Equilibrium"
+          ]
+        },
+        {
+          "title": "15.2 Temperature Scales",
+          "subtopics": [
+            "The Thermodynamic (Kelvin) Scale",
+            "Celsius-Kelvin Conversion"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "16. Thermal properties of materials",
+      "topics": [
+        {
+          "title": "16.1 Specific Heat Capacity",
+          "subtopics": [
+            "Specific Heat Capacity",
+            "Electrical Method for Specific Heat"
+          ]
+        },
+        {
+          "title": "16.2 Specific Latent Heat",
+          "subtopics": [
+            "Specific Latent Heat",
+            "Electrical Method for Latent Heat"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "17. Oscillations",
+      "topics": [
+        {
+          "title": "17.1 Simple Harmonic Motion (SHM)",
+          "subtopics": [
+            "Defining Simple Harmonic Motion (SHM)",
+            "SHM Defining Equation",
+            "SHM Displacement and Velocity Equations"
+          ]
+        },
+        {
+          "title": "17.2 Damping and Resonance",
+          "subtopics": [
+            "Free, Forced, and Natural Frequency",
+            "Effects of Damping (Light, Critical, Heavy)",
+            "Explaining Resonance"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "18. Electric fields",
+      "topics": [
+        {
+          "title": "18.1 Electric Force and Field",
+          "subtopics": [
+            "Coulomb’s Law",
+            "Electric Field Concept",
+            "Calculating Electric Field Strength"
+          ]
+        },
+        {
+          "title": "18.2 Electric Potential",
+          "subtopics": [
+            "Defining Electric Potential",
+            "Potential Energy and Potential Relation"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "19. Capacitance",
+      "topics": [
+        {
+          "title": "19.1 Capacitors in Circuits",
+          "subtopics": [
+            "Defining Capacitance and Farad",
+            "Charge, Capacitance, Voltage",
+            "Capacitors in Series and Parallel"
+          ]
+        },
+        {
+          "title": "19.2 Energy and Charging",
+          "subtopics": [
+            "Energy Stored in a Capacitor",
+            "Capacitor Charging and Discharging"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "20. Magnetic fields",
+      "topics": [
+        {
+          "title": "20.1 Force on a Moving Charge",
+          "subtopics": [
+            "Magnetic Field and Flux Density",
+            "Force on Current-Carrying Wire",
+            "Force on a Moving Charge",
+            "The Velocity Selector"
+          ]
+        },
+        {
+          "title": "20.2 Magnetic Fields Due to Currents",
+          "subtopics": [
+            "Fields from Wires, Coils, and Solenoids",
+            "Ampere Definition (Force Interaction)"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "21. Electromagnetic induction",
+      "topics": [
+        {
+          "title": "21.1 Magnetic Flux",
+          "subtopics": [
+            "Magnetic Flux and Flux Linkage",
+            "Magnetic Flux Formula"
+          ]
+        },
+        {
+          "title": "21.2 Faraday’s and Lenz’s Laws",
+          "subtopics": [
+            "Faraday’s Law",
+            "Lenz’s Law"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "22. Alternating currents",
+      "topics": [
+        {
+          "title": "22.1 A.C. Generators and Transformers",
+          "subtopics": [
+            "A.C. Generator Principles",
+            "Defining and Using r.m.s. Values",
+            "Transformer Operation and Equations"
+          ]
+        },
+        {
+          "title": "22.2 Rectification",
+          "subtopics": [
+            "Half-wave and Full-wave Rectification"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "23. Quantum physics",
+      "topics": [
+        {
+          "title": "23.1 Photons",
+          "subtopics": [
+            "EM Quantisation and Photons",
+            "Photon Energy"
+          ]
+        },
+        {
+          "title": "23.2 Photoelectric Effect",
+          "subtopics": [
+            "Photoelectric Effect and Photon Model",
+            "Work Function, Threshold and Photoelectric Equation"
+          ]
+        },
+        {
+          "title": "23.3 Energy Levels and Line Spectra",
+          "subtopics": [
+            "Discrete Atomic Energy Levels",
+            "Origin of Line Spectra"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "24. Nuclear physics",
+      "topics": [
+        {
+          "title": "24.1 The Nucleus",
+          "subtopics": [
+            "Atomic Structure (p, n, e)",
+            "Nucleon and Proton Number",
+            "Mass Defect and Binding Energy"
+          ]
+        },
+        {
+          "title": "24.2 Radioactivity",
+          "subtopics": [
+            "Half-Life and Decay Constant",
+            "Radioactive Decay Equations"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "25. Medical physics",
+      "topics": [
+        {
+          "title": "25.1 X-rays",
+          "subtopics": [
+            "X-ray Production and Spectra",
+            "X-ray Imaging and Contrast Media"
+          ]
+        },
+        {
+          "title": "25.2 Ultrasound",
+          "subtopics": [
+            "Ultrasound Imaging and Acoustic Impedance"
+          ]
+        }
+      ]
+    }
+  ]
+}
