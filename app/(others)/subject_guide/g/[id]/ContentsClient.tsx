@@ -269,14 +269,45 @@ type SubjectDoc = {
   chapters: Chapter[];
 };
 
+// function sanitizeForUrl(str: string) {
+//   return str
+//     .trim()
+//     .toLowerCase()
+//     .replace(/\s+/g, "_")        // spaces → underscores
+//     .replace(/[^a-z0-9_-]+/g, ""); // remove everything except a–z, 0–9, _ and -
+// }
+
+// scripts/sanitize.js
 function sanitizeForUrl(str: string) {
   return str
     .trim()
     .toLowerCase()
-    .replace(/[\s/]+/g, "_")
-    .replace(/[^\w.\-:(),']+/g, "");
-}
 
+    // remove/replace known problematic characters first:
+    // replace slashes with dash (we use dash to preserve separation)
+    .replace(/[\/\\]+/g, "-")
+
+    // replace colon or equals or @ with underscore (these often appear inside titles)
+    .replace(/[:=@]+/g, "_")
+
+    // remove parentheses, brackets, quotes, currency symbols, percent etc.
+    .replace(/[()[\]{}"“”'’`%$€₹¢•†·•—–]/g, "")
+
+    // remove punctuation like commas/full stops/semicolon/question/exclamation etc.
+    .replace(/[.,;?!‽…]+/g, "")
+
+    // replace any whitespace sequence with single underscore
+    .replace(/\s+/g, "_")
+
+    // drop any remaining chars that are not a-z, 0-9, underscore or dash
+    .replace(/[^a-z0-9_-]/g, "")
+
+    // collapse multiple underscores into one
+    .replace(/_+/g, "_")
+
+    // trim underscores/dashes from ends
+    .replace(/^[_-]+|[_-]+$/g, "");
+}
 export default function ContentsClient({ subject }: { subject: SubjectDoc }) {
   const router = useRouter();
   const [openChapters, setOpenChapters] = useState<Record<string, boolean>>({});
