@@ -292,6 +292,224 @@
 // }
 
 
+// "use client";
+
+// import React, { useEffect, useState } from "react";
+// import { createPortal } from "react-dom";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { usePathname } from "next/navigation";
+// import logo from "@/public/logo/Logo only.svg";
+// import { Menu, X } from "lucide-react";
+
+// export default function Navigation() {
+//   const pathname = usePathname();
+//   const [isActive, setIsActive] = useState(false);
+//   const [mounted, setMounted] = useState(false);
+//   const [scrolled, setScrolled] = useState(false);
+
+//   useEffect(() => setMounted(true), []);
+
+//   // Lock scroll when mobile menu is open
+//   useEffect(() => {
+//     if (typeof window === "undefined") return;
+//     document.body.style.overflow = isActive ? "hidden" : "";
+//     return () => {
+//       document.body.style.overflow = "";
+//     };
+//   }, [isActive]);
+
+//   // Detect scroll to toggle color
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       if (window.scrollY > window.innerHeight * 0.8) {
+//         setScrolled(true);
+//       } else {
+//         setScrolled(false);
+//       }
+//     };
+
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   const navListItems = [
+//     { title: "Home", href: "/" },
+//     { title: "Certificates", href: "/certificates" },
+//     { title: "Resources", href: "/resources" },
+//     { title: "Blogs", href: "/blogs" },
+//     { title: "Team", href: "/team" },
+//   ];
+
+//   const MobileOverlay = ({ onClose }: { onClose: () => void }) => {
+//     if (!mounted) return null;
+
+//     const [visible, setVisible] = useState(false);
+
+//     useEffect(() => {
+//       const t = setTimeout(() => setVisible(true), 20);
+//       return () => clearTimeout(t);
+//     }, []);
+
+//     const handleClose = () => {
+//       setVisible(false);
+//       setTimeout(() => onClose(), 320);
+//     };
+
+//     return createPortal(
+//       <div className="fixed inset-0 z-[9999] pointer-events-auto">
+//         {/* backdrop */}
+//         <div
+//           onClick={handleClose}
+//           aria-hidden="true"
+//           className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
+//             visible ? "opacity-100" : "opacity-0"
+//           }`}
+//         />
+
+//         {/* sliding panel (from right) */}
+//         <div
+//           className={`absolute inset-0 flex flex-col transform transition-transform duration-300 ease-out ${
+//             visible ? "translate-x-0" : "translate-x-full"
+//           }`}
+//         >
+//           {/* header */}
+//           <div className="h-[72px] flex items-center justify-between px-4 border-b bg-white/90 backdrop-blur-sm z-10">
+//             <Link href="/" onClick={handleClose} className="flex items-center gap-3">
+//               <Image src={logo} alt="Logo" width={44} height={44} />
+//               <span className="font-semibold text-grey-800">r/alevel</span>
+//             </Link>
+
+//             <button
+//               onClick={handleClose}
+//               aria-label="Close menu"
+//               className="p-2 rounded-md hover:bg-gray-100 transition"
+//             >
+//               <X size={24} />
+//             </button>
+//           </div>
+
+//           {/* content */}
+//           <div
+//             className={`overflow-auto flex-1 bg-white transition-opacity duration-300 ${
+//               visible ? "opacity-100" : "opacity-0"
+//             }`}
+//           >
+//             <ul className="flex flex-col gap-2 p-6">
+//               {navListItems.map((item) => (
+//                 <li key={item.title}>
+//                   <Link
+//                     href={item.href}
+//                     onClick={handleClose}
+//                     className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
+//                       pathname === item.href
+//                         ? "text-blue-600 bg-blue-50"
+//                         : "text-gray-800 hover:bg-gray-100"
+//                     }`}
+//                   >
+//                     {item.title}
+//                   </Link>
+//                 </li>
+//               ))}
+//             </ul>
+
+//             <div className="p-6 border-t">
+//               <a
+//                 href="https://www.reddit.com/r/alevel/"
+//                 target="_blank"
+//                 rel="noreferrer"
+//                 onClick={handleClose}
+//                 className="block w-full text-center bg-blue-600 text-white font-semibold py-3 rounded-full hover:bg-blue-700 transition"
+//               >
+//                 Join Now
+//               </a>
+//             </div>
+//           </div>
+//         </div>
+//       </div>,
+//       document.body
+//     );
+//   };
+
+//   return (
+//     <>
+//       <nav
+//         className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-sm transition-all duration-300 ${
+//           scrolled ? "bg-white" : "bg-transparent"
+//         }`}
+//       >
+//         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
+//           {/* logo */}
+//           <Link href="/" className="flex items-center gap-3">
+//             <Image src={logo} alt="Logo" width={56} height={56} />
+//             <span
+//               className={`hidden sm:block font-semibold text-lg transition-colors duration-300 ${
+//                 scrolled ? "text-black" : "text-white"
+//               }`}
+//             >
+//               r/alevel
+//             </span>
+//           </Link>
+
+//           {/* desktop nav */}
+//           <div className="hidden lg2:flex items-center gap-8">
+//             {navListItems.map((item) => {
+//               const isCurrent = pathname === item.href;
+//               return (
+//                 <Link
+//                   key={item.title}
+//                   href={item.href}
+//                   className={`relative px-1 py-1 text-sm font-medium transition-all duration-300 ${
+//                     isCurrent
+//                       ? scrolled
+//                         ? "text-blue-600"
+//                         : "text-white"
+//                       : scrolled
+//                       ? "text-black hover:text-blue-600"
+//                       : "text-white hover:scale-110"
+//                   }`}
+//                 >
+//                   {item.title}
+//                   <span
+//                     className={`absolute left-0 -bottom-1 h-[2px] w-full transform origin-left transition-transform duration-300 ${
+//                       scrolled ? "bg-blue-600" : "bg-white"
+//                     } ${isCurrent ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
+//                   />
+//                 </Link>
+//               );
+//             })}
+//           </div>
+
+//           {/* join button (desktop) */}
+//           <a
+//             href="https://www.reddit.com/r/alevel/"
+//             target="_blank"
+//             rel="noreferrer"
+//             className={`hidden lg2:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold shadow-sm hover:scale-105 transition-all duration-300 ${
+//               scrolled
+//                 ? "bg-blue-600 text-white hover:bg-blue-700"
+//                 : "bg-white/20 text-white hover:bg-white/30"
+//             }`}
+//           >
+//             Join Now
+//           </a>
+
+//           {/* mobile button */}
+//           <button
+//             onClick={() => setIsActive(true)}
+//             aria-label="Open menu"
+//             className="lg2:hidden p-2 rounded-md hover:bg-gray-100 transition"
+//           >
+//             <Menu size={22} color={scrolled ? "#000000" : "#ffffff"} />
+//           </button>
+//         </div>
+//       </nav>
+
+//       {isActive && mounted && <MobileOverlay onClose={() => setIsActive(false)} />}
+//     </>
+//   );
+// }
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -301,6 +519,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import logo from "@/public/logo/Logo only.svg";
 import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -319,16 +538,9 @@ export default function Navigation() {
     };
   }, [isActive]);
 
-  // Detect scroll to toggle color
+  // Detect scroll
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > window.innerHeight * 0.8) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -344,64 +556,59 @@ export default function Navigation() {
   const MobileOverlay = ({ onClose }: { onClose: () => void }) => {
     if (!mounted) return null;
 
-    const [visible, setVisible] = useState(false);
-
-    useEffect(() => {
-      const t = setTimeout(() => setVisible(true), 20);
-      return () => clearTimeout(t);
-    }, []);
-
-    const handleClose = () => {
-      setVisible(false);
-      setTimeout(() => onClose(), 320);
-    };
-
     return createPortal(
-      <div className="fixed inset-0 z-[9999] pointer-events-auto">
-        {/* backdrop */}
-        <div
-          onClick={handleClose}
-          aria-hidden="true"
-          className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
-            visible ? "opacity-100" : "opacity-0"
-          }`}
-        />
-
-        {/* sliding panel (from right) */}
-        <div
-          className={`absolute inset-0 flex flex-col transform transition-transform duration-300 ease-out ${
-            visible ? "translate-x-0" : "translate-x-full"
-          }`}
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex flex-col"
         >
-          {/* header */}
-          <div className="h-[72px] flex items-center justify-between px-4 border-b bg-white/90 backdrop-blur-sm z-10">
-            <Link href="/" onClick={handleClose} className="flex items-center gap-3">
-              <Image src={logo} alt="Logo" width={44} height={44} />
-              <span className="font-semibold text-grey-800">r/alevel</span>
-            </Link>
-
-            <button
-              onClick={handleClose}
-              aria-label="Close menu"
-              className="p-2 rounded-md hover:bg-gray-100 transition"
-            >
-              <X size={24} />
-            </button>
-          </div>
-
-          {/* content */}
-          <div
-            className={`overflow-auto flex-1 bg-white transition-opacity duration-300 ${
-              visible ? "opacity-100" : "opacity-0"
-            }`}
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="bg-white flex flex-col flex-1"
           >
-            <ul className="flex flex-col gap-2 p-6">
+            {/* header */}
+            <div className="h-[72px] flex items-center justify-between px-4 border-b bg-white/90 backdrop-blur-sm">
+              <Link href="/" onClick={onClose} className="flex items-center gap-3">
+                <Image src={logo} alt="Logo" width={44} height={44} />
+                <span className="font-semibold text-gray-800">r/alevel</span>
+              </Link>
+              <button
+                onClick={onClose}
+                aria-label="Close menu"
+                className="p-2 rounded-md hover:bg-gray-100 transition"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <motion.ul
+              className="flex flex-col gap-2 p-6 flex-1 overflow-auto"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: { staggerChildren: 0.08 },
+                },
+              }}
+            >
               {navListItems.map((item) => (
-                <li key={item.title}>
+                <motion.li
+                  key={item.title}
+                  variants={{
+                    hidden: { opacity: 0, x: 40 },
+                    visible: { opacity: 1, x: 0 },
+                  }}
+                >
                   <Link
                     href={item.href}
-                    onClick={handleClose}
-                    className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
+                    onClick={onClose}
+                    className={`block text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
                       pathname === item.href
                         ? "text-blue-600 bg-blue-50"
                         : "text-gray-800 hover:bg-gray-100"
@@ -409,39 +616,48 @@ export default function Navigation() {
                   >
                     {item.title}
                   </Link>
-                </li>
+                </motion.li>
               ))}
-            </ul>
+            </motion.ul>
 
             <div className="p-6 border-t">
-              <a
+              <motion.a
+                whileHover={{ scale: 1.05 }}
                 href="https://www.reddit.com/r/alevel/"
                 target="_blank"
                 rel="noreferrer"
-                onClick={handleClose}
+                onClick={onClose}
                 className="block w-full text-center bg-blue-600 text-white font-semibold py-3 rounded-full hover:bg-blue-700 transition"
               >
                 Join Now
-              </a>
+              </motion.a>
             </div>
-          </div>
-        </div>
-      </div>,
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>,
       document.body
     );
   };
 
   return (
     <>
-      <nav
+      {/* Navbar with entrance animation */}
+      <motion.nav
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-sm transition-all duration-300 ${
-          scrolled ? "bg-white" : "bg-transparent"
+          scrolled
+            ? "bg-white shadow-lg scale-[1.01]"
+            : "bg-transparent shadow-none scale-100"
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
-          {/* logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <Image src={logo} alt="Logo" width={56} height={56} />
+          {/* Logo */}
+          <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
+            <Link href="/">
+              <Image src={logo} alt="Logo" width={56} height={56} />
+            </Link>
             <span
               className={`hidden sm:block font-semibold text-lg transition-colors duration-300 ${
                 scrolled ? "text-black" : "text-white"
@@ -449,61 +665,73 @@ export default function Navigation() {
             >
               r/alevel
             </span>
-          </Link>
+          </motion.div>
 
-          {/* desktop nav */}
+          {/* Desktop nav links */}
           <div className="hidden lg2:flex items-center gap-8">
-            {navListItems.map((item) => {
+            {navListItems.map((item, i) => {
               const isCurrent = pathname === item.href;
               return (
-                <Link
+                <motion.div
                   key={item.title}
-                  href={item.href}
-                  className={`relative px-1 py-1 text-sm font-medium transition-all duration-300 ${
-                    isCurrent
-                      ? scrolled
-                        ? "text-blue-600"
-                        : "text-white"
-                      : scrolled
-                      ? "text-black hover:text-blue-600"
-                      : "text-white hover:scale-110"
-                  }`}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 + 0.5 }}
                 >
-                  {item.title}
-                  <span
-                    className={`absolute left-0 -bottom-1 h-[2px] w-full transform origin-left transition-transform duration-300 ${
-                      scrolled ? "bg-blue-600" : "bg-white"
-                    } ${isCurrent ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
-                  />
-                </Link>
+                  <Link
+                    href={item.href}
+                    className={`relative px-1 py-1 text-sm font-medium transition-all duration-300 ${
+                      isCurrent
+                        ? scrolled
+                          ? "text-blue-600"
+                          : "text-white"
+                        : scrolled
+                        ? "text-black hover:text-blue-600"
+                        : "text-white hover:scale-110"
+                    }`}
+                  >
+                    {item.title}
+                    <motion.span
+                      layoutId={`underline-${item.title}`}
+                      className={`absolute left-0 -bottom-1 h-[2px] w-full ${
+                        scrolled ? "bg-blue-600" : "bg-white"
+                      }`}
+                      initial={{ scaleX: 0 }}
+                      whileHover={{ scaleX: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </Link>
+                </motion.div>
               );
             })}
           </div>
 
-          {/* join button (desktop) */}
-          <a
+          {/* Join button */}
+          <motion.a
+            whileHover={{ scale: 1.08 }}
             href="https://www.reddit.com/r/alevel/"
             target="_blank"
             rel="noreferrer"
-            className={`hidden lg2:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold shadow-sm hover:scale-105 transition-all duration-300 ${
+            className={`hidden lg2:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold shadow-sm transition-all duration-300 ${
               scrolled
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-white/20 text-white hover:bg-white/30"
             }`}
           >
             Join Now
-          </a>
+          </motion.a>
 
-          {/* mobile button */}
-          <button
+          {/* Mobile menu button */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             onClick={() => setIsActive(true)}
             aria-label="Open menu"
             className="lg2:hidden p-2 rounded-md hover:bg-gray-100 transition"
           >
             <Menu size={22} color={scrolled ? "#000000" : "#ffffff"} />
-          </button>
+          </motion.button>
         </div>
-      </nav>
+      </motion.nav>
 
       {isActive && mounted && <MobileOverlay onClose={() => setIsActive(false)} />}
     </>
