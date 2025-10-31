@@ -8,7 +8,7 @@ import vasuSign from "@/public/certificateImages/Vasu_sign.jpg";
 import { CertImgSkeleton } from "@/app/skeleton";
 import { Suspense } from "react";
 
-export const Skeleton = function (){
+const Skeleton = function (){
   return (
       <div className="font-poppins animate-pulse min-h-[200px] max-xxs:h-[400px] max-xs:h-[550px] max-sm:h-[720px] max-md:h-[950px] max-lg:h-[1200px] max-xl:h-[1300px] max-2xl:h-[1500px]" style={{ maxWidth:"70rem", margin:"2rem auto", padding:"0 2rem", marginBottom:"30rem"} }>
         <CertImgSkeleton className="w-full h-full bg-gray-200 rounded-xl" />
