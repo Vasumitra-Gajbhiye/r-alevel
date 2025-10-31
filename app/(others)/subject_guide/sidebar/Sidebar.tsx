@@ -1065,6 +1065,8 @@
 // }
 
 // app/components/Sidebar.tsx (or wherever you keep it)
+
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { usePathname } from "next/navigation";
