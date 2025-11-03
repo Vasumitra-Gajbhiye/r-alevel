@@ -4,6 +4,7 @@ import "../globals.css";
 import ContactUs from "./layout ui/contact-us";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import SessionProviderWrapper from "../SessionProviderWrapper";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -49,11 +50,13 @@ export default function RootLayout({
       <link rel="icon" href="/favicon.png" />
       </head>
       <body className={poppins.className}>
+        <SessionProviderWrapper>
         <Navigation />
         <div className="pt-11">
         {children}
         </div>
         <ContactUs />
+        </SessionProviderWrapper>
       </body>
     </html>
   );
