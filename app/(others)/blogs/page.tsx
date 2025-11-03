@@ -1500,686 +1500,277 @@
 //   );
 // }
 
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import Image from "next/image";
-// import getAllBlogs from "@/app/controller/getAllBlogs";
-// import Skeleton, { ImageSkeleton } from "@/app/skeleton";
-// import { motion, AnimatePresence } from "framer-motion";
-
-// export default function Blogs() {
-//   const [data, setData] = useState<any[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [current, setCurrent] = useState(0);
-//   const [direction, setDirection] = useState(0);
-//   const [isHovered, setIsHovered] = useState(false);
-//   const [showAll, setShowAll] = useState(false);
-
-//   // ✅ STEP 1: Define which blogs go into the carousel
-//   const featuredIds = [
-//     // Example: put IDs you want featured here
-//     "66c09af3885c6d954427fb33",
-//     "66c09b9d885c6d954427fb55",
-//     "66c09ba8885c6d954427fb57",
-//     "66c09b3a885c6d954427fb3f",
-//   ];
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const allBlogs = await getAllBlogs();
-//         setData(allBlogs);
-//       } catch (error) {
-//         console.error("Error fetching data:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchData();
-//   }, []);
-
-//   useEffect(() => {
-//     if (isHovered || data.length === 0) return;
-//     const interval = setInterval(() => handleNext(), 4000);
-//     return () => clearInterval(interval);
-//   }, [data, isHovered]);
-
-//   const handleNext = () => {
-//     setDirection(1);
-//     setCurrent((prev) => (prev + 1) % featuredBlogs.length);
-//   };
-
-//   const handlePrev = () => {
-//     setDirection(-1);
-//     setCurrent(
-//       (prev) => (prev - 1 + featuredBlogs.length) % featuredBlogs.length
-//     );
-//   };
-
-//   // ✅ STEP 2: Filter featured blogs easily
-//   const featuredBlogs = data.filter((b) => featuredIds.includes(b._id));
-
-//   const variants = {
-//     enter: (direction: number) => ({
-//       x: direction > 0 ? 100 : -100,
-//       opacity: 0,
-//     }),
-//     center: { x: 0, opacity: 1 },
-//     exit: (direction: number) => ({
-//       x: direction > 0 ? -100 : 100,
-//       opacity: 0,
-//     }),
-//   };
-
-//   return (
-//     <main className="min-h-screen bg-white text-gray-800">
-//       {/* HERO + FEATURED combined gradient section */}
-//       <section className="relative bg-gradient-to-b from-[#eaf5ff] via-[#f9fbff] to-white">
-//         {/* Hero Section - scaled down */}
-//         <div className="text-center py-16 px-6 md:px-10">
-//           <motion.h1
-//             initial={{ opacity: 0, y: 10 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.6 }}
-//             className="text-4xl md:text-5xl font-extrabold tracking-tight text-sky-800"
-//           >
-//             Explore. Learn. Grow.
-//           </motion.h1>
-//           <motion.p
-//             initial={{ opacity: 0, y: 10 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.8, delay: 0.1 }}
-//             className="text-gray-600 mt-3 max-w-2xl mx-auto text-base md:text-lg"
-//           >
-//             Insightful articles and guides written by the r/alevel community —
-//             made to help you study smarter and live better.
-//           </motion.p>
-//         </div>
-
-//         {/* FEATURED SECTION */}
-//         <div className="relative py-4 px-6 md:px-10">
-//           <div className="max-w-5xl mx-auto text-center relative">
-//             <AnimatePresence mode="wait" custom={direction}>
-//               {!loading && featuredBlogs.length > 0 && (
-//                 <motion.div
-//                   key={featuredBlogs[current]._id}
-//                   custom={direction}
-//                   variants={variants}
-//                   initial="enter"
-//                   animate="center"
-//                   exit="exit"
-//                   transition={{
-//                     x: { type: "spring", stiffness: 150, damping: 25 },
-//                     opacity: { duration: 0.3 },
-//                   }}
-//                   className="relative"
-//                 >
-//                   {/* Image + arrows container */}
-//                   <div
-//                     className="relative inline-block"
-//                     onMouseEnter={() => setIsHovered(true)}
-//                     onMouseLeave={() => setIsHovered(false)}
-//                   >
-//                     <a
-//                       href={`/blogs/tb/${featuredBlogs[current]._id}`}
-//                       className="block rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all mx-auto max-w-4xl"
-//                     >
-//                       <Image
-//                         src={`/blogs/${featuredBlogs[current]._id}/mainImgThumb.jpg`}
-//                         alt={featuredBlogs[current].mainTitle}
-//                         width={1200}
-//                         height={600}
-//                         className="object-cover w-full h-[400px] md:h-[480px] transition-transform duration-700 hover:scale-[1.03]"
-//                       />
-//                     </a>
-
-//                     {/* SIDE Arrows */}
-//                     <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
-//                       <button
-//                         onClick={handlePrev}
-//                         className="pointer-events-auto bg-white/80 border border-gray-200 hover:border-sky-400 text-sky-700 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-sm hover:shadow-md transition"
-//                       >
-//                         <span className="text-2xl md:text-3xl font-light">
-//                           ‹
-//                         </span>
-//                       </button>
-//                       <button
-//                         onClick={handleNext}
-//                         className="pointer-events-auto bg-white/80 border border-gray-200 hover:border-sky-400 text-sky-700 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-sm hover:shadow-md transition"
-//                       >
-//                         <span className="text-2xl md:text-3xl font-light">
-//                           ›
-//                         </span>
-//                       </button>
-//                     </div>
-//                   </div>
-
-//                   {/* Text below image */}
-//                   <div className="mt-8">
-//                     <p className="uppercase text-sm font-medium tracking-widest text-sky-600 mb-2">
-//                       {featuredBlogs[current].tag}
-//                     </p>
-//                     <h2 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-3 text-sky-900">
-//                       <a
-//                         href={`/blogs/tb/${featuredBlogs[current]._id}`}
-//                         className="hover:text-sky-700 transition-colors"
-//                       >
-//                         {featuredBlogs[current].mainTitle}
-//                       </a>
-//                     </h2>
-//                     <p className="text-gray-600 mb-4 max-w-2xl mx-auto text-sm md:text-base">
-//                       {featuredBlogs[current].subtitle ||
-//                         "A featured piece from the r/alevel community exploring something worth reading."}
-//                     </p>
-//                     <p className="text-sm text-gray-500">
-//                       {featuredBlogs[current].date} • by{" "}
-//                       <span className="text-sky-700 font-medium">
-//                         {featuredBlogs[current].author}
-//                       </span>
-//                     </p>
-//                   </div>
-//                 </motion.div>
-//               )}
-//             </AnimatePresence>
-
-//             {/* Dots */}
-//             <div className="flex justify-center space-x-2 mt-8">
-//               {featuredBlogs.map((_, i) => (
-//                 <button
-//                   key={i}
-//                   onClick={() => {
-//                     setDirection(i > current ? 1 : -1);
-//                     setCurrent(i);
-//                   }}
-//                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
-//                     i === current
-//                       ? "bg-sky-700 scale-125"
-//                       : "bg-gray-300 hover:bg-sky-400"
-//                   }`}
-//                 ></button>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* LATEST ARTICLES */}
-//       <section className="max-w-7xl mx-auto px-6 md:px-10 mt-24 mb-32">
-//         <div className="flex items-center justify-between mb-10">
-//           <h2 className="text-2xl font-semibold border-l-4 border-sky-600 pl-3">
-//             Latest Articles
-//           </h2>
-//           {!loading && data.length > 8 && (
-//             <button
-//               onClick={() => setShowAll((prev) => !prev)}
-//               className="text-sky-700 hover:text-sky-900 font-medium text-sm border border-sky-200 px-4 py-1.5 rounded-full hover:border-sky-400 transition"
-//             >
-//               {showAll ? "Show Less" : "View All"}
-//             </button>
-//           )}
-//         </div>
-
-//         <div
-//           className="grid gap-10 sm:gap-12"
-//           style={{
-//             gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-//           }}
-//         >
-//           {loading
-//             ? [...Array(8)].map((_, i) => (
-//                 <div
-//                   key={i}
-//                   className="rounded-xl overflow-hidden bg-white shadow-sm border border-gray-100 p-4"
-//                 >
-//                   <ImageSkeleton className="w-full h-56 rounded-lg mb-4" />
-//                   <Skeleton className="h-4 w-20 mb-3 rounded-md" />
-//                   <Skeleton className="h-5 w-3/4 mb-2 rounded-md" />
-//                   <Skeleton className="h-3 w-1/2 rounded-md" />
-//                 </div>
-//               ))
-//             : data
-//                 .filter((b) => !featuredIds.includes(b._id))
-//                 .slice(0, showAll ? data.length : 8)
-//                 .map((blog, i) => (
-//                   <motion.a
-//                     key={i}
-//                     href={`/blogs/tb/${blog._id}`}
-//                     whileHover={{ y: -6 }}
-//                     transition={{ type: "spring", stiffness: 200, damping: 15 }}
-//                     className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 group"
-//                   >
-//                     <div className="overflow-hidden relative">
-//                       <img
-//                         src={`/blogs/${blog._id}/mainImgThumb.jpg`}
-//                         alt={blog.mainTitle}
-//                         className="object-cover w-full h-56 group-hover:scale-105 transition-all duration-500"
-//                       />
-//                       <span className="absolute top-3 left-3 bg-sky-100 text-sky-800 px-3 py-1 text-xs font-medium rounded-full">
-//                         {blog.tag}
-//                       </span>
-//                     </div>
-//                     <div className="p-5">
-//                       <h3 className="text-lg font-semibold text-gray-900 group-hover:text-sky-700 transition-colors">
-//                         {blog.mainTitle}
-//                       </h3>
-//                       <p className="text-xs text-gray-500 mt-2">
-//                         {blog.date} • {blog.author}
-//                       </p>
-//                     </div>
-//                   </motion.a>
-//                 ))}
-//         </div>
-//       </section>
-//     </main>
-//   );
-// }
-
-// "use client";
-// import Image from "next/image";
-// import { motion, useScroll, useSpring } from "framer-motion";
-// import { useEffect, useRef, useState } from "react";
-
-// export default function Blog() {
-//   const ref = useRef<HTMLDivElement>(null);
-//   const tocRef = useRef<HTMLDivElement>(null);
-//   const { scrollYProgress } = useScroll({ target: ref });
-//   const scaleX = useSpring(scrollYProgress, {
-//     stiffness: 100,
-//     damping: 30,
-//     restDelta: 0.001,
-//   });
-
-//   const [activeHeading, setActiveHeading] = useState<string>("");
-
-//   useEffect(() => {
-//     const headings = document.querySelectorAll("h2");
-//     const observer = new IntersectionObserver(
-//       (entries) => {
-//         entries.forEach((entry) => {
-//           if (entry.isIntersecting) {
-//             setActiveHeading(entry.target.textContent || "");
-//           }
-//         });
-//       },
-//       { rootMargin: "0px 0px -60% 0px" }
-//     );
-//     headings.forEach((h) => observer.observe(h));
-//     return () => observer.disconnect();
-//   }, []);
-
-//   const tocItems = [
-//     "Identify your academic interests and goals",
-//     "Choose activities that develop relevant skills",
-//     "Balance depth and breadth",
-//     "Evaluate your time management",
-//     "Seek opportunities for personal growth",
-//     "Get involved and make an impact",
-//     "Conclusion",
-//   ];
-
-//   return (
-//     <>
-//       {/* 🩵 Scroll Progress Bar */}
-//       <motion.div
-//         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 to-sky-700 origin-left z-50"
-//         style={{ scaleX }}
-//       />
-
-//       <div ref={ref} className="relative flex flex-col items-center my-20 px-5 md:px-10">
-//         {/* 🧠 HERO SECTION */}
-//         <motion.div
-//           initial={{ opacity: 0, y: 20 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.6 }}
-//           className="w-full max-w-3xl text-center"
-//         >
-//           <h1 className="text-3xl md:text-4xl font-extrabold leading-snug text-sky-900">
-//             Choosing Extracurricular Activities That Compliment Your Studies
-//           </h1>
-
-//           <div className="mt-3 text-sm text-gray-500">
-//             <span>4 May 2024</span> ·{" "}
-//             <span className="text-blue-600 font-medium">Vasumitra Gajbhiye</span>
-//           </div>
-
-//           <div className="mt-8 rounded-2xl overflow-hidden shadow-md">
-//             <Image
-//               src="/blogs/66c5d55db6fe1c382e55eb73/mainImg.jpg"
-//               alt="blog hero"
-//               width={1200}
-//               height={600}
-//               className="object-cover w-full"
-//             />
-//           </div>
-//         </motion.div>
-
-//         {/* 📖 FLOATING TABLE OF CONTENTS (sticky within blog container) */}
-//         <div className="flex justify-center w-full max-w-6xl mt-10">
-//           <div className="relative w-full flex gap-12">
-//             {/* Blog content */}
-//             <div className="flex-1 max-w-3xl">
-//               <div className="mt-14 leading-8 text-slate-800 tracking-wide prose prose-sky">
-//                 <p>
-//                   Extracurricular activities can play a significant role in your A-level
-//                   experience, offering valuable skills, experiences, and insights that
-//                   complement your academic pursuits.
-//                 </p>
-
-//                 <p>
-//                   Selecting activities that align with your studies can enhance your personal
-//                   growth, strengthen your university applications, and make your academic
-//                   journey more fulfilling.
-//                 </p>
-
-//                 <blockquote className="border-l-4 border-sky-400 pl-4 italic text-gray-600 bg-sky-50/80 p-3 rounded-md">
-//                   “Extracurriculars aren’t distractions — they’re extensions of who you are
-//                   becoming.”
-//                 </blockquote>
-
-//                 <hr className="my-10 border-sky-100" />
-
-//                 {tocItems.map((title, i) => (
-//                   <motion.section
-//                     key={title}
-//                     initial={{ opacity: 0, y: 20 }}
-//                     whileInView={{ opacity: 1, y: 0 }}
-//                     transition={{ duration: 0.5, delay: i * 0.1 }}
-//                     viewport={{ once: true }}
-//                     className="my-10"
-//                   >
-//                     <h2
-//                       id={title.replace(/\s+/g, "-")}
-//                       className="text-xl font-semibold text-sky-900 mb-3"
-//                     >
-//                       {i + 1}. {title}
-//                     </h2>
-//                     <p>
-//                       {
-//                         [
-//                           "Reflect on your subjects and see how activities can deepen or complement them.",
-//                           "Pick clubs or projects that build teamwork, communication, or leadership.",
-//                           "Stay consistent in a few, but explore variety for balance.",
-//                           "Balance passion with rest — quality beats quantity.",
-//                           "Try unfamiliar roles or experiences that push your comfort zone.",
-//                           "Lead, volunteer, or create — make your impact visible.",
-//                           "Extracurriculars are more than tasks; they’re tools for transformation.",
-//                         ][i]
-//                       }
-//                     </p>
-//                     {i === 1 && (
-//                       <div className="p-5 bg-gradient-to-r from-sky-50 to-blue-50 border-l-4 border-sky-400 rounded-md my-5">
-//                         <strong>💡 Tip:</strong> Join debate, coding, or theatre — they all
-//                         teach collaboration and creativity.
-//                       </div>
-//                     )}
-//                     {i === 0 && (
-//                       <div className="bg-sky-50/60 border border-sky-100 p-4 rounded-lg my-3">
-//                         <strong>Example:</strong> Science students may find research or club
-//                         work fuels both curiosity and skill.
-//                       </div>
-//                     )}
-//                   </motion.section>
-//                 ))}
-//               </div>
-
-//               {/* 💫 NEXT BLOG CTA */}
-//               <motion.div
-//                 whileHover={{ scale: 1.02 }}
-//                 className="mt-20 p-6 bg-sky-50 border border-sky-200 rounded-xl shadow-sm text-center w-full"
-//               >
-//                 <h3 className="text-lg font-semibold text-sky-800">
-//                   Read Next: <span className="text-gray-800">“The Art of Studying Smart”</span>
-//                 </h3>
-//                 <a
-//                   href="/blogs/tb/next"
-//                   className="inline-block mt-3 text-sm text-white bg-sky-600 px-4 py-2 rounded-lg hover:bg-sky-700 transition-all"
-//                 >
-//                   Read Now →
-//                 </a>
-//               </motion.div>
-//             </div>
-
-//             {/* Sticky Table of Contents */}
-//             <motion.aside
-//               ref={tocRef}
-//               initial={{ opacity: 0, y: 30 }}
-//               whileInView={{ opacity: 1, y: 0 }}
-//               transition={{ duration: 0.8, delay: 0.4 }}
-//               viewport={{ once: true }}
-//               className="hidden lg:block w-64 text-sm sticky top-28 h-fit self-start"
-//             >
-//               <div className="p-4 bg-white/60 backdrop-blur-md border border-sky-100/60 rounded-2xl shadow-md">
-//                 <h3 className="font-semibold text-gray-700 mb-3">On this page</h3>
-//                 <ul className="space-y-2 text-gray-600">
-//                   {tocItems.map((h) => (
-//                     <li
-//                       key={h}
-//                       className={`cursor-pointer relative pl-2 transition-all ${
-//                         activeHeading === h
-//                           ? "text-sky-600 font-medium before:absolute before:left-0 before:top-1 before:h-4 before:w-[3px] before:bg-sky-500 rounded-full"
-//                           : "hover:text-sky-700 hover:translate-x-1"
-//                       }`}
-//                       onClick={() =>
-//                         document
-//                           .querySelector(`h2[id='${h.replace(/\s+/g, "-")}']`)
-//                           ?.scrollIntoView({ behavior: "smooth", block: "center" })
-//                       }
-//                     >
-//                       {h}
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </div>
-//             </motion.aside>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
 "use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, useScroll, useSpring } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import getAllBlogs from "@/app/controller/getAllBlogs";
+import Skeleton, { ImageSkeleton } from "@/app/skeleton";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function Blog() {
-  const ref = useRef<HTMLDivElement>(null);
-  const tocRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref });
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
+export default function Blogs() {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
-  const [activeHeading, setActiveHeading] = useState<string>("");
-
-  useEffect(() => {
-    const headings = document.querySelectorAll("h2");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveHeading(entry.target.textContent || "");
-          }
-        });
-      },
-      { rootMargin: "0px 0px -60% 0px" }
-    );
-    headings.forEach((h) => observer.observe(h));
-    return () => observer.disconnect();
-  }, []);
-
-  const tocItems = [
-    "Identify your academic interests and goals",
-    "Choose activities that develop relevant skills",
-    "Balance depth and breadth",
-    "Evaluate your time management",
-    "Seek opportunities for personal growth",
-    "Get involved and make an impact",
-    "Conclusion",
+  // ✅ STEP 1: Define which blogs go into the carousel
+  const featuredIds = [
+    // Example: put IDs you want featured here
+    "66c09af3885c6d954427fb33",
+    "66c09b9d885c6d954427fb55",
+    "66c09ba8885c6d954427fb57",
+    "66c09b3a885c6d954427fb3f",
   ];
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const allBlogs = await getAllBlogs();
+        setData(allBlogs);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (isHovered || data.length === 0) return;
+    const interval = setInterval(() => handleNext(), 4000);
+    return () => clearInterval(interval);
+  }, [data, isHovered]);
+
+  const handleNext = () => {
+    setDirection(1);
+    setCurrent((prev) => (prev + 1) % featuredBlogs.length);
+  };
+
+  const handlePrev = () => {
+    setDirection(-1);
+    setCurrent(
+      (prev) => (prev - 1 + featuredBlogs.length) % featuredBlogs.length
+    );
+  };
+
+  // ✅ STEP 2: Filter featured blogs easily
+  const featuredBlogs = data.filter((b) => featuredIds.includes(b._id));
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 100 : -100,
+      opacity: 0,
+    }),
+    center: { x: 0, opacity: 1 },
+    exit: (direction: number) => ({
+      x: direction > 0 ? -100 : 100,
+      opacity: 0,
+    }),
+  };
+
   return (
-    <>
-      {/* 🩵 Scroll Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 to-sky-700 origin-left z-50"
-        style={{ scaleX }}
-      />
+    <main className="min-h-screen bg-white text-gray-800">
+      {/* HERO + FEATURED combined gradient section */}
+      <section className="relative bg-gradient-to-b from-[#eaf5ff] via-[#f9fbff] to-white">
+        {/* Hero Section - scaled down */}
+        <div className="text-center py-16 px-6 md:px-10">
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-5xl font-extrabold tracking-tight text-sky-800"
+          >
+            Explore. Learn. Grow.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-gray-600 mt-3 max-w-2xl mx-auto text-base md:text-lg"
+          >
+            Insightful articles and guides written by the r/alevel community —
+            made to help you study smarter and live better.
+          </motion.p>
+        </div>
 
-      <div ref={ref} className="relative flex flex-col items-center my-20 px-5 md:px-10">
-        {/* 🧠 HERO SECTION */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="w-full max-w-3xl text-center"
-        >
-          <h1 className="text-3xl md:text-4xl font-extrabold leading-snug text-sky-900">
-            Choosing Extracurricular Activities That Compliment Your Studies
-          </h1>
-
-          <div className="mt-3 text-sm text-gray-500">
-            <span>4 May 2024</span> ·{" "}
-            <span className="text-blue-600 font-medium">Vasumitra Gajbhiye</span>
-          </div>
-
-          <div className="mt-8 rounded-2xl overflow-hidden shadow-md">
-            <Image
-              src="/blogs/66c5d55db6fe1c382e55eb73/mainImg.jpg"
-              alt="blog hero"
-              width={1200}
-              height={600}
-              className="object-cover w-full"
-            />
-          </div>
-        </motion.div>
-
-        {/* 📖 BLOG CONTENT + TOC */}
-        <div className="relative flex justify-center w-full max-w-6xl mt-14">
-          {/* Make the entire section relative to bound sticky */}
-          <div className="relative flex w-full max-w-6xl gap-12 items-start">
-            {/* Blog content */}
-            <div className="flex-1 max-w-3xl">
-              <div className="leading-8 text-slate-800 tracking-wide prose prose-sky">
-                <p>
-                  Extracurricular activities can play a significant role in your A-level
-                  experience, offering valuable skills, experiences, and insights that
-                  complement your academic pursuits.
-                </p>
-
-                <p>
-                  Selecting activities that align with your studies can enhance your personal
-                  growth, strengthen your university applications, and make your academic
-                  journey more fulfilling.
-                </p>
-
-                <blockquote className="border-l-4 border-sky-400 pl-4 italic text-gray-600 bg-sky-50/80 p-3 rounded-md">
-                  “Extracurriculars aren’t distractions — they’re extensions of who you are
-                  becoming.”
-                </blockquote>
-
-                <hr className="my-10 border-sky-100" />
-
-                {tocItems.map((title, i) => (
-                  <motion.section
-                    key={title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: i * 0.1 }}
-                    viewport={{ once: true }}
-                    className="my-10"
-                  >
-                    <h2
-                      id={title.replace(/\s+/g, "-")}
-                      className="text-xl font-semibold text-sky-900 mb-3"
-                    >
-                      {i + 1}. {title}
-                    </h2>
-                    <p>
-                      {
-                        [
-                          "Reflect on your subjects and see how activities can deepen or complement them.",
-                          "Pick clubs or projects that build teamwork, communication, or leadership.",
-                          "Stay consistent in a few, but explore variety for balance.",
-                          "Balance passion with rest — quality beats quantity.",
-                          "Try unfamiliar roles or experiences that push your comfort zone.",
-                          "Lead, volunteer, or create — make your impact visible.",
-                          "Extracurriculars are more than tasks; they’re tools for transformation.",
-                        ][i]
-                      }
-                    </p>
-                    {i === 1 && (
-                      <div className="p-5 bg-gradient-to-r from-sky-50 to-blue-50 border-l-4 border-sky-400 rounded-md my-5">
-                        <strong>💡 Tip:</strong> Join debate, coding, or theatre — they all
-                        teach collaboration and creativity.
-                      </div>
-                    )}
-                    {i === 0 && (
-                      <div className="bg-sky-50/60 border border-sky-100 p-4 rounded-lg my-3">
-                        <strong>Example:</strong> Science students may find research or club
-                        work fuels both curiosity and skill.
-                      </div>
-                    )}
-                  </motion.section>
-                ))}
-              </div>
-
-              {/* 💫 NEXT BLOG CTA */}
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="mt-20 p-6 bg-sky-50 border border-sky-200 rounded-xl shadow-sm text-center w-full"
-              >
-                <h3 className="text-lg font-semibold text-sky-800">
-                  Read Next: <span className="text-gray-800">“The Art of Studying Smart”</span>
-                </h3>
-                <a
-                  href="/blogs/tb/next"
-                  className="inline-block mt-3 text-sm text-white bg-sky-600 px-4 py-2 rounded-lg hover:bg-sky-700 transition-all"
+        {/* FEATURED SECTION */}
+        <div className="relative py-4 px-6 md:px-10">
+          <div className="max-w-5xl mx-auto text-center relative">
+            <AnimatePresence mode="wait" custom={direction}>
+              {!loading && featuredBlogs.length > 0 && (
+                <motion.div
+                  key={featuredBlogs[current]._id}
+                  custom={direction}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    x: { type: "spring", stiffness: 150, damping: 25 },
+                    opacity: { duration: 0.3 },
+                  }}
+                  className="relative"
                 >
-                  Read Now →
-                </a>
-              </motion.div>
-            </div>
-
-            {/* 🧭 Sticky Table of Contents */}
-            <motion.aside
-              ref={tocRef}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="hidden lg:block w-80 text-sm sticky top-32 self-start h-fit"
-            >
-              <div className="p-5 bg-white/70 backdrop-blur-lg border border-sky-100/70 rounded-2xl shadow-md">
-                <h3 className="font-semibold text-gray-700 mb-4">On this page</h3>
-                <ul className="space-y-2 text-gray-600">
-                  {tocItems.map((h) => (
-                    <li
-                      key={h}
-                      className={`cursor-pointer relative pl-3 transition-all ${
-                        activeHeading === h
-                          ? "text-sky-600 font-medium before:absolute before:left-0 before:top-1 before:h-4 before:w-[3px] before:bg-sky-500 rounded-full"
-                          : "hover:text-sky-700 hover:translate-x-1"
-                      }`}
-                      onClick={() =>
-                        document
-                          .querySelector(`h2[id='${h.replace(/\s+/g, "-")}']`)
-                          ?.scrollIntoView({ behavior: "smooth", block: "center" })
-                      }
+                  {/* Image + arrows container */}
+                  <div
+                    className="relative inline-block"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                  >
+                    <a
+                      href={`/blogs/tb/${featuredBlogs[current]._id}`}
+                      className="block rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all mx-auto max-w-4xl"
                     >
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.aside>
+                      <Image
+                        src={`/blogs/${featuredBlogs[current]._id}/mainImgThumb.jpg`}
+                        alt={featuredBlogs[current].mainTitle}
+                        width={1200}
+                        height={600}
+                        className="object-cover w-full h-[400px] md:h-[480px] transition-transform duration-700 hover:scale-[1.03]"
+                      />
+                    </a>
+
+                    {/* SIDE Arrows */}
+                    <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
+                      <button
+                        onClick={handlePrev}
+                        className="pointer-events-auto bg-white/80 border border-gray-200 hover:border-sky-400 text-sky-700 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-sm hover:shadow-md transition"
+                      >
+                        <span className="text-2xl md:text-3xl font-light">
+                          ‹
+                        </span>
+                      </button>
+                      <button
+                        onClick={handleNext}
+                        className="pointer-events-auto bg-white/80 border border-gray-200 hover:border-sky-400 text-sky-700 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-sm hover:shadow-md transition"
+                      >
+                        <span className="text-2xl md:text-3xl font-light">
+                          ›
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Text below image */}
+                  <div className="mt-8">
+                    <p className="uppercase text-sm font-medium tracking-widest text-sky-600 mb-2">
+                      {featuredBlogs[current].tag}
+                    </p>
+                    <h2 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-3 text-sky-900">
+                      <a
+                        href={`/blogs/tb/${featuredBlogs[current]._id}`}
+                        className="hover:text-sky-700 transition-colors"
+                      >
+                        {featuredBlogs[current].mainTitle}
+                      </a>
+                    </h2>
+                    <p className="text-gray-600 mb-4 max-w-2xl mx-auto text-sm md:text-base">
+                      {featuredBlogs[current].subtitle ||
+                        "A featured piece from the r/alevel community exploring something worth reading."}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {featuredBlogs[current].date} • by{" "}
+                      <span className="text-sky-700 font-medium">
+                        {featuredBlogs[current].author}
+                      </span>
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Dots */}
+            <div className="flex justify-center space-x-2 mt-8">
+              {featuredBlogs.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setDirection(i > current ? 1 : -1);
+                    setCurrent(i);
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    i === current
+                      ? "bg-sky-700 scale-125"
+                      : "bg-gray-300 hover:bg-sky-400"
+                  }`}
+                ></button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </>
+      </section>
+
+      {/* LATEST ARTICLES */}
+      <section className="max-w-7xl mx-auto px-6 md:px-10 mt-24 mb-32">
+        <div className="flex items-center justify-between mb-10">
+          <h2 className="text-2xl font-semibold border-l-4 border-sky-600 pl-3">
+            Latest Articles
+          </h2>
+          {!loading && data.length > 8 && (
+            <button
+              onClick={() => setShowAll((prev) => !prev)}
+              className="text-sky-700 hover:text-sky-900 font-medium text-sm border border-sky-200 px-4 py-1.5 rounded-full hover:border-sky-400 transition"
+            >
+              {showAll ? "Show Less" : "View All"}
+            </button>
+          )}
+        </div>
+
+        <div
+          className="grid gap-10 sm:gap-12"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          }}
+        >
+          {loading
+            ? [...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl overflow-hidden bg-white shadow-sm border border-gray-100 p-4"
+                >
+                  <ImageSkeleton className="w-full h-56 rounded-lg mb-4" />
+                  <Skeleton className="h-4 w-20 mb-3 rounded-md" />
+                  <Skeleton className="h-5 w-3/4 mb-2 rounded-md" />
+                  <Skeleton className="h-3 w-1/2 rounded-md" />
+                </div>
+              ))
+            : data
+                .filter((b) => !featuredIds.includes(b._id))
+                .slice(0, showAll ? data.length : 8)
+                .map((blog, i) => (
+                  <motion.a
+                    key={i}
+                    href={`/blogs/tb/${blog._id}`}
+                    whileHover={{ y: -6 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 group"
+                  >
+                    <div className="overflow-hidden relative">
+                      <img
+                        src={`/blogs/${blog._id}/mainImgThumb.jpg`}
+                        alt={blog.mainTitle}
+                        className="object-cover w-full h-56 group-hover:scale-105 transition-all duration-500"
+                      />
+                      <span className="absolute top-3 left-3 bg-sky-100 text-sky-800 px-3 py-1 text-xs font-medium rounded-full">
+                        {blog.tag}
+                      </span>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-sky-700 transition-colors">
+                        {blog.mainTitle}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-2">
+                        {blog.date} • {blog.author}
+                      </p>
+                    </div>
+                  </motion.a>
+                ))}
+        </div>
+      </section>
+    </main>
   );
 }
