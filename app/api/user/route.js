@@ -1,69 +1,60 @@
+// app/api/user/route.js
+import { NextResponse } from "next/server";
 import connectDB from "@/libs/mongodb";
-import CertData from "@/models/userData";
-import { NextResponse, NextRequest } from "next/server";
+import UserData from "@/models/userData";
 
-// CREATE A SUBJECT
+/**
+ * POST /api/user
+ * Body: { email: string }
+ * Returns: user payload for profile page
+ */
 export async function POST(req) {
   try {
-      const {name, email, subjectsAS, subjectsA2, examSession, receiveEmails } = await req.json();
+    const body = await req.json();
+    const { email } = body || {};
 
-    const newUserData = {
-        name:name,
-      email: email,
-      subjectsAS: subjectsAS,
-      subjectsA2: subjectsA2,
-      examSession: examSession,
-      receiveEmails: receiveEmails, 
+    if (!email || typeof email !== "string") {
+      return NextResponse.json(
+        { error: "Missing or invalid 'email' in request body" },
+        { status: 400 }
+      );
+    }
+
+    // ensure DB connection
+    await connectDB();
+
+    // find user by email
+    const user = await UserData.findOne({ email }).lean();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    // Normalize fields so client always receives expected types
+    const payload = {
+      name: user.name ?? "",
+      email: user.email ?? "",
+      boards: Array.isArray(user.boards) ? user.boards : [],
+      subjectsAS: Array.isArray(user.subjectsAS) ? user.subjectsAS : [],
+      subjectsA2: Array.isArray(user.subjectsA2) ? user.subjectsA2 : [],
+      // ensure examSession is an array (you requested multiple sessions)
+      examSession: Array.isArray(user.examSession)
+        ? user.examSession
+        : user.examSession
+        ? [user.examSession]
+        : [],
+      receiveEmails: typeof user.receiveEmails === "boolean" ? user.receiveEmails : false,
     };
 
-    await connectDB();
-
-    await CertData.create(newUserData);
-
+    return NextResponse.json(payload, { status: 200 });
+  } catch (err) {
+    console.error("Error in /api/user:", err);
     return NextResponse.json(
-      {
-        message: "Successfully created a new cert",
-        data: newUserData,
-      },
-      {
-        status: 201,
-      }
-    );
-  } catch (error) {
-    return NextResponse.json({
-      message: "Cannot create a new cert",
-      error: error,
-    });
-  }
-}
-
-export async function DELETE(req) {
-  try {
-    const id = req.nextUrl.searchParams.get("id");
-
-    console.log(id);
-
-    await connectDB();
-
-    await CertData.findByIdAndDelete(id);
-
-    return NextResponse.json(
-      {
-        message: "Cert deleted successfully",
-      },
-      {
-        status: 200,
-      }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Failed to delete cert",
-        error: error,
-      },
-      {
-        status: 500,
-      }
+      { error: "Internal server error" },
+      { status: 500 }
     );
   }
 }

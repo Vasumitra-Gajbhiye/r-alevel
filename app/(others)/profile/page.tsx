@@ -795,6 +795,868 @@
 //   );
 // }
 
+// "use client";
+
+// import React, { useEffect, useMemo, useState, FormEvent } from "react";
+// import Image from "next/image";
+// import { useSession, signOut } from "next-auth/react";
+// import { motion, AnimatePresence } from "framer-motion";
+
+// /* ---------------------------------- Types ---------------------------------- */
+
+// type BoardKey = "CAIE" | "Edexcel" | "Edexcel-IAL" | "AQA" | "OCR" | "WJEC";
+
+// /* -------------------------------- Constants -------------------------------- */
+
+// const BOARDS: { key: BoardKey; label: string }[] = [
+//   { key: "CAIE", label: "Cambridge (CAIE)" },
+//   { key: "Edexcel", label: "Pearson Edexcel (UK)" },
+//   { key: "Edexcel-IAL", label: "Edexcel IAL" },
+//   { key: "AQA", label: "AQA" },
+//   { key: "OCR", label: "OCR" },
+//   { key: "WJEC", label: "WJEC/Eduqas" },
+// ];
+
+// const SUBJECTS_BY_BOARD: Record<BoardKey, { code: string; name: string }[]> = {
+//   CAIE: [
+//     { code: "9709", name: "Mathematics" },
+//     { code: "9701", name: "Chemistry" },
+//     { code: "9702", name: "Physics" },
+//     { code: "9708", name: "Economics" },
+//     { code: "9691", name: "Computer Science" },
+//   ],
+//   Edexcel: [
+//     { code: "9MA0", name: "Mathematics" },
+//     { code: "8CH0", name: "Chemistry" },
+//     { code: "8PH0", name: "Physics" },
+//     { code: "9EC0", name: "Economics" },
+//     { code: "9PS0", name: "Psychology" },
+//   ],
+//   "Edexcel-IAL": [
+//     { code: "IAL-MA", name: "Mathematics (IAL)" },
+//     { code: "IAL-CH", name: "Chemistry (IAL)" },
+//     { code: "IAL-PH", name: "Physics (IAL)" },
+//     { code: "IAL-EC", name: "Economics (IAL)" },
+//     { code: "IAL-CS", name: "Computer Science (IAL)" },
+//   ],
+//   AQA: [
+//     { code: "7408", name: "Biology" },
+//     { code: "7405", name: "Chemistry" },
+//     { code: "7407", name: "Physics" },
+//     { code: "7181", name: "Economics" },
+//     { code: "7182", name: "Psychology" },
+//   ],
+//   OCR: [
+//     { code: "H230", name: "Biology" },
+//     { code: "H432", name: "Chemistry" },
+//     { code: "H556", name: "Physics" },
+//     { code: "H866", name: "Computer Science" },
+//     { code: "H581", name: "History" },
+//   ],
+//   WJEC: [
+//     { code: "WJEC-01", name: "Chemistry" },
+//     { code: "WJEC-02", name: "Physics" },
+//     { code: "WJEC-03", name: "Mathematics" },
+//     { code: "WJEC-04", name: "Economics" },
+//     { code: "WJEC-05", name: "Business" },
+//   ],
+// };
+
+// const SESSIONS_BY_BOARD: Record<BoardKey, string[]> = {
+//   CAIE: ["May/June", "Oct/Nov", "Mar"],
+//   Edexcel: ["May/June", "Jan", "Oct/Nov"],
+//   "Edexcel-IAL": ["May/June", "Oct/Nov", "Nov"],
+//   AQA: ["May/June", "Jan", "Oct/Nov"],
+//   OCR: ["May/June", "Jan", "Oct/Nov"],
+//   WJEC: ["May/June", "Jan", "Oct/Nov"],
+// };
+
+// /* -------------------------------- Component -------------------------------- */
+
+// interface UserPayload {
+//   name: string;
+//   email: string;
+//   boards?: BoardKey[];
+//   subjectsAS?: string[];
+//   subjectsA2?: string[];
+//   examSession?: string;
+//   receiveEmails?: boolean;
+// }
+
+// export default function ProfilePage() {
+//   const { data: session } = useSession();
+
+//   const [loading, setLoading] = useState(true);
+//   const [saving, setSaving] = useState(false);
+//   const [toast, setToast] = useState<string | null>(null);
+
+//   const [boards, setBoards] = useState<BoardKey[]>([]);
+//   const [subjectsAS, setSubjectsAS] = useState<string[]>([]);
+//   const [subjectsA2, setSubjectsA2] = useState<string[]>([]);
+//   const [activeLevel, setActiveLevel] = useState<"AS" | "A2">("AS");
+//   const [examSession, setExamSession] = useState("");
+//   const [receiveEmails, setReceiveEmails] = useState(false);
+//   const [name, setName] = useState("");
+
+//   const availableSubjects = useMemo(() => {
+//     const combined = new Map<string, { board: BoardKey; code: string; name: string }>();
+//     boards.forEach((b) => {
+//       SUBJECTS_BY_BOARD[b]?.forEach((s) => {
+//         const key = `${b}::${s.code}`;
+//         if (!combined.has(key)) combined.set(key, { board: b, ...s });
+//       });
+//     });
+//     return Array.from(combined.entries()).map(([key, val]) => ({ key, ...val }));
+//   }, [boards]);
+
+//   function showToast(msg: string, ms = 2500) {
+//     setToast(msg);
+//     setTimeout(() => setToast(null), ms);
+//   }
+
+//   useEffect(() => {
+//     async function loadUser() {
+//       if (!session?.user?.email) return setLoading(false);
+//       try {
+//         const res = await fetch("/api/user", {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({ email: session.user.email }),
+//         });
+//         if (!res.ok) throw new Error("Failed to load profile");
+//         const data: UserPayload = await res.json();
+//         setName(data.name ?? session.user.name ?? "");
+//         setBoards(data.boards ?? []);
+//         setSubjectsAS(data.subjectsAS ?? []);
+//         setSubjectsA2(data.subjectsA2 ?? []);
+//         setExamSession(data.examSession ?? "");
+//         setReceiveEmails(data.receiveEmails ?? false);
+//       } catch {
+//         showToast("Could not load profile");
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+//     loadUser();
+//   }, [session?.user?.email]);
+
+//   async function handleSave(e: FormEvent) {
+//     e.preventDefault();
+//     if (!session?.user?.email) return showToast("Sign in required");
+//     try {
+//       setSaving(true);
+//       const payload: UserPayload = {
+//         name,
+//         email: session.user.email,
+//         boards,
+//         subjectsAS,
+//         subjectsA2,
+//         examSession,
+//         receiveEmails,
+//       };
+//       const res = await fetch("/api/user/update", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(payload),
+//       });
+//       if (!res.ok) throw new Error("Save failed");
+//       showToast("Profile saved!");
+//     } catch {
+//       showToast("Error saving profile");
+//     } finally {
+//       setSaving(false);
+//     }
+//   }
+
+//   const sessionOptions = useMemo(() => {
+//     const opts: { key: string; label: string }[] = [];
+//     boards.forEach((b) => {
+//       SESSIONS_BY_BOARD[b]?.forEach((s) =>
+//         opts.push({ key: `${b}::${s}`, label: `${b} — ${s}` })
+//       );
+//     });
+//     return opts;
+//   }, [boards]);
+
+//   if (loading) {
+//     return (
+//       <div className="p-10 text-center text-gray-500">Loading your profile...</div>
+//     );
+//   }
+
+//   if (!session?.user) {
+//     return (
+//       <div className="p-10 text-center text-gray-700">
+//         Please sign in with Google first.
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <main className="max-w-7xl mx-auto p-6 md:p-10 flex flex-col md:flex-row gap-6">
+//       {/* Toast */}
+//       <AnimatePresence>
+//         {toast && (
+//           <motion.div
+//             initial={{ opacity: 0, y: -10 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             exit={{ opacity: 0, y: -10 }}
+//             className="fixed top-6 right-6 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-md"
+//           >
+//             {toast}
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* Floating user card */}
+//       <motion.aside
+//         initial={{ opacity: 0, y: 20 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ delay: 0.1 }}
+//         className="md:w-80 h-fit bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-6 shadow-md"
+//       >
+//         <div className="flex items-center gap-4">
+//           <div className="relative w-16 h-16 rounded-full overflow-hidden border border-gray-200">
+//             <Image
+//               src={session.user.image || "/default-avatar.png"}
+//               alt="Profile"
+//               width={64}
+//               height={64}
+//               className="object-cover"
+//             />
+//           </div>
+//           <div>
+//             <h2 className="text-lg font-semibold text-gray-800">
+//               {name || session.user.name}
+//             </h2>
+//             <p className="text-xs text-gray-500">Signed in with Google</p>
+//           </div>
+//         </div>
+
+//         <button
+//           onClick={() => signOut()}
+//           className="mt-6 w-full bg-red-50 text-red-600 border border-red-100 py-2 rounded-lg font-semibold hover:bg-red-100 transition"
+//         >
+//           Sign Out
+//         </button>
+
+//         <div className="mt-6 bg-blue-50 border border-blue-100 text-blue-800 p-3 rounded-lg text-sm">
+//           💡 Tip: Select your exam boards first — subjects & sessions depend on them.
+//         </div>
+//       </motion.aside>
+
+//       {/* Main interactive panel */}
+//       <motion.section
+//         initial={{ opacity: 0, y: 15 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ delay: 0.15 }}
+//         className="flex-1 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-sm p-6"
+//       >
+//         <form onSubmit={handleSave}>
+//           <div className="flex items-center justify-between">
+//             <h2 className="text-2xl font-bold text-gray-800">Profile Settings</h2>
+//             <span className="text-sm text-gray-500">r/alevel account</span>
+//           </div>
+
+//           {/* Boards */}
+//           <div className="mt-6">
+//             <label className="text-sm font-medium text-gray-700 mb-2 block">
+//               Exam Boards
+//             </label>
+//             <div className="flex flex-wrap gap-2">
+//               {BOARDS.map((b) => {
+//                 const active = boards.includes(b.key);
+//                 return (
+//                   <button
+//                     key={b.key}
+//                     type="button"
+//                     onClick={() =>
+//                       setBoards((prev) =>
+//                         prev.includes(b.key)
+//                           ? prev.filter((x) => x !== b.key)
+//                           : [...prev, b.key]
+//                       )
+//                     }
+//                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+//                       active
+//                         ? "bg-blue-600 text-white shadow"
+//                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+//                     }`}
+//                   >
+//                     {b.label}
+//                   </button>
+//                 );
+//               })}
+//             </div>
+//           </div>
+
+//           {/* Subjects */}
+//           <div className="mt-8">
+//             <div className="flex justify-between items-center">
+//               <h3 className="text-lg font-semibold text-gray-800">
+//                 Subjects — {activeLevel}
+//               </h3>
+//               <div className="space-x-2">
+//                 <button
+//                   type="button"
+//                   onClick={() => setActiveLevel("AS")}
+//                   className={`px-3 py-1 rounded text-sm ${
+//                     activeLevel === "AS"
+//                       ? "bg-blue-100 text-blue-700"
+//                       : "hover:bg-gray-100"
+//                   }`}
+//                 >
+//                   AS
+//                 </button>
+//                 <button
+//                   type="button"
+//                   onClick={() => setActiveLevel("A2")}
+//                   className={`px-3 py-1 rounded text-sm ${
+//                     activeLevel === "A2"
+//                       ? "bg-blue-100 text-blue-700"
+//                       : "hover:bg-gray-100"
+//                   }`}
+//                 >
+//                   A2
+//                 </button>
+//               </div>
+//             </div>
+
+//             {boards.length === 0 ? (
+//               <p className="text-sm text-gray-500 mt-3 italic">
+//                 Select a board first to choose subjects.
+//               </p>
+//             ) : (
+//               <div className="flex flex-wrap gap-2 mt-3">
+//                 {availableSubjects.map((s) => {
+//                   const key = `${s.board}::${s.code}::${s.name}`;
+//                   const selected =
+//                     activeLevel === "AS"
+//                       ? subjectsAS.includes(key)
+//                       : subjectsA2.includes(key);
+//                   return (
+//                     <button
+//                       type="button"
+//                       key={key}
+//                       onClick={() => {
+//                         const updater =
+//                           activeLevel === "AS" ? setSubjectsAS : setSubjectsA2;
+//                         updater((prev) =>
+//                           prev.includes(key)
+//                             ? prev.filter((p) => p !== key)
+//                             : [...prev, key]
+//                         );
+//                       }}
+//                       className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+//                         selected
+//                           ? "bg-blue-600 text-white"
+//                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+//                       }`}
+//                     >
+//                       <span className="font-mono text-xs">{s.code}</span> {s.name}
+//                     </button>
+//                   );
+//                 })}
+//               </div>
+//             )}
+//           </div>
+
+//           {/* Exam Session */}
+//           <div className="mt-8">
+//             <h3 className="text-lg font-semibold text-gray-800">Exam Session</h3>
+//             {boards.length === 0 ? (
+//               <p className="text-sm text-gray-500 mt-2 italic">
+//                 Select a board first to choose exam sessions.
+//               </p>
+//             ) : (
+//               <select
+//                 value={examSession}
+//                 onChange={(e) => setExamSession(e.target.value)}
+//                 className="mt-3 border rounded-md p-2 w-full bg-white"
+//               >
+//                 <option value="">-- Select Session --</option>
+//                 {sessionOptions.map((opt) => (
+//                   <option key={opt.key} value={opt.key}>
+//                     {opt.label}
+//                   </option>
+//                 ))}
+//               </select>
+//             )}
+//           </div>
+
+//           {/* Preferences */}
+//           <div className="mt-8 flex items-center gap-3">
+//             <input
+//               type="checkbox"
+//               checked={receiveEmails}
+//               onChange={(e) => setReceiveEmails(e.target.checked)}
+//             />
+//             <span className="text-sm text-gray-700">
+//               Receive updates about new resources for your subjects
+//             </span>
+//           </div>
+
+//           {/* Save */}
+//           <div className="mt-8 flex justify-end gap-3">
+//             <button
+//               type="button"
+//               onClick={() => window.location.reload()}
+//               className="px-4 py-2 bg-gray-100 rounded-md text-sm hover:bg-gray-200"
+//             >
+//               Cancel
+//             </button>
+//             <button
+//               type="submit"
+//               disabled={saving}
+//               className={`px-4 py-2 rounded-md text-sm font-semibold text-white ${
+//                 saving ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+//               }`}
+//             >
+//               {saving ? "Saving..." : "Save Changes"}
+//             </button>
+//           </div>
+//         </form>
+//       </motion.section>
+//     </main>
+//   );
+// }
+
+// "use client";
+
+// import React, { useEffect, useMemo, useState, FormEvent } from "react";
+// import Image from "next/image";
+// import { useSession, signOut } from "next-auth/react";
+// import { motion, AnimatePresence } from "framer-motion";
+
+// /* ---------------------------------- Types ---------------------------------- */
+
+// type BoardKey = "CAIE" | "Edexcel" | "Edexcel-IAL" | "AQA" | "OCR" | "WJEC";
+
+// /* -------------------------------- Constants -------------------------------- */
+
+// const BOARDS: { key: BoardKey; label: string }[] = [
+//   { key: "CAIE", label: "Cambridge (CAIE)" },
+//   { key: "Edexcel", label: "Pearson Edexcel (UK)" },
+//   { key: "Edexcel-IAL", label: "Edexcel IAL" },
+//   { key: "AQA", label: "AQA" },
+//   { key: "OCR", label: "OCR" },
+//   { key: "WJEC", label: "WJEC/Eduqas" },
+// ];
+
+// const SUBJECTS_BY_BOARD: Record<BoardKey, { code: string; name: string }[]> = {
+//   CAIE: [
+//     { code: "9709", name: "Mathematics" },
+//     { code: "9701", name: "Chemistry" },
+//     { code: "9702", name: "Physics" },
+//     { code: "9708", name: "Economics" },
+//     { code: "9691", name: "Computer Science" },
+//   ],
+//   Edexcel: [
+//     { code: "9MA0", name: "Mathematics" },
+//     { code: "8CH0", name: "Chemistry" },
+//     { code: "8PH0", name: "Physics" },
+//     { code: "9EC0", name: "Economics" },
+//     { code: "9PS0", name: "Psychology" },
+//   ],
+//   "Edexcel-IAL": [
+//     { code: "IAL-MA", name: "Mathematics (IAL)" },
+//     { code: "IAL-CH", name: "Chemistry (IAL)" },
+//     { code: "IAL-PH", name: "Physics (IAL)" },
+//     { code: "IAL-EC", name: "Economics (IAL)" },
+//     { code: "IAL-CS", name: "Computer Science (IAL)" },
+//   ],
+//   AQA: [
+//     { code: "7408", name: "Biology" },
+//     { code: "7405", name: "Chemistry" },
+//     { code: "7407", name: "Physics" },
+//     { code: "7181", name: "Economics" },
+//     { code: "7182", name: "Psychology" },
+//   ],
+//   OCR: [
+//     { code: "H230", name: "Biology" },
+//     { code: "H432", name: "Chemistry" },
+//     { code: "H556", name: "Physics" },
+//     { code: "H866", name: "Computer Science" },
+//     { code: "H581", name: "History" },
+//   ],
+//   WJEC: [
+//     { code: "WJEC-01", name: "Chemistry" },
+//     { code: "WJEC-02", name: "Physics" },
+//     { code: "WJEC-03", name: "Mathematics" },
+//     { code: "WJEC-04", name: "Economics" },
+//     { code: "WJEC-05", name: "Business" },
+//   ],
+// };
+
+// const SESSIONS_BY_BOARD: Record<BoardKey, string[]> = {
+//   CAIE: ["May/June", "Oct/Nov", "Mar"],
+//   Edexcel: ["May/June", "Jan", "Oct/Nov"],
+//   "Edexcel-IAL": ["May/June", "Oct/Nov", "Nov"],
+//   AQA: ["May/June", "Jan", "Oct/Nov"],
+//   OCR: ["May/June", "Jan", "Oct/Nov"],
+//   WJEC: ["May/June", "Jan", "Oct/Nov"],
+// };
+
+// /* -------------------------------- Component -------------------------------- */
+
+// interface UserPayload {
+//   name: string;
+//   email: string;
+//   boards?: BoardKey[];
+//   subjectsAS?: string[];
+//   subjectsA2?: string[];
+//   examSession?: string[]; // ✅ changed to array
+//   receiveEmails?: boolean;
+// }
+
+// export default function ProfilePage() {
+//   const { data: session } = useSession();
+
+//   const [loading, setLoading] = useState(true);
+//   const [saving, setSaving] = useState(false);
+//   const [toast, setToast] = useState<string | null>(null);
+
+//   const [boards, setBoards] = useState<BoardKey[]>([]);
+//   const [subjectsAS, setSubjectsAS] = useState<string[]>([]);
+//   const [subjectsA2, setSubjectsA2] = useState<string[]>([]);
+//   const [activeLevel, setActiveLevel] = useState<"AS" | "A2">("AS");
+//   const [examSession, setExamSession] = useState<string[]>([]); // ✅ multiple sessions
+//   const [receiveEmails, setReceiveEmails] = useState(false);
+//   const [name, setName] = useState("");
+
+//   const availableSubjects = useMemo(() => {
+//     const combined = new Map<string, { board: BoardKey; code: string; name: string }>();
+//     boards.forEach((b) => {
+//       SUBJECTS_BY_BOARD[b]?.forEach((s) => {
+//         const key = `${b}::${s.code}`;
+//         if (!combined.has(key)) combined.set(key, { board: b, ...s });
+//       });
+//     });
+//     return Array.from(combined.entries()).map(([key, val]) => ({ key, ...val }));
+//   }, [boards]);
+
+//   function showToast(msg: string, ms = 2500) {
+//     setToast(msg);
+//     setTimeout(() => setToast(null), ms);
+//   }
+
+//   /* ---------------------------- Load user data ---------------------------- */
+//   useEffect(() => {
+//     async function loadUser() {
+//       if (!session?.user?.email) return setLoading(false);
+//       try {
+//         const res = await fetch("/api/user", {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({ email: session.user.email }),
+//         });
+//         if (!res.ok) throw new Error("Failed to load profile");
+//         const data: UserPayload = await res.json();
+//         setName(data.name ?? session.user.name ?? "");
+//         setBoards(data.boards ?? []);
+//         setSubjectsAS(data.subjectsAS ?? []);
+//         setSubjectsA2(data.subjectsA2 ?? []);
+//         setExamSession(data.examSession ?? []); // ✅ fix reload issue
+//         setReceiveEmails(data.receiveEmails ?? false);
+//       } catch {
+//         showToast("Could not load profile");
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+//     loadUser();
+//   }, [session?.user?.email]);
+
+//   /* ---------------------------- Save user data ---------------------------- */
+//   async function handleSave(e: FormEvent) {
+//     e.preventDefault();
+//     if (!session?.user?.email) return showToast("Sign in required");
+//     try {
+//       setSaving(true);
+//       const payload: UserPayload = {
+//         name,
+//         email: session.user.email,
+//         boards,
+//         subjectsAS,
+//         subjectsA2,
+//         examSession, // ✅ save multiple sessions
+//         receiveEmails,
+//       };
+//       const res = await fetch("/api/user/update", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(payload),
+//       });
+//       if (!res.ok) throw new Error("Save failed");
+//       showToast("Profile saved!");
+//     } catch {
+//       showToast("Error saving profile");
+//     } finally {
+//       setSaving(false);
+//     }
+//   }
+
+//   /* ----------------------------- Session Options ----------------------------- */
+//   const sessionOptions = useMemo(() => {
+//     const opts: { key: string; label: string }[] = [];
+//     boards.forEach((b) => {
+//       SESSIONS_BY_BOARD[b]?.forEach((s) =>
+//         opts.push({ key: `${b}::${s}`, label: `${b} — ${s}` })
+//       );
+//     });
+//     return opts;
+//   }, [boards]);
+
+//   /* ------------------------------- Loading ------------------------------- */
+//   if (loading) {
+//     return <div className="p-10 text-center text-gray-500">Loading your profile...</div>;
+//   }
+
+//   if (!session?.user) {
+//     return <div className="p-10 text-center text-gray-700">Please sign in with Google first.</div>;
+//   }
+
+//   /* ------------------------------- Render ------------------------------- */
+//   return (
+//     <main className="max-w-7xl mx-auto p-6 md:p-10 flex flex-col md:flex-row gap-6">
+//       {/* Toast */}
+//       <AnimatePresence>
+//         {toast && (
+//           <motion.div
+//             initial={{ opacity: 0, y: -10 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             exit={{ opacity: 0, y: -10 }}
+//             className="fixed top-6 right-6 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-md"
+//           >
+//             {toast}
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* Sidebar */}
+//       <motion.aside
+//         initial={{ opacity: 0, y: 20 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ delay: 0.1 }}
+//         className="md:w-80 h-fit bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-6 shadow-md"
+//       >
+//         <div className="flex items-center gap-4">
+//           <div className="relative w-16 h-16 rounded-full overflow-hidden border border-gray-200">
+//             <Image
+//               src={session.user.image || "/default-avatar.png"}
+//               alt="Profile"
+//               width={64}
+//               height={64}
+//               className="object-cover"
+//             />
+//           </div>
+//           <div>
+//             <h2 className="text-lg font-semibold text-gray-800">
+//               {name || session.user.name}
+//             </h2>
+//             <p className="text-xs text-gray-500">Signed in with Google</p>
+//           </div>
+//         </div>
+
+//         <button
+//           onClick={() => signOut()}
+//           className="mt-6 w-full bg-red-50 text-red-600 border border-red-100 py-2 rounded-lg font-semibold hover:bg-red-100 transition"
+//         >
+//           Sign Out
+//         </button>
+
+//         <div className="mt-6 bg-blue-50 border border-blue-100 text-blue-800 p-3 rounded-lg text-sm">
+//           💡 Tip: Select your exam boards first — subjects & sessions depend on them.
+//         </div>
+//       </motion.aside>
+
+//       {/* Main Section */}
+//       <motion.section
+//         initial={{ opacity: 0, y: 15 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ delay: 0.15 }}
+//         className="flex-1 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-sm p-6"
+//       >
+//         <form onSubmit={handleSave}>
+//           <div className="flex items-center justify-between">
+//             <h2 className="text-2xl font-bold text-gray-800">Profile Settings</h2>
+//             <span className="text-sm text-gray-500">r/alevel account</span>
+//           </div>
+
+//           {/* Boards */}
+//           <div className="mt-6">
+//             <label className="text-sm font-medium text-gray-700 mb-2 block">Exam Boards</label>
+//             <div className="flex flex-wrap gap-2">
+//               {BOARDS.map((b) => {
+//                 const active = boards.includes(b.key);
+//                 return (
+//                   <button
+//                     key={b.key}
+//                     type="button"
+//                     onClick={() =>
+//                       setBoards((prev) =>
+//                         prev.includes(b.key)
+//                           ? prev.filter((x) => x !== b.key)
+//                           : [...prev, b.key]
+//                       )
+//                     }
+//                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+//                       active
+//                         ? "bg-blue-600 text-white shadow"
+//                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+//                     }`}
+//                   >
+//                     {b.label}
+//                   </button>
+//                 );
+//               })}
+//             </div>
+//           </div>
+
+//           {/* Subjects */}
+//           <div className="mt-8">
+//             <div className="flex justify-between items-center">
+//               <h3 className="text-lg font-semibold text-gray-800">
+//                 Subjects — {activeLevel}
+//               </h3>
+//               <div className="space-x-2">
+//                 <button
+//                   type="button"
+//                   onClick={() => setActiveLevel("AS")}
+//                   className={`px-3 py-1 rounded text-sm ${
+//                     activeLevel === "AS"
+//                       ? "bg-blue-100 text-blue-700"
+//                       : "hover:bg-gray-100"
+//                   }`}
+//                 >
+//                   AS
+//                 </button>
+//                 <button
+//                   type="button"
+//                   onClick={() => setActiveLevel("A2")}
+//                   className={`px-3 py-1 rounded text-sm ${
+//                     activeLevel === "A2"
+//                       ? "bg-blue-100 text-blue-700"
+//                       : "hover:bg-gray-100"
+//                   }`}
+//                 >
+//                   A2
+//                 </button>
+//               </div>
+//             </div>
+
+//             {boards.length === 0 ? (
+//               <p className="text-sm text-gray-500 mt-3 italic">
+//                 Select a board first to choose subjects.
+//               </p>
+//             ) : (
+//               <div className="flex flex-wrap gap-2 mt-3">
+//                 {availableSubjects.map((s) => {
+//                   const key = `${s.board}::${s.code}::${s.name}`;
+//                   const selected =
+//                     activeLevel === "AS"
+//                       ? subjectsAS.includes(key)
+//                       : subjectsA2.includes(key);
+//                   return (
+//                     <button
+//                       type="button"
+//                       key={key}
+//                       onClick={() => {
+//                         const updater =
+//                           activeLevel === "AS" ? setSubjectsAS : setSubjectsA2;
+//                         updater((prev) =>
+//                           prev.includes(key)
+//                             ? prev.filter((p) => p !== key)
+//                             : [...prev, key]
+//                         );
+//                       }}
+//                       className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+//                         selected
+//                           ? "bg-blue-600 text-white"
+//                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+//                       }`}
+//                     >
+//                       <span className="font-mono text-xs">{s.code}</span> {s.name}
+//                     </button>
+//                   );
+//                 })}
+//               </div>
+//             )}
+//           </div>
+
+//           {/* ✅ Multiple Exam Sessions */}
+//           <div className="mt-8">
+//             <h3 className="text-lg font-semibold text-gray-800">Exam Sessions</h3>
+//             {boards.length === 0 ? (
+//               <p className="text-sm text-gray-500 mt-2 italic">
+//                 Select a board first to choose exam sessions.
+//               </p>
+//             ) : (
+//               <div className="flex flex-wrap gap-2 mt-3">
+//                 {sessionOptions.map((opt) => {
+//                   const selected = examSession.includes(opt.key);
+//                   return (
+//                     <button
+//                       key={opt.key}
+//                       type="button"
+//                       onClick={() =>
+//                         setExamSession((prev) =>
+//                           selected
+//                             ? prev.filter((s) => s !== opt.key)
+//                             : [...prev, opt.key]
+//                         )
+//                       }
+//                       className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+//                         selected
+//                           ? "bg-blue-600 text-white"
+//                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+//                       }`}
+//                     >
+//                       {opt.label}
+//                     </button>
+//                   );
+//                 })}
+//               </div>
+//             )}
+//           </div>
+
+//           {/* Preferences */}
+//           <div className="mt-8 flex items-center gap-3">
+//             <input
+//               type="checkbox"
+//               checked={receiveEmails}
+//               onChange={(e) => setReceiveEmails(e.target.checked)}
+//             />
+//             <span className="text-sm text-gray-700">
+//               Receive updates about new resources for your subjects
+//             </span>
+//           </div>
+
+//           {/* Save */}
+//           <div className="mt-8 flex justify-end gap-3">
+//             <button
+//               type="button"
+//               onClick={() => window.location.reload()}
+//               className="px-4 py-2 bg-gray-100 rounded-md text-sm hover:bg-gray-200"
+//             >
+//               Cancel
+//             </button>
+//             <button
+//               type="submit"
+//               disabled={saving}
+//               className={`px-4 py-2 rounded-md text-sm font-semibold text-white ${
+//                 saving ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+//               }`}
+//             >
+//               {saving ? "Saving..." : "Save Changes"}
+//             </button>
+//           </div>
+//         </form>
+//       </motion.section>
+//     </main>
+//   );
+// }
+
 "use client";
 
 import React, { useEffect, useMemo, useState, FormEvent } from "react";
@@ -803,15 +1665,13 @@ import { useSession, signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /* ---------------------------------- Types ---------------------------------- */
-
-type BoardKey = "CAIE" | "Edexcel" | "Edexcel-IAL" | "AQA" | "OCR" | "WJEC";
+type BoardKey = "CAIE" | "Edexcel" | "Edexcel_IAL" | "AQA" | "OCR" | "WJEC";
 
 /* -------------------------------- Constants -------------------------------- */
-
 const BOARDS: { key: BoardKey; label: string }[] = [
   { key: "CAIE", label: "Cambridge (CAIE)" },
   { key: "Edexcel", label: "Pearson Edexcel (UK)" },
-  { key: "Edexcel-IAL", label: "Edexcel IAL" },
+  { key: "Edexcel_IAL", label: "Edexcel IAL" },
   { key: "AQA", label: "AQA" },
   { key: "OCR", label: "OCR" },
   { key: "WJEC", label: "WJEC/Eduqas" },
@@ -832,7 +1692,7 @@ const SUBJECTS_BY_BOARD: Record<BoardKey, { code: string; name: string }[]> = {
     { code: "9EC0", name: "Economics" },
     { code: "9PS0", name: "Psychology" },
   ],
-  "Edexcel-IAL": [
+  Edexcel_IAL: [
     { code: "IAL-MA", name: "Mathematics (IAL)" },
     { code: "IAL-CH", name: "Chemistry (IAL)" },
     { code: "IAL-PH", name: "Physics (IAL)" },
@@ -863,29 +1723,58 @@ const SUBJECTS_BY_BOARD: Record<BoardKey, { code: string; name: string }[]> = {
 };
 
 const SESSIONS_BY_BOARD: Record<BoardKey, string[]> = {
-  CAIE: ["May/June", "Oct/Nov", "Mar"],
+  CAIE: ["Feb/Mar 2026","May/June 2026", "Oct/Nov 2026", "Feb/Mar 2027", "May/June 2027", "Oct/Nov 2027", "2028"],
   Edexcel: ["May/June", "Jan", "Oct/Nov"],
-  "Edexcel-IAL": ["May/June", "Oct/Nov", "Nov"],
+  Edexcel_IAL: ["May/June", "Oct/Nov", "Nov"],
   AQA: ["May/June", "Jan", "Oct/Nov"],
   OCR: ["May/June", "Jan", "Oct/Nov"],
   WJEC: ["May/June", "Jan", "Oct/Nov"],
 };
 
 /* -------------------------------- Component -------------------------------- */
-
 interface UserPayload {
   name: string;
   email: string;
   boards?: BoardKey[];
   subjectsAS?: string[];
   subjectsA2?: string[];
-  examSession?: string;
+  examSession?: string[];
   receiveEmails?: boolean;
 }
 
+/* -------------------------- Normalization Helpers -------------------------- */
+function findBoardForCode(code: string): { board: BoardKey; code: string; name: string } | null {
+  for (const b of Object.keys(SUBJECTS_BY_BOARD) as BoardKey[]) {
+    const found = SUBJECTS_BY_BOARD[b].find((s) => s.code === code || s.name === code);
+    if (found) return { board: b, code: found.code, name: found.name };
+  }
+  return null;
+}
+
+function normalizeSubjects(arr?: string[] | null) {
+  if (!arr) return [];
+  const out: string[] = [];
+  arr.forEach((item) => {
+    if (!item) return;
+    if (item.includes("::")) return out.push(item);
+    const dashMatch = item.match(/^(.+?)\s*[-—]\s*(.+)$/);
+    if (dashMatch) {
+      const code = dashMatch[1].trim();
+      const name = dashMatch[2].trim();
+      const found = findBoardForCode(code);
+      out.push(found ? `${found.board}::${found.code}::${found.name}` : `CAIE::${code}::${name}`);
+    } else {
+      const codeOnly = item.trim();
+      const found = findBoardForCode(codeOnly);
+      out.push(found ? `${found.board}::${found.code}::${found.name}` : codeOnly);
+    }
+  });
+  return out;
+}
+
+/* -------------------------------- Component -------------------------------- */
 export default function ProfilePage() {
   const { data: session } = useSession();
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -893,20 +1782,30 @@ export default function ProfilePage() {
   const [boards, setBoards] = useState<BoardKey[]>([]);
   const [subjectsAS, setSubjectsAS] = useState<string[]>([]);
   const [subjectsA2, setSubjectsA2] = useState<string[]>([]);
+  const [examSession, setExamSession] = useState<string[]>([]);
   const [activeLevel, setActiveLevel] = useState<"AS" | "A2">("AS");
-  const [examSession, setExamSession] = useState("");
   const [receiveEmails, setReceiveEmails] = useState(false);
   const [name, setName] = useState("");
 
   const availableSubjects = useMemo(() => {
     const combined = new Map<string, { board: BoardKey; code: string; name: string }>();
-    boards.forEach((b) => {
+    boards.forEach((b) =>
       SUBJECTS_BY_BOARD[b]?.forEach((s) => {
         const key = `${b}::${s.code}`;
         if (!combined.has(key)) combined.set(key, { board: b, ...s });
-      });
-    });
+      })
+    );
     return Array.from(combined.entries()).map(([key, val]) => ({ key, ...val }));
+  }, [boards]);
+
+  const sessionOptions = useMemo(() => {
+    const opts: { key: string; label: string }[] = [];
+    boards.forEach((b) => {
+      SESSIONS_BY_BOARD[b]?.forEach((s) =>
+        opts.push({ key: `${b}::${s}`, label: `${b} — ${s}` })
+      );
+    });
+    return opts;
   }, [boards]);
 
   function showToast(msg: string, ms = 2500) {
@@ -914,32 +1813,50 @@ export default function ProfilePage() {
     setTimeout(() => setToast(null), ms);
   }
 
-  useEffect(() => {
-    async function loadUser() {
-      if (!session?.user?.email) return setLoading(false);
-      try {
-        const res = await fetch("/api/user", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: session.user.email }),
-        });
-        if (!res.ok) throw new Error("Failed to load profile");
-        const data: UserPayload = await res.json();
-        setName(data.name ?? session.user.name ?? "");
-        setBoards(data.boards ?? []);
-        setSubjectsAS(data.subjectsAS ?? []);
-        setSubjectsA2(data.subjectsA2 ?? []);
-        setExamSession(data.examSession ?? "");
-        setReceiveEmails(data.receiveEmails ?? false);
-      } catch {
-        showToast("Could not load profile");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadUser();
-  }, [session?.user?.email]);
+  /* ---------------------------- Load user data ---------------------------- */
+/* ---------------------------- Load user data ---------------------------- */
+useEffect(() => {
+  async function loadUser() {
+    if (!session?.user?.email) return setLoading(false);
+    try {
+      const res = await fetch("/api/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: session.user.email }),
+      });
+      if (!res.ok) throw new Error("Failed to load profile");
 
+      const data: any = await res.json();
+
+      const normalizedAS = normalizeSubjects(data.subjectsAS);
+      const normalizedA2 = normalizeSubjects(data.subjectsA2);
+      const normalizedSessions = Array.isArray(data.examSession)
+        ? data.examSession
+        : [data.examSession].filter(Boolean);
+
+      // ✅ Auto-detect boards from saved subjects or sessions
+      const detectedBoards = new Set<BoardKey>();
+      [...normalizedAS, ...normalizedA2, ...normalizedSessions].forEach((item) => {
+        const match = (item || "").split("::")[0] as BoardKey;
+        if (BOARDS.some((b) => b.key === match)) detectedBoards.add(match);
+      });
+
+      setBoards(Array.from(detectedBoards));
+      setSubjectsAS(normalizedAS);
+      setSubjectsA2(normalizedA2);
+      setExamSession(normalizedSessions);
+      setReceiveEmails(!!data.receiveEmails);
+      setName(data.name ?? session.user.name ?? "");
+    } catch (err) {
+      console.error(err);
+      showToast("Could not load profile");
+    } finally {
+      setLoading(false);
+    }
+  }
+  loadUser();
+}, [session?.user?.email]);
+  /* ---------------------------- Save user data ---------------------------- */
   async function handleSave(e: FormEvent) {
     e.preventDefault();
     if (!session?.user?.email) return showToast("Sign in required");
@@ -968,29 +1885,10 @@ export default function ProfilePage() {
     }
   }
 
-  const sessionOptions = useMemo(() => {
-    const opts: { key: string; label: string }[] = [];
-    boards.forEach((b) => {
-      SESSIONS_BY_BOARD[b]?.forEach((s) =>
-        opts.push({ key: `${b}::${s}`, label: `${b} — ${s}` })
-      );
-    });
-    return opts;
-  }, [boards]);
-
-  if (loading) {
-    return (
-      <div className="p-10 text-center text-gray-500">Loading your profile...</div>
-    );
-  }
-
-  if (!session?.user) {
-    return (
-      <div className="p-10 text-center text-gray-700">
-        Please sign in with Google first.
-      </div>
-    );
-  }
+  /* ------------------------------- Render ------------------------------- */
+  if (loading) return <div className="p-10 text-center text-gray-500">Loading your profile...</div>;
+  if (!session?.user)
+    return <div className="p-10 text-center text-gray-700">Please sign in with Google first.</div>;
 
   return (
     <main className="max-w-7xl mx-auto p-6 md:p-10 flex flex-col md:flex-row gap-6">
@@ -1008,7 +1906,7 @@ export default function ProfilePage() {
         )}
       </AnimatePresence>
 
-      {/* Floating user card */}
+      {/* Sidebar */}
       <motion.aside
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -1026,9 +1924,7 @@ export default function ProfilePage() {
             />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-800">
-              {name || session.user.name}
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-800">{name || session.user.name}</h2>
             <p className="text-xs text-gray-500">Signed in with Google</p>
           </div>
         </div>
@@ -1045,7 +1941,7 @@ export default function ProfilePage() {
         </div>
       </motion.aside>
 
-      {/* Main interactive panel */}
+      {/* Main Section */}
       <motion.section
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -1060,9 +1956,7 @@ export default function ProfilePage() {
 
           {/* Boards */}
           <div className="mt-6">
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Exam Boards
-            </label>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">Exam Boards</label>
             <div className="flex flex-wrap gap-2">
               {BOARDS.map((b) => {
                 const active = boards.includes(b.key);
@@ -1078,9 +1972,7 @@ export default function ProfilePage() {
                       )
                     }
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
-                      active
-                        ? "bg-blue-600 text-white shadow"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      active ? "bg-blue-600 text-white shadow" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     {b.label}
@@ -1093,32 +1985,20 @@ export default function ProfilePage() {
           {/* Subjects */}
           <div className="mt-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Subjects — {activeLevel}
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-800">Subjects — {activeLevel}</h3>
               <div className="space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveLevel("AS")}
-                  className={`px-3 py-1 rounded text-sm ${
-                    activeLevel === "AS"
-                      ? "bg-blue-100 text-blue-700"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  AS
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveLevel("A2")}
-                  className={`px-3 py-1 rounded text-sm ${
-                    activeLevel === "A2"
-                      ? "bg-blue-100 text-blue-700"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  A2
-                </button>
+                {["AS", "A2"].map((lvl) => (
+                  <button
+                    key={lvl}
+                    type="button"
+                    onClick={() => setActiveLevel(lvl as "AS" | "A2")}
+                    className={`px-3 py-1 rounded text-sm ${
+                      activeLevel === lvl ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {lvl}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -1131,26 +2011,19 @@ export default function ProfilePage() {
                 {availableSubjects.map((s) => {
                   const key = `${s.board}::${s.code}::${s.name}`;
                   const selected =
-                    activeLevel === "AS"
-                      ? subjectsAS.includes(key)
-                      : subjectsA2.includes(key);
+                    activeLevel === "AS" ? subjectsAS.includes(key) : subjectsA2.includes(key);
                   return (
                     <button
                       type="button"
                       key={key}
                       onClick={() => {
-                        const updater =
-                          activeLevel === "AS" ? setSubjectsAS : setSubjectsA2;
+                        const updater = activeLevel === "AS" ? setSubjectsAS : setSubjectsA2;
                         updater((prev) =>
-                          prev.includes(key)
-                            ? prev.filter((p) => p !== key)
-                            : [...prev, key]
+                          prev.includes(key) ? prev.filter((p) => p !== key) : [...prev, key]
                         );
                       }}
                       className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
-                        selected
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        selected ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
                       <span className="font-mono text-xs">{s.code}</span> {s.name}
@@ -1161,26 +2034,35 @@ export default function ProfilePage() {
             )}
           </div>
 
-          {/* Exam Session */}
+          {/* Exam Sessions */}
           <div className="mt-8">
-            <h3 className="text-lg font-semibold text-gray-800">Exam Session</h3>
+            <h3 className="text-lg font-semibold text-gray-800">Exam Sessions</h3>
             {boards.length === 0 ? (
               <p className="text-sm text-gray-500 mt-2 italic">
                 Select a board first to choose exam sessions.
               </p>
             ) : (
-              <select
-                value={examSession}
-                onChange={(e) => setExamSession(e.target.value)}
-                className="mt-3 border rounded-md p-2 w-full bg-white"
-              >
-                <option value="">-- Select Session --</option>
-                {sessionOptions.map((opt) => (
-                  <option key={opt.key} value={opt.key}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              <div className="flex flex-wrap gap-2 mt-3">
+                {sessionOptions.map((opt) => {
+                  const selected = examSession.includes(opt.key);
+                  return (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() =>
+                        setExamSession((prev) =>
+                          selected ? prev.filter((s) => s !== opt.key) : [...prev, opt.key]
+                        )
+                      }
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                        selected ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
 
