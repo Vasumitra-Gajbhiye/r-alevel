@@ -1,13 +1,15 @@
-import { Schema, models, model } from "mongoose";
+import mongoose from "mongoose";
 
-const userDataSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, unique: true, required: true },
-  subjectsAS: [{ type: String }],   // e.g. ["Maths", "Physics"]
-  subjectsA2: [{ type: String }],
-  examSession: { type: String },    // e.g. "May/June 2026"
-  receiveEmails: { type: Boolean, default: false },
-});
+const userDataSchema = new mongoose.Schema(
+  {
+    name: { type: String },
+    email: { type: String, required: true, unique: true },
+    subjectsAS: { type: [String], default: [] },
+    subjectsA2: { type: [String], default: [] },
+    examSession: { type: [String], default: [] },
+    receiveEmails: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
 
-const UserData = models.UserData || model("UserData", userDataSchema);
-export default UserData;
+export default mongoose.models.UserData || mongoose.model("UserData", userDataSchema);
