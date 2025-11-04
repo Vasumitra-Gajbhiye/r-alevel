@@ -665,15 +665,18 @@ const Profile = ({
   title,
   discordId,
   linkedin,
+  imgSrc,
   i,
 }: {
   name: string;
   title: string;
   discordId: string;
   linkedin?: string;
+  imgSrc?: string;
   i: number;
 }) => {
   const gradient = getGradient(title);
+  console.log(imgSrc)
 
   return (
     <motion.div
@@ -732,7 +735,7 @@ const Profile = ({
       {/* Profile image */}
       <div className="relative mb-4 z-10">
         <img
-          src={`${name=="Vasumitra Gajbhiye" ? "https://api.dicebear.com/9.x/avataaars/svg?seed=Liam&flip=true&accessories=round&accessoriesColor=3c4f5c,25557c,262e33,b1e2ff,5199e4,65c9ff&accessoriesProbability=100&clothing=blazerAndShirt&clothingGraphic[]&eyebrows=raisedExcited&eyes=closed&facialHair[]&facialHairColor[]&hairColor=2c1b18&mouth=twinkle&skinColor=edb98a&top=shortRound" : `https://api.dicebear.com/9.x/avataaars/svg?seed=encodeURIComponent(${name})`}`}
+          src={`${imgSrc ? imgSrc : `https://api.dicebear.com/9.x/avataaars/svg?seed=encodeURIComponent(${name})`}`}
           alt={name}
           className="w-32 h-32 rounded-full border-4 border-white/60 shadow-sm group-hover:scale-105 transition-transform duration-300"
         />
@@ -827,6 +830,7 @@ export default function Team() {
                 title={member.title}
                 discordId={member.discordId}
                 linkedin={member.linkedin}
+                imgSrc={member.imgSrc}
                 i={i}
               />
             ))}

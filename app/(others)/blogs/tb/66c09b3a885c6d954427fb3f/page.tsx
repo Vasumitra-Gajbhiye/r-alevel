@@ -779,10 +779,10 @@ export default function Blog() {
           className="mt-20 p-6 bg-sky-50 border border-sky-200 rounded-xl shadow-sm text-center w-full max-w-2xl"
         >
           <h3 className="text-lg font-semibold text-sky-800">
-            Read Next: <span className="text-gray-800">“The Art of Studying Smart”</span>
+            Read Next: <span className="text-gray-800">“The Importance of Sleep, Nutrition, and Exercise for Academic Performance”</span>
           </h3>
           <a
-            href="/blogs/tb/next"
+            href="/blogs/tb/66c09b87885c6d954427fb51"
             className="inline-block mt-3 text-sm text-white bg-sky-600 px-4 py-2 rounded-lg hover:bg-sky-700 transition-all"
           >
             Read Now →

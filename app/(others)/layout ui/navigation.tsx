@@ -1387,7 +1387,7 @@ export default function Navigation() {
             <ul className="flex flex-col gap-2 p-6">
               {navListItems.map((item) => (
                 <li key={item.title}>
-                  <Link
+                  {/* <Link
                     href={item.href}
                     onClick={handleClose}
                     className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
@@ -1397,9 +1397,36 @@ export default function Navigation() {
                     }`}
                   >
                     {item.title}
-                  </Link>
+                  </Link> */}
+                  <Link
+        href={item.href}
+        onClick={handleClose}
+        className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
+          pathname === item.href
+            ? "text-blue-600 bg-blue-50"
+            : "text-gray-800 hover:bg-gray-100"
+        }`}
+      >
+        {item.title}
+      </Link>
                 </li>
               ))}
+              {/* ✅ Profile link - visible only on mobile */}
+  {session?.user && (
+    <li>
+      <Link
+        href="/profile"
+        onClick={handleClose}
+        className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
+          pathname === "/profile"
+            ? "text-blue-600 bg-blue-50"
+            : "text-gray-800 hover:bg-gray-100"
+        }`}
+      >
+        Profile
+      </Link>
+    </li>
+  )}
             </ul>
 
             {/* mobile footer */}

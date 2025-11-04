@@ -632,7 +632,7 @@ import { Variants } from "framer-motion";
 
 
 /* ---------------------------
-  Dummy data for search
+  Data for search
 --------------------------- */
   const uuid = [
     { name: "2a00sg309itg", id: "2a00sg309itg" },
@@ -914,7 +914,7 @@ export default function CertificatesPage() {
               href="https://discord.gg/r-alevel-1114437735692902481"
               target="_blank"
               rel="noreferrer"
-              className="px-4 py-2 rounded-full bg-cy-600 text-white font-semibold hover:bg-cy-700 transition"
+              className="px-4 py-2 rounded-full bg-cy-600 text-white font-semibold hover:scale-110 bg-cy-700 transition"
             >
               Join Discord
             </a>

@@ -2392,7 +2392,7 @@ export default function ProfilePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="md:w-80 h-fit bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-6 shadow-md"
+        className="md:w-80 h-fit bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-6 shadow-md max-md:mt-8"
       >
         <div className="flex items-center gap-4">
           <div className="relative w-16 h-16 rounded-full overflow-hidden border border-gray-200">
