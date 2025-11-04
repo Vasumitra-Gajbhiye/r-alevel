@@ -1,4 +1,4 @@
-import mongoDBConnect from "@/libs/mongodb";
+import connectDB from "@/libs/mongodb";
 import BlogsData from "@/models/blogsData";
 import { AnyCnameRecord } from "dns";
 import { NextResponse, NextRequest } from "next/server";
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params: { id } }: any) {
     // const id = searchParams.get("id");
     console.log(id);
 
-    await mongoDBConnect();
+    await connectDB();
 
     const blog = await BlogsData.findOne({ _id: id });
 
@@ -62,7 +62,7 @@ export async function PUT(req: NextRequest, { params: { id } }: any) {
     };
     console.log(pramasID);
 
-    await mongoDBConnect();
+    await connectDB();
 
     await BlogsData.findByIdAndUpdate(pramasID, newBlogsData);
 

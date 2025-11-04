@@ -1,4 +1,4 @@
-import mongoDBConnect from "@/libs/mongodb";
+import connectDB from "@/libs/mongodb";
 import CertData from "@/models/certsData";
 import { NextResponse, NextRequest } from "next/server";
 import { createServer } from "tls";
@@ -6,7 +6,7 @@ import { createServer } from "tls";
 // GET ALL SUBJECTS
 export async function GET(req: NextRequest) {
   try {
-    await mongoDBConnect();
+    await connectDB();
 
     const certs = await CertData.find();
 
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       owner: owner,
     };
 
-    await mongoDBConnect();
+    await connectDB();
 
     await CertData.create(newCertData);
 
@@ -73,7 +73,7 @@ export async function DELETE(req: NextRequest) {
 
     console.log(id);
 
-    await mongoDBConnect();
+    await connectDB();
 
     await CertData.findByIdAndDelete(id);
 

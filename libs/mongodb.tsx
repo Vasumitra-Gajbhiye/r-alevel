@@ -1,6 +1,6 @@
 // import mongoose from "mongoose";
 
-// export default async function mongoDBConnect() {
+// export default async function connectDB() {
 //   console.log("connecting to db...");
 //   try {
 //     await mongoose.connect(`${process.env.MONGODB_URI}`);
@@ -14,7 +14,7 @@
 
 // let isConnected = false;
 
-// export default async function mongoDBConnect() {
+// export default async function connectDB() {
 //   if (isConnected) return;
   
 //   try {

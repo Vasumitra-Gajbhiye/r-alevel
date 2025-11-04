@@ -1,11 +1,11 @@
-import mongoDBConnect from "@/libs/mongodb";
+import connectDB from "@/libs/mongodb";
 import ResourcesData from "@/models/resourcesData";
 import { NextResponse, NextRequest } from "next/server";
 
 // GET ALL SUBJECTS
 export async function GET(req: NextRequest) {
   try {
-    await mongoDBConnect();
+    await connectDB();
 
     const subjects = await ResourcesData.find();
 
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       id: id,
     };
 
-    await mongoDBConnect();
+    await connectDB();
 
     await ResourcesData.create(newResourcesData);
 
@@ -70,7 +70,7 @@ export async function DELETE(req: NextRequest) {
 
     console.log(id);
 
-    await mongoDBConnect();
+    await connectDB();
 
     await ResourcesData.findByIdAndDelete(id);
 
