@@ -20,9 +20,16 @@ const booksSchema = new mongoose.Schema({
   buy: { type: String },
 });
 
-const youtubeSchema = new mongoose.Schema({
+const youtubeChannelSchema = new mongoose.Schema({
   channel: { type: String, required: true },
   channelUrl: { type: String, required: true },
+  description: { type: String },
+  thumbnail: { type: String },
+});
+
+const youtubePlaylistSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  playlistUrl: { type: String, required: true },
   description: { type: String },
   thumbnail: { type: String },
 });
@@ -36,6 +43,7 @@ const pastPaperSchema = new mongoose.Schema({
 const toolsSchema = new mongoose.Schema({
   name: { type: String, required: true },
   url: { type: String, required: true },
+  description: { type: String},
 });
 
 const resources2dataSchema = new mongoose.Schema(
@@ -45,7 +53,8 @@ const resources2dataSchema = new mongoose.Schema(
     syllabus: [syllabusSchema],
     notes: [notesSchema],
     books: [booksSchema],
-    youtube: [youtubeSchema],
+    youtubeChannel: [youtubeChannelSchema],
+    youtubePlaylist: [youtubePlaylistSchema],
     pastPapers: [pastPaperSchema],
     tools: [toolsSchema],
   },

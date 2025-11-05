@@ -150,7 +150,7 @@ function Search() {
     { name: "biology", id: "6655b6b02e379ceca333520d" },
     { name: "business studies", id: "6655b6b02e379ceca333520e" },
     { name: "business", id: "6655b6b02e379ceca333520f" },
-    { name: "chemistry", id: "6655b6b02e379ceca3335210", updated: false },
+    { name: "chemistry", id: "6655b6b02e379ceca3335210", updated: true },
     { name: "computer science", id: "6655b6b02e379ceca3335211" },
     { name: "economics", id: "6655b6b02e379ceca3335212" },
     { name: "english language", id: "6655b6b02e379ceca3335213" },

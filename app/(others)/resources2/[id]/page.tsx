@@ -289,6 +289,8 @@ export default function ChemistryResourcesPage({ params }: { params: { id: strin
     const [filterBoard, setFilterBoard] = useState<string | null>(null);
     const [showContribute, setShowContribute] = useState(false);
 
+    const [showAllSyllabus, setShowAllSyllabus] = useState(false);
+    const [showAllBooks, setShowAllBooks] = useState(false);
 
   useEffect(() => {
     async function fetchResource() {
@@ -331,9 +333,10 @@ export default function ChemistryResourcesPage({ params }: { params: { id: strin
     ...(resource.syllabus || []).map((s:any) => ({ type: "Syllabus", title: s.title, desc: s.board || "", link: s.link })),
     ...(resource.notes || []).map((n:any) => ({ type: "Notes", title: n.title, desc: n.source, link: n.link })),
     ...(resource.books || []).map((b:any) => ({ type: "Books", title: b.title, desc: b.edition || "", link: b.buy })),
-    ...(resource.youtube || []).map((y:any) => ({ type: "Videos", title: y.channel, desc: y.description, link: y.channelUrl })),
+    ...(resource.youtubeChannel || []).map((y:any) => ({ type: "Videos", title: y.channel, desc: y.description, link: y.channelUrl })),
+    ...(resource.youtubePlaylist || []).map((y:any) => ({ type: "Videos", title: y.title, desc: y.description, link: y.playlistUrl })),
     ...(resource.pastPapers || []).map((p:any) => ({ type: "Papers", title: `${p.board} — ${p.year}`, desc: p.board, link: p.link })),
-    ...(resource.tools || []).map((t:any) => ({ type: "Tools", title: t.name, desc: "", link: t.url })),
+    ...(resource.tools || []).map((t:any) => ({ type: "Tools", title: t.name, desc: t.description, link: t.url })),
   ];
 
   if (!query) return items;
@@ -436,7 +439,7 @@ const filteredPapers = useMemo(() => {
               subtitle="Unit-by-unit, concise"
               onClick={() => scrollTo("notes")}
             />
-            <IconCard icon="🎥" title="Video Playlists" subtitle="Channels & walkthroughs" onClick={() => scrollTo("videos")} />
+            <IconCard icon="🎥" title="Youtube Channels" subtitle="Channels & walkthroughs" onClick={() => scrollTo("videos")} />
             <IconCard icon="🧾" title="Past Papers" subtitle="Papers + mark schemes" onClick={() => scrollTo("papers")} />
             <IconCard icon="📚" title="Books & Textbooks" subtitle="Recommended reads" onClick={() => scrollTo("books")} />
           </motion.div>
@@ -448,8 +451,9 @@ const filteredPapers = useMemo(() => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: categories & content (2/3) */}
           <div className="lg:col-span-2 space-y-8">
+            
             {/* SYLLABUS */}
-            <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            {/* <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-xl font-semibold text-sky-900">Syllabus & Specification</h2>
@@ -463,7 +467,7 @@ const filteredPapers = useMemo(() => {
               <div className="mt-4 grid gap-3">
                 {resource.syllabus.map((s:any) => (
                   <a key={s.title} href={s.link} target="_blank" className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-sm transition">
-                    {/* <div className="w-10 h-10 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">📄</div> */}
+                    
                     <div className="w-10 h-10 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">
                       <Image src={`/syllabus_icons/${s.board.replace("/", "")}.png`} alt={`${s.board} logo`} width={25} height={25}/>
                     </div>
@@ -475,7 +479,60 @@ const filteredPapers = useMemo(() => {
                   </a>
                 ))}
               </div>
-            </motion.section>
+            </motion.section> */}
+
+            <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+  <div className="flex justify-between items-start">
+    <div>
+      <h2 className="text-xl font-semibold text-sky-900">Syllabus & Specification</h2>
+      <p className="text-sm text-gray-500 mt-1">Official specifications & exam board notes.</p>
+    </div>
+
+    <button
+      onClick={() => setShowAllSyllabus((prev) => !prev)}
+      className={`text-sm text-sky-700 underline ${resource.syllabus.length >6 ? "visible" : "hidden"}`}
+    >
+      {showAllSyllabus ? "View less" : "View all"}
+    </button>
+  </div>
+
+  {/* Animated wrapper */}
+  <motion.div
+    initial={false}
+    animate={showAllSyllabus ? "expanded" : "collapsed"}
+    variants={{
+      expanded: { height: "auto", opacity: 1 },
+      collapsed: { height: "auto", opacity: 1 }, // container remains auto
+    }}
+    transition={{ duration: 0.35, ease: "easeInOut" }}
+    className="overflow-hidden mt-4"
+  >
+    <motion.div
+      layout
+      transition={{ duration: 0.35, ease: "easeInOut" }}
+      className="grid gap-3"
+    >
+      {(showAllSyllabus ? resource.syllabus : resource.syllabus.slice(0, 6)).map((s:any) => (
+        <motion.a
+          key={s.title}
+          href={s.link}
+          target="_blank"
+          layout
+          className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-sm transition"
+        >
+          <div className="w-10 h-10 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">
+            <Image src={`/syllabus_icons/${s.board.replace("/", "")}.png`} alt={`${s.board} logo`} width={25} height={25}/>
+          </div>
+
+          <div>
+            <div className="font-medium text-sky-800">{s.title}</div>
+            <div className="text-xs text-gray-500">{s.board}</div>
+          </div>
+        </motion.a>
+      ))}
+    </motion.div>
+  </motion.div>
+</motion.section>
 
             {/* NOTES */}
             <motion.section {...fade} id="notes" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
@@ -496,29 +553,12 @@ const filteredPapers = useMemo(() => {
               </div>
             </motion.section>
 
-            {/* BOOKS */}
-            <motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-              <h2 className="text-xl font-semibold text-sky-900">Books & Textbooks</h2>
-              <p className="text-sm text-gray-500 mt-1">Recommended references & editions.</p>
-
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {resource.books.map((b:any) => (
-                  <div key={b.title} className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white">
-                    <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
-                      <Image src={b.cover} alt={b.title} fill className="object-contain" />
-                    </div>
-                    <div className="text-sm font-medium text-sky-800">{b.title}</div>
-                    <a className="text-xs text-sky-700 underline" target="_blank" href={b.buy}>Buy / Details</a>
-                  </div>
-                ))}
-              </div>
-            </motion.section>
-
-            {/* VIDEOS */}
+           
+            {/* YOUTUBE CHANNELS */}
             <motion.section {...fade} id="videos" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">Video Channels & Playlists</h2>
+                  <h2 className="text-xl font-semibold text-sky-900">YouTube Channels</h2>
                   <p className="text-sm text-gray-500 mt-1">Walkthroughs, concept explainers, and past-paper guides.</p>
                 </div>
                 <div>
@@ -527,7 +567,7 @@ const filteredPapers = useMemo(() => {
               </div>
 
               <div className="mt-4 grid sm:grid-cols-2 gap-4">
-                {resource.youtube.map((y:any) => (
+                {resource.youtubeChannel.map((y:any) => (
                   <a key={y.channel} href={y.channelUrl} target="_blank" className="p-3 border rounded-lg hover:shadow transition flex gap-3 items-center">
                     <div className="w-12 h-12 rounded-full relative  overflow-hidden bg-gray-100">
                       <Image src={y.thumbnail} alt={y.channel} fill className="object-cover" />
@@ -538,6 +578,60 @@ const filteredPapers = useMemo(() => {
                     </div>
                   </a>
                 ))}
+              </div>
+            </motion.section>
+
+
+            {/* VIDEOS — PLAYLISTS (NEW) */}
+            <motion.section {...fade} id="yt-playlists" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-xl font-semibold text-sky-900">YouTube Playlists</h2>
+                  <p className="text-sm text-gray-500 mt-1">Curated topic modules, revision series, and past-paper walkthrough sets.</p>
+                </div>
+                <div>
+                  <a className="text-sm text-sky-700 underline" target="_blank" href="#yt-playlists">Open playlists</a>
+                </div>
+              </div>
+
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {(resource.youtubePlaylist || []).map((p:any) => {
+                  const href = p.playlistUrl ;
+                  const title = p.title;
+                  const description = p.description || "";
+                  const thumb = p.thumbnail || "/playlist_thumb/fallback.png";
+
+                  return (
+                    <a
+                      key={title + href}
+                      href={href}
+                      target="_blank"
+                      className="group rounded-2xl border border-sky-50 bg-white overflow-hidden shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
+                    >
+                      {/* Thumbnail */}
+                      <div className="relative w-full aspect-video bg-gray-100">
+                        <Image src={thumb} alt={title} fill className="object-cover" />
+                        {/* subtle overlay + “Playlist” badge */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                        <div className="absolute top-2 left-2 text-[10px] uppercase tracking-wide bg-white/90 backdrop-blur px-2 py-1 rounded-md">
+                          Playlist
+                        </div>
+                      </div>
+
+                      {/* Body */}
+                      <div className="p-4">
+                        <div className="text-sm font-semibold text-sky-900 line-clamp-2">{title}</div>
+                        {description && (
+                          <p className="mt-1 text-xs text-gray-600 line-clamp-3">
+                            {description}
+                          </p>
+                        )}
+
+                      </div>
+                    </a>
+                  );
+                })}
+                
               </div>
             </motion.section>
 
@@ -607,8 +701,62 @@ const filteredPapers = useMemo(() => {
               </div>
             </motion.section>
 
+              {/* BOOKS */}
+            {/* <motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+              <h2 className="text-xl font-semibold text-sky-900">Books & Textbooks</h2>
+              <p className="text-sm text-gray-500 mt-1">Recommended references & editions.</p>
+
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {resource.books.map((b:any) => (
+                  <div key={b.title} className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white">
+                    <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
+                      <Image src={b.cover} alt={b.title} fill className="object-contain" />
+                    </div>
+                    <div className="text-sm font-medium text-sky-800">{b.title}</div>
+                    <a className="text-xs text-sky-700 underline" target="_blank" href={b.buy}>Buy / Details</a>
+                  </div>
+                ))}
+              </div>
+            </motion.section> */}
+<motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+  <div className="flex items-start justify-between">
+    <div>
+      <h2 className="text-xl font-semibold text-sky-900">Books & Textbooks</h2>
+      <p className="text-sm text-gray-500 mt-1">Recommended references & editions.</p>
+    </div>
+
+    {resource.books.length > 6 && (
+      <button
+        onClick={() => setShowAllBooks((prev) => !prev)}
+        className="text-sm text-sky-700 underline"
+      >
+        {showAllBooks ? "View less" : "View all"}
+      </button>
+    )}
+  </div>
+
+  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+    {(showAllBooks ? resource.books : resource.books.slice(0, 6)).map((b:any, idx:number) => (
+      <motion.div
+        key={b.title}
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, delay: showAllBooks ? idx * 0.02 : 0 }} // subtle stagger when expanding
+        className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white"
+      >
+        <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
+          <Image src={b.cover} alt={b.title} fill className="object-contain" />
+        </div>
+        <div className="text-sm font-medium text-sky-800 line-clamp-2">{b.title}</div>
+        <a className="text-xs text-sky-700 underline" target="_blank" href={b.buy}>Buy / Details</a>
+      </motion.div>
+    ))}
+  </div>
+</motion.section>
+
+              
             {/* TOOLS */}
-            <motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            {/* <motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
               <h2 className="text-xl font-semibold text-sky-900">Tools & Utilities</h2>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {resource.tools.map((t:any) => (
@@ -620,7 +768,36 @@ const filteredPapers = useMemo(() => {
                   </a>
                 ))}
               </div>
-            </motion.section>
+            </motion.section> */}
+
+            {/* TOOLS */}
+<motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+  <h2 className="text-xl font-semibold text-sky-900">Tools & Utilities</h2>
+  <p className="text-sm text-gray-500 mt-1">Useful calculators, references, and quick-access utilities.</p>
+
+  <div className="mt-4 grid grid-cols-1  gap-3">
+    {resource.tools.map((t:any) => (
+      <a
+        key={t.name}
+        href={t.url}
+        target="_blank"
+        className="p-4 pr-2 border rounded-lg hover:shadow-md transition flex justify-center items-start gap-3 bg-white"
+      >
+        <div className="w-10 h-10 rounded bg-sky-50 flex items-center justify-center text-xl">🔧</div>
+
+        <div className="flex-1">
+          <div className="text-sm font-semibold text-sky-800">{t.name}</div>
+
+          {t.description && (
+            <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">
+              {t.description}
+            </p>
+          )}
+        </div>
+      </a>
+    ))}
+  </div>
+</motion.section>
 
             {/* COMMUNITY */}
             <motion.section {...fade} id="community" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
