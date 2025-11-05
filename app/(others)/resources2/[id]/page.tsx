@@ -291,6 +291,10 @@ export default function ChemistryResourcesPage({ params }: { params: { id: strin
 
     const [showAllSyllabus, setShowAllSyllabus] = useState(false);
     const [showAllBooks, setShowAllBooks] = useState(false);
+    const [showAllTools, setShowAllTools] = useState(false);
+    const [showAllPlaylists, setShowAllPlaylists] = useState(false);
+    const [showAllChannels, setShowAllChannels] = useState(false);
+    const [showAllNotes, setShowAllNotes] = useState(false);
 
   useEffect(() => {
     async function fetchResource() {
@@ -351,7 +355,7 @@ const filteredPapers = useMemo(() => {
     filterBoard ? p.board === filterBoard : true
   );
 }, [resource, filterBoard]);
-
+const showPaperScrollbar = filteredPapers.length > 8;
   
     /* small helpers */
     const scrollTo = (id:string) => {
@@ -453,102 +457,100 @@ const filteredPapers = useMemo(() => {
           <div className="lg:col-span-2 space-y-8">
             
             {/* SYLLABUS */}
-            {/* <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            
+
+            <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-xl font-semibold text-sky-900">Syllabus & Specification</h2>
                   <p className="text-sm text-gray-500 mt-1">Official specifications & exam board notes.</p>
                 </div>
-                <div> 
-                  <a className="text-sm text-sky-700 underline" target="_blank" href="/resources/chemistry/syllabus">View all</a>
-                </div>
+
+                <button
+                  onClick={() => setShowAllSyllabus((prev) => !prev)}
+                  className={`text-sm text-sky-700 underline ${resource.syllabus.length >6 ? "visible" : "hidden"}`}
+                >
+                  {showAllSyllabus ? "View less" : "View all"}
+                </button>
               </div>
 
-              <div className="mt-4 grid gap-3">
-                {resource.syllabus.map((s:any) => (
-                  <a key={s.title} href={s.link} target="_blank" className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-sm transition">
-                    
-                    <div className="w-10 h-10 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">
-                      <Image src={`/syllabus_icons/${s.board.replace("/", "")}.png`} alt={`${s.board} logo`} width={25} height={25}/>
-                    </div>
+              {/* Animated wrapper */}
+              <motion.div
+                initial={false}
+                animate={showAllSyllabus ? "expanded" : "collapsed"}
+                variants={{
+                  expanded: { height: "auto", opacity: 1 },
+                  collapsed: { height: "auto", opacity: 1 }, // container remains auto
+                }}
+                transition={{ duration: 0.35, ease: "easeInOut" }}
+                className="overflow-hidden mt-4"
+              >
+                <motion.div
+                  layout
+                  transition={{ duration: 0.35, ease: "easeInOut" }}
+                  className="grid gap-3"
+                >
+                  {(showAllSyllabus ? resource.syllabus : resource.syllabus.slice(0, 6)).map((s:any) => (
+                    <motion.a
+                      key={s.title}
+                      href={s.link}
+                      target="_blank"
+                      layout
+                      className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-sm transition"
+                    >
+                      <div className="w-10 h-10 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">
+                        <Image src={`/syllabus_icons/${s.board.replace("/", "")}.png`} alt={`${s.board} logo`} width={25} height={25}/>
+                      </div>
 
-                    <div>
-                      <div className="font-medium text-sky-800">{s.title}</div>
-                      <div className="text-xs text-gray-500">{s.board}</div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </motion.section> */}
+                      <div>
+                        <div className="font-medium text-sky-800">{s.title}</div>
+                        <div className="text-xs text-gray-500">{s.board}</div>
+                      </div>
+                    </motion.a>
+                  ))}
+                </motion.div>
+              </motion.div>
+            </motion.section>
 
-            <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-  <div className="flex justify-between items-start">
-    <div>
-      <h2 className="text-xl font-semibold text-sky-900">Syllabus & Specification</h2>
-      <p className="text-sm text-gray-500 mt-1">Official specifications & exam board notes.</p>
-    </div>
-
-    <button
-      onClick={() => setShowAllSyllabus((prev) => !prev)}
-      className={`text-sm text-sky-700 underline ${resource.syllabus.length >6 ? "visible" : "hidden"}`}
-    >
-      {showAllSyllabus ? "View less" : "View all"}
-    </button>
-  </div>
-
-  {/* Animated wrapper */}
-  <motion.div
-    initial={false}
-    animate={showAllSyllabus ? "expanded" : "collapsed"}
-    variants={{
-      expanded: { height: "auto", opacity: 1 },
-      collapsed: { height: "auto", opacity: 1 }, // container remains auto
-    }}
-    transition={{ duration: 0.35, ease: "easeInOut" }}
-    className="overflow-hidden mt-4"
-  >
-    <motion.div
-      layout
-      transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="grid gap-3"
-    >
-      {(showAllSyllabus ? resource.syllabus : resource.syllabus.slice(0, 6)).map((s:any) => (
-        <motion.a
-          key={s.title}
-          href={s.link}
-          target="_blank"
-          layout
-          className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-sm transition"
-        >
-          <div className="w-10 h-10 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">
-            <Image src={`/syllabus_icons/${s.board.replace("/", "")}.png`} alt={`${s.board} logo`} width={25} height={25}/>
-          </div>
-
-          <div>
-            <div className="font-medium text-sky-800">{s.title}</div>
-            <div className="text-xs text-gray-500">{s.board}</div>
-          </div>
-        </motion.a>
-      ))}
-    </motion.div>
-  </motion.div>
-</motion.section>
-
-            {/* NOTES */}
+         {/* NOTES */}
             <motion.section {...fade} id="notes" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-              <h2 className="text-xl font-semibold text-sky-900">Notes & Summaries</h2>
-              <p className="text-sm text-gray-500 mt-1">Concise unit notes, printable summaries and cheat sheets.</p>
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-sky-900">Notes & Summaries</h2>
+                  <p className="text-sm text-gray-500 mt-1">Concise unit notes, printable summaries and cheat sheets.</p>
+                </div>
+
+                {resource.notes.length > 6 && (
+                  <button
+                    onClick={() => setShowAllNotes(prev => !prev)}
+                    className="text-sm text-sky-700 underline"
+                  >
+                    {showAllNotes ? "View less" : "View all"}
+                  </button>
+                )}
+              </div>
 
               <div className="mt-4 grid sm:grid-cols-2 gap-4">
-                {resource.notes.map((n:any) => (
-                  <a key={n.id} href={n.link} target="_blank" className="p-4 border rounded-lg hover:shadow transition flex gap-3">
+                {(showAllNotes ? resource.notes : resource.notes.slice(0, 6)).map((n:any, idx:number) => (
+                  <motion.a
+                    key={n.id}
+                    href={n.link}
+                    target="_blank"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: showAllNotes ? idx * 0.02 : 0 }}
+                    className="p-4 border rounded-lg hover:shadow-md transition flex gap-3 bg-white"
+                  >
                     <div className="w-12 h-12 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">📝</div>
+
                     <div className="flex-1">
                       <div className="font-medium text-sky-800">{n.title}</div>
                       <div className="text-xs text-gray-500 mt-1">{n.source}</div>
-                      <div className="text-xs text-gray-400 mt-2">{n.tags?.join(", ")}</div>
+                      {n.tags?.length > 0 && (
+                        <div className="text-xs text-gray-400 mt-2 line-clamp-1">{n.tags.join(", ")}</div>
+                      )}
                     </div>
-                  </a>
+                  </motion.a>
                 ))}
               </div>
             </motion.section>
@@ -561,22 +563,39 @@ const filteredPapers = useMemo(() => {
                   <h2 className="text-xl font-semibold text-sky-900">YouTube Channels</h2>
                   <p className="text-sm text-gray-500 mt-1">Walkthroughs, concept explainers, and past-paper guides.</p>
                 </div>
-                <div>
-                  <a className="text-sm text-sky-700 underline" target="_blank" href="#videos">Open YouTube</a>
-                </div>
+
+                {resource.youtubeChannel.length > 6 && (
+                  <button
+                    onClick={() => setShowAllChannels(prev => !prev)}
+                    className="text-sm text-sky-700 underline"
+                  >
+                    {showAllChannels ? "View less" : "View all"}
+                  </button>
+                )}
               </div>
 
               <div className="mt-4 grid sm:grid-cols-2 gap-4">
-                {resource.youtubeChannel.map((y:any) => (
-                  <a key={y.channel} href={y.channelUrl} target="_blank" className="p-3 border rounded-lg hover:shadow transition flex gap-3 items-center">
-                    <div className="w-12 h-12 rounded-full relative  overflow-hidden bg-gray-100">
+                {(showAllChannels ? resource.youtubeChannel : resource.youtubeChannel.slice(0, 6)).map((y:any, idx:number) => (
+                  <motion.a
+                    key={y.channel}
+                    href={y.channelUrl}
+                    target="_blank"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: showAllChannels ? idx * 0.02 : 0 }}
+                    className="p-3 border rounded-lg hover:shadow-md transition flex gap-3 items-center bg-white"
+                  >
+                    <div className="w-12 h-12 rounded-full relative overflow-hidden bg-gray-100">
                       <Image src={y.thumbnail} alt={y.channel} fill className="object-cover" />
                     </div>
+
                     <div className="flex-1 text-left">
                       <div className="font-medium text-sky-800">{y.channel}</div>
-                      <div className="text-xs text-gray-500 mt-1">{y.description}</div>
+                      {y.description && (
+                        <div className="text-xs text-gray-500 mt-1 line-clamp-2">{y.description}</div>
+                      )}
                     </div>
-                  </a>
+                  </motion.a>
                 ))}
               </div>
             </motion.section>
@@ -589,29 +608,37 @@ const filteredPapers = useMemo(() => {
                   <h2 className="text-xl font-semibold text-sky-900">YouTube Playlists</h2>
                   <p className="text-sm text-gray-500 mt-1">Curated topic modules, revision series, and past-paper walkthrough sets.</p>
                 </div>
-                <div>
-                  <a className="text-sm text-sky-700 underline" target="_blank" href="#yt-playlists">Open playlists</a>
-                </div>
+
+                {(resource.youtubePlaylist?.length > 6) && (
+                  <button
+                    onClick={() => setShowAllPlaylists(prev => !prev)}
+                    className="text-sm text-sky-700 underline"
+                  >
+                    {showAllPlaylists ? "View less" : "View all"}
+                  </button>
+                )}
               </div>
 
               <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {(resource.youtubePlaylist || []).map((p:any) => {
-                  const href = p.playlistUrl ;
+                {(showAllPlaylists ? resource.youtubePlaylist : resource.youtubePlaylist.slice(0, 6)).map((p:any, idx:number) => {
+                  const href = p.playlistUrl;
                   const title = p.title;
                   const description = p.description || "";
                   const thumb = p.thumbnail || "/playlist_thumb/fallback.png";
 
                   return (
-                    <a
+                    <motion.a
                       key={title + href}
                       href={href}
                       target="_blank"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.25, delay: showAllPlaylists ? idx * 0.02 : 0 }}
                       className="group rounded-2xl border border-sky-50 bg-white overflow-hidden shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
                     >
                       {/* Thumbnail */}
                       <div className="relative w-full aspect-video bg-gray-100">
                         <Image src={thumb} alt={title} fill className="object-cover" />
-                        {/* subtle overlay + “Playlist” badge */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition" />
                         <div className="absolute top-2 left-2 text-[10px] uppercase tracking-wide bg-white/90 backdrop-blur px-2 py-1 rounded-md">
                           Playlist
@@ -621,183 +648,170 @@ const filteredPapers = useMemo(() => {
                       {/* Body */}
                       <div className="p-4">
                         <div className="text-sm font-semibold text-sky-900 line-clamp-2">{title}</div>
+
                         {description && (
                           <p className="mt-1 text-xs text-gray-600 line-clamp-3">
                             {description}
                           </p>
                         )}
-
                       </div>
-                    </a>
+                    </motion.a>
                   );
                 })}
-                
               </div>
             </motion.section>
+
 
             {/* PAST PAPERS */}
-            <motion.section {...fade} id="papers" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-sky-900">Past Papers & Mark Schemes</h2>
-                  <p className="text-sm text-gray-500 mt-1">Filter by board and download individual papers.</p>
-                </div>
+{/* PAST PAPERS */}
+<motion.section {...fade} id="papers" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+  <div className="flex items-center justify-between">
+    <div>
+      <h2 className="text-xl font-semibold text-sky-900">Past Papers & Mark Schemes</h2>
+      <p className="text-sm text-gray-500 mt-1">Filter by board and download individual papers.</p>
+    </div>
 
-                <div className="flex items-center gap-2">
-                  <select
-                    value={filterBoard || ""}
-                    onChange={(e) => setFilterBoard(e.target.value || null)}
-                    className="px-3 py-2 border rounded-full"
-                  >
-                    <option value="">All boards</option>
-                    <option value="CAIE">CAIE</option>
-                    <option value="Edexcel">Edexcel</option>
-                    <option value="AQA">AQA</option>
-                    <option value="WJEC/Eduqas">WJEC/Eduqas</option>
+    <div className="flex items-center gap-2">
+      <select
+        value={filterBoard || ""}
+        onChange={(e) => setFilterBoard(e.target.value || null)}
+        className="px-3 py-2 border rounded-full"
+      >
+        <option value="">All boards</option>
+        <option value="CAIE">CAIE</option>
+        <option value="Edexcel">Edexcel</option>
+        <option value="AQA">AQA</option>
+        <option value="WJEC/Eduqas">WJEC/Eduqas</option>
+      </select>
+      <button
+        onClick={() => {
+          alert("Download all (demo): combine links server-side for full export.");
+        }}
+        className="px-3 py-2 bg-sky-600 text-white rounded-full"
+      >
+        Download all
+      </button>
+    </div>
+  </div>
 
-                  </select>
-                  <button
-                    onClick={() => {
-                      // demo: in prod create a zip or direct download
-                      alert("Download all (demo): combine links server-side for full export.");
-                    }}
-                    className="px-3 py-2 bg-sky-600 text-white rounded-full"
-                  >
-                    Download all
-                  </button>
-                </div>
-              </div>
+  {/* Scroll Container */}
+  <div className={`mt-4 overflow-x-auto ${showPaperScrollbar ? "max-h-[25rem] overflow-y-auto" : ""}`}>
+    <table className="w-full text-sm border-collapse">
+      <thead className="sticky top-0 bg-white z-10 border-b">
+        <tr className="text-left text-xs text-gray-500">
+          <th className="py-2">Year</th>
+          <th>Board</th>
+          <th>Download</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredPapers.map((p:any) => (
+          <tr key={`${p.board}-${p.year}`} className="border-b last:border-b-0">
+            <td className="py-3">{p.year}</td>
+            <td>{p.board}</td>
+            <td>
+              <a className="text-sky-700 underline" target="_blank" href={p.link}>
+                Download PDF
+              </a>
+            </td>
+          </tr>
+        ))}
 
-              <div className="mt-4 overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-left text-xs text-gray-500 border-b">
-                      <th className="py-2">Year</th>
-                      <th>Board</th>
-                      <th>Download</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredPapers.map((p:any) => (
-                      <tr key={`${p.board}-${p.year}`} className="border-b last:border-b-0">
-                        <td className="py-3">{p.year}</td>
-                        <td>{p.board}</td>
-                        <td>
-                          <a className="text-sky-700 underline" target="_blank" href={p.link}>
-                            Download PDF
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
-                    {filteredPapers.length === 0 && (
-                      <tr>
-                        <td colSpan={3} className="py-3 text-gray-500">
-                          No papers found for this board
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </motion.section>
+        {filteredPapers.length === 0 && (
+          <tr>
+            <td colSpan={3} className="py-3 text-gray-500">
+              No papers found for this board
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</motion.section>
 
               {/* BOOKS */}
-            {/* <motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-              <h2 className="text-xl font-semibold text-sky-900">Books & Textbooks</h2>
-              <p className="text-sm text-gray-500 mt-1">Recommended references & editions.</p>
+
+            <motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-sky-900">Books & Textbooks</h2>
+                  <p className="text-sm text-gray-500 mt-1">Recommended references & editions.</p>
+                </div>
+
+                {resource.books.length > 6 && (
+                  <button
+                    onClick={() => setShowAllBooks((prev) => !prev)}
+                    className="text-sm text-sky-700 underline"
+                  >
+                    {showAllBooks ? "View less" : "View all"}
+                  </button>
+                )}
+              </div>
 
               <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {resource.books.map((b:any) => (
-                  <div key={b.title} className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white">
+                {(showAllBooks ? resource.books : resource.books.slice(0, 6)).map((b:any, idx:number) => (
+                  <motion.div
+                    key={b.title}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: showAllBooks ? idx * 0.02 : 0 }} // subtle stagger when expanding
+                    className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white"
+                  >
                     <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
                       <Image src={b.cover} alt={b.title} fill className="object-contain" />
                     </div>
-                    <div className="text-sm font-medium text-sky-800">{b.title}</div>
+                    <div className="text-sm font-medium text-sky-800 line-clamp-2">{b.title}</div>
                     <a className="text-xs text-sky-700 underline" target="_blank" href={b.buy}>Buy / Details</a>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </motion.section> */}
-<motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-  <div className="flex items-start justify-between">
-    <div>
-      <h2 className="text-xl font-semibold text-sky-900">Books & Textbooks</h2>
-      <p className="text-sm text-gray-500 mt-1">Recommended references & editions.</p>
-    </div>
-
-    {resource.books.length > 6 && (
-      <button
-        onClick={() => setShowAllBooks((prev) => !prev)}
-        className="text-sm text-sky-700 underline"
-      >
-        {showAllBooks ? "View less" : "View all"}
-      </button>
-    )}
-  </div>
-
-  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-    {(showAllBooks ? resource.books : resource.books.slice(0, 6)).map((b:any, idx:number) => (
-      <motion.div
-        key={b.title}
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, delay: showAllBooks ? idx * 0.02 : 0 }} // subtle stagger when expanding
-        className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white"
-      >
-        <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
-          <Image src={b.cover} alt={b.title} fill className="object-contain" />
-        </div>
-        <div className="text-sm font-medium text-sky-800 line-clamp-2">{b.title}</div>
-        <a className="text-xs text-sky-700 underline" target="_blank" href={b.buy}>Buy / Details</a>
-      </motion.div>
-    ))}
-  </div>
-</motion.section>
+            </motion.section>
 
               
             {/* TOOLS */}
-            {/* <motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-              <h2 className="text-xl font-semibold text-sky-900">Tools & Utilities</h2>
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {resource.tools.map((t:any) => (
-                  <a key={t.name} href={t.url} target="_blank" className="p-3 border rounded-lg hover:shadow transition flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-sky-50 flex items-center justify-center">🔧</div>
-                    <div>
-                      <div className="font-medium text-sky-800">{t.name}</div>
+            <motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-sky-900">Tools & Utilities</h2>
+                  <p className="text-sm text-gray-500 mt-1">Useful calculators, references, and quick-access utilities.</p>
+                </div>
+
+                {resource.tools.length > 6 && (
+                  <button
+                    onClick={() => setShowAllTools((prev) => !prev)}
+                    className="text-sm text-sky-700 underline"
+                  >
+                    {showAllTools ? "View less" : "View all"}
+                  </button>
+                )}
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3">
+                {(showAllTools ? resource.tools : resource.tools.slice(0, 6)).map((t:any, idx:number) => (
+                  <motion.a
+                    key={t.name}
+                    href={t.url}
+                    target="_blank"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: showAllTools ? idx * 0.02 : 0 }} // subtle stagger when expanding
+                    className="p-4 pr-2 border rounded-lg hover:shadow-md transition flex justify-center items-start gap-3 bg-white"
+                  >
+                    <div className="w-10 h-10 rounded bg-sky-50 flex items-center justify-center text-xl">🔧</div>
+
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-sky-800">{t.name}</div>
+
+                      {t.description && (
+                        <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">
+                          {t.description}
+                        </p>
+                      )}
                     </div>
-                  </a>
+                  </motion.a>
                 ))}
               </div>
-            </motion.section> */}
-
-            {/* TOOLS */}
-<motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
-  <h2 className="text-xl font-semibold text-sky-900">Tools & Utilities</h2>
-  <p className="text-sm text-gray-500 mt-1">Useful calculators, references, and quick-access utilities.</p>
-
-  <div className="mt-4 grid grid-cols-1  gap-3">
-    {resource.tools.map((t:any) => (
-      <a
-        key={t.name}
-        href={t.url}
-        target="_blank"
-        className="p-4 pr-2 border rounded-lg hover:shadow-md transition flex justify-center items-start gap-3 bg-white"
-      >
-        <div className="w-10 h-10 rounded bg-sky-50 flex items-center justify-center text-xl">🔧</div>
-
-        <div className="flex-1">
-          <div className="text-sm font-semibold text-sky-800">{t.name}</div>
-
-          {t.description && (
-            <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">
-              {t.description}
-            </p>
-          )}
-        </div>
-      </a>
-    ))}
-  </div>
-</motion.section>
+            </motion.section>
 
             {/* COMMUNITY */}
             <motion.section {...fade} id="community" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
