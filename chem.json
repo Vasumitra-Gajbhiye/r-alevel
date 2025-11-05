@@ -1,0 +1,199 @@
+{
+    "subject": "Chemistry",
+
+    "syllabus": [{
+        "title": "Cambridge Int'l AS/A Level Chemistry 9701",
+        "board": "CAIE",
+        "link":"https://www.cambridgeinternational.org/Images/664563-2025-2027-syllabus.pdf#:~:text=Syllabus%20Cambridge%20International%20AS%20%26,Version%201"
+    },
+    {
+        "title": "Pearson Edexcel A Level Chemistry (9CH0)",
+        "board": "Edexcel",
+        "link":"https://qualifications.pearson.com/content/dam/pdf/A%20Level/Chemistry/2015/Specification%20and%20sample%20assessments/a-level-chemistry-2015-specification.pdf#:~:text=A%20Level%20Chemistry%20Specification%20Pearson,certification%20from%202017%20Issue%203"
+    },
+    {
+
+        "title": "Pearson Edexcel International A Level Chemistry (YCH11)",
+        "board": "Edexcel",
+        "link": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Chemistry/2018/Specification-and-Sample-Assessment/International-A-Level-Chemistry-Spec.pdf#:~:text=INTERNATIONAL%20ADVANCED%20LEVEL%20CHEMISTRY%20SPECIFICATION,First%20teaching%20September%202018"
+    },
+    {
+
+        "title": "AQA AS/A Level Chemistry (7405)",
+        "board": "AQA",
+        "link": "https://filestore.aqa.org.uk/resources/chemistry/specifications/AQA-7404-7405-SP-2015.PDF#:~:text=AQA%20AS%20and%20A,resources%2C%20support%20and%20administration%203"
+    },
+    {
+
+        "title": "WJEC/Eduqas A Level Chemistry",
+        "board": "WJEC/Eduqas",
+        "link": "https://www.eduqas.co.uk/media/1adby0gf/eduqas-a-level-chemistry-spec-from-2015-e.pdf#:~:text=WJEC%20Eduqas%20GCE%20A%20LEVEL,schools%20and%20colleges%20in%20Wales"
+    },
+    {
+
+        "title": "IB Diploma Chemistry (SL/HL)",
+        "board": "IB Diploma",
+        "link": "https://www.ibo.org/globalassets/new-structure/recognition/pdfs/dp_sciences_chemistry_subject-brief_jan_2022_e.pdf#:~:text=International%20Baccalaureate%20Diploma%20Programme%20Subject,Sciences%3A%20Chemistry%20First%20assessment%202025"
+    }
+],  
+
+    "notes":[
+    {
+        "title":"Physics & Maths Tutor Alevel Chemistry Revision Notes",
+        "source":"PMT",
+        "link":"https://www.physicsandmathstutor.com/chemistry-revision/a-level-caie/#:~:text=For%20each%20of%20the%20papers,by%20topic%20and%20other%20worksheets",
+        "tags":["Revision", "Notes"]
+    },
+    {
+        "title":"Chemguide Complete Topic Explanations",
+        "source":"Chemguide",
+        "link":"https://www.chemguide.co.uk#:~:text=Atomic%20Structure%20and%20Bonding%20Covers,copper%2C%20iron%2C%20titanium%20and%20tungsten",
+        "tags":["Long", "Explained"]
+    },
+    {
+        "title":"Save My Exams Notes",
+        "source":"SaveMyExams",
+        "link":"https://www.savemyexams.com/a-level/chemistry/",
+        "tags":["SME", "Paid"]
+    }
+],  
+    "books":[
+        {
+            "title":"Cambridge International AS & A Level Chemistry Coursebook - for CAIE 9701.",
+            "edition":"",
+            "cover":"",
+            "buy":""
+        },
+        {
+            "title":"Cambridge Int'l AS & A Level Chemistry Student's Book (Collins, 2020) - for CAIE 9701.",
+            "edition":"",
+            "cover":"",
+            "buy":""
+        },
+        {
+            "title":"Hodder Edu. Cambridge Int'l Chemistry Student's Book 2nd Ed. (2020) - for CAIE 9701.",
+            "edition":"Pearson Edexcel A Level Chemistry (9CH0) Student Book - Y1 & Y2 - updated edition for Edexcel.",
+            "cover":"",
+            "buy":""
+        },
+        {
+            "title":"Pearson Edexcel A Level Chemistry (9CH0) Student Book - Y1 & Y2",
+            "edition":"",
+            "cover":"",
+            "buy":""
+        },
+        {
+            "title":"AQA A Level Chemistry Student Guide (Oxford Univ. Press) - for AQA 7405.",
+            "edition":"",
+            "cover":"",
+            "buy":""
+        },
+        {
+            "title":"CGP A-Level Chemistry Complete Revision & Practice (Edexcel)",
+            "edition":"",
+            "cover":"",
+            "buy":""
+        }
+    ],
+    "youtube":[
+        {
+            "channel":"FreeScienceLessons",
+            "channelUrl":"https://youtube.com",
+            "description":"",
+            "thumbnail":""
+        },
+           {
+            "channel":"Allery Chemistry",
+            "channelUrl":"https://youtube.com",
+            "description":"",
+            "thumbnail":""
+        },
+           {
+            "channel":"ScienceWithHazel",
+            "channelUrl":"https://youtube.com",
+            "description":"",
+            "thumbnail":""
+        },
+           {
+            "channel":"DrBeattie's Chemistry",
+            "channelUrl":"https://youtube.com",
+            "description":"",
+            "thumbnail":""
+        },
+           {
+            "channel":"MaChemGuy",
+            "channelUrl":"https://youtube.com",
+            "description":"",
+            "thumbnail":""
+        },
+           {
+            "channel":"CrashCourse Chemistry",
+            "channelUrl":"https://youtube.com",
+            "description":"",
+            "thumbnail":""
+        },
+           {
+            "channel":"Khan Academy Chemistry",
+            "channelUrl":"https://youtube.com",
+            "description":"",
+            "thumbnail":""
+        }
+    ],
+    "pastPapers":[
+        {
+            "year":"2021",
+            "board":"CAIE",
+            "link":""
+        },
+        {
+            "year":"2022",
+            "board":"CAIE",
+            "link":""
+        },
+        {
+            "year":"2023",
+            "board":"CAIE",
+            "link":""
+        },
+        {
+            "year":"2021",
+            "board":"Edexcel",
+            "link":""
+        },
+        {
+            "year":"2022",
+            "board":"Edexcel",
+            "link":""
+        },
+        {
+            "year":"2021",
+            "board":"AQA",
+            "link":""
+        },
+        {
+            "year":"2022",
+            "board":"AQA",
+            "link":""
+        },
+        {
+            "year":"2021",
+            "board":"WJEC/Eduqas",
+            "link":""
+        }
+    ],
+    "tools":[
+        {
+            "name":"Mole calculator",
+            "url":""
+        },
+        {
+            "name":"Interactive periodic table",
+            "url":""
+        },
+        {
+            "name":"Gas reactions",
+            "url":""
+        }
+    ]
+
+}

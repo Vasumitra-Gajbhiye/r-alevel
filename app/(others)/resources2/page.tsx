@@ -141,45 +141,18 @@ import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
 function Search() {
   const router = useRouter();
-  const updated= [
-    {name:"chemistry", id:"690b1fb20678ed563fe6536e"}
-]
 
   const uuid = [
-    { name: "accounting", id: "6655b6b02e379ceca333520c" },
-    { name: "biology", id: "6655b6b02e379ceca333520d" },
-    { name: "business studies", id: "6655b6b02e379ceca333520e" },
-    { name: "business", id: "6655b6b02e379ceca333520f" },
-    { name: "chemistry", id: "6655b6b02e379ceca3335210", updated: false },
-    { name: "computer science", id: "6655b6b02e379ceca3335211" },
-    { name: "economics", id: "6655b6b02e379ceca3335212" },
-    { name: "english language", id: "6655b6b02e379ceca3335213" },
-    { name: "environmental studies", id: "6655b6b02e379ceca3335214" },
-    { name: "further mathematics", id: "6655b6b02e379ceca3335215" },
-    { name: "geography", id: "6655b6b02e379ceca3335216" },
-    { name: "history", id: "6655b6b02e379ceca3335217" },
-    { name: "information technology", id: "6655b6b02e379ceca3335218" },
-    { name: "mathematics", id: "6655b6b02e379ceca3335219" },
-    { name: "physics", id: "6655b6b02e379ceca333521a" },
-    { name: "psychology", id: "6655b6b02e379ceca333521b" },
-    { name: "sociology", id: "6655b6b02e379ceca333521c" },
-    { name: "spanish", id: "6655b6b02e379ceca333521d" },
+    { name: "chemistry", id: "690b1fb20678ed563fe6536e" },
   ];
 
   const items = uuid.map((item, index) => ({ name: item.name, id: index + 1 }));
-
- 
 
   const handleOnSelect = (item: any) => {
     const selected = uuid[item.id - 1];
     if (selected) {
       // ✅ navigate client-side
-      // CODE TO REDIRECT TO UPDATED RESOURCES
-       const isUpdated = function(sub:any)
-       {
-         return sub.name==selected.name
-       }   
-     selected.updated?router.push(`/resources2/${updated.find(isUpdated)?.id}`): router.push(`/resources/${selected.id}`);
+      router.push(`/resources2/${selected.id}`);
     }
   };
 
