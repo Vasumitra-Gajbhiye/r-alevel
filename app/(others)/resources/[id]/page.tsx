@@ -192,9 +192,23 @@ export default function SingleResource({ params: { id } }: any) {
 }*/
 
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import Image from "next/image";
 // import getSingleSubject from "@/app/controller/getSingleSubject";
+
+export default async function SingleSubject({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  return (
+    <div className="bg-white min-h-screen">
+      {/* You can keep Navbar here */}
+      <Suspense fallback={<Skeleton />}>
+        <SubjectDisplay id={id} />
+      </Suspense>
+      {/* You can keep Footer here */}
+    </div>
+  );
+}
 
 const Skeleton=function(){
 return (
@@ -221,17 +235,7 @@ return (
     );
 }
 
-export default function SingleSubject({ params: { id } }: any) {
-  return (
-    <div className="bg-white min-h-screen">
-      {/* You can keep Navbar here */}
-      <Suspense fallback={<Skeleton />}>
-        <SubjectDisplay id={id} />
-      </Suspense>
-      {/* You can keep Footer here */}
-    </div>
-  );
-}
+
 
 interface Resource{
   _id: any;
@@ -298,7 +302,6 @@ async function SubjectDisplay({ id }:  { id: string }) {
         <div className="flex flex-col mb-32">
           {subject?.links.map((link: any, index: number) => {
             return (
-              <>
                 <a
                   target="_blank"
                   className="underline text-xl mb-3 visited:text-gray-500 text-gray-950 hover:bg-gray-100 transition-all px-1 rounded-sm"
@@ -307,7 +310,6 @@ async function SubjectDisplay({ id }:  { id: string }) {
                 >
                   {link.linkTitle}
                 </a>
-              </>
             );
           })}
         </div>

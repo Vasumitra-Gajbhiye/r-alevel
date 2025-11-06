@@ -91,29 +91,30 @@ export default function OurProgress() {
   };
 
   const CardProgress = ({ title, titleAlt, data, subtitle }: propType) => {
-    return (
-      <motion.div
-        variants={{
-          hidden: { opacity: 0, y: 30 },
-          visible: { opacity: 1, y: 0 },
-        }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-white rounded-lg p-5 drop-shadow-md"
-      >
-        <h5 className="hidden lg:block text-cy-700 font-bold text-base md:text-lg mb-1">
-          {title}
-        </h5>
-        <h5 className="lg:hidden text-cy-700 font-bold text-base md:text-lg mb-1">
-          {titleAlt}
-        </h5>
-        <h3 className="md:text-3xl text-2xl font-semibold mb-3 text-gray-900">
-          {data}
-        </h3>
-        <h6 className="text-sm md:text-base text-gray-700">{subtitle}</h6>
-      </motion.div>
-    );
-  };
-
+  return (
+    <motion.div
+      variants={{
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0 },
+      }}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="bg-white rounded-lg p-5 drop-shadow-md"
+    >
+      <h5 className="hidden lg:block text-cyan-700 font-bold text-base md:text-lg mb-1">
+        {title}
+      </h5>
+      <h5 className="lg:hidden text-cyan-700 font-bold text-base md:text-lg mb-1">
+        {titleAlt}
+      </h5>
+      <h3 className="md:text-3xl text-2xl font-semibold mb-3 text-gray-900">
+        {data}
+      </h3>
+      <h6 className="text-sm md:text-base text-gray-700">{subtitle}</h6>
+    </motion.div>
+  );
+};
   // 👇 Increase threshold so animation triggers later
   const { ref, inView } = useInView({
     triggerOnce: true,

@@ -2,8 +2,10 @@ import mongoDBConnect from "@/libs/mongodb";
 import ResourcesData from "@/models/resourcesData";
 import { NextResponse, NextRequest } from "next/server";
 
+
 // GET ALL SUBJECTS
-export async function GET(req: NextRequest, { params: { id } }: any) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   console.log(id);
   try {
     // const searchParams = useSearchParams();
@@ -37,7 +39,9 @@ export async function GET(req: NextRequest, { params: { id } }: any) {
   }
 }
 
-export async function PUT(req: NextRequest, { params: { id } }: any) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   console.log(id);
   let pramasID = id;
   try {

@@ -260,19 +260,20 @@ interface IconCardProps {
   title: string;
   subtitle?: string;
   onClick?: () => void;
+  border: string;
 }
 
-function IconCard({ icon, title, subtitle, onClick }: IconCardProps) {
+function IconCard({ icon, title, subtitle, onClick, border }: IconCardProps) {
   return (
     <button
       onClick={onClick}
-      className="group bg-white/70 backdrop-blur-sm border border-sky-100 rounded-2xl p-4 flex flex-col items-start gap-2 shadow-sm hover:shadow-md transition transform hover:-translate-y-1"
+      className={`group bg-white/70 backdrop-blur-sm border border-[${border}] rounded-2xl p-4 flex flex-col items-start gap-2 shadow-sm hover:shadow-md transition transform hover:-translate-y-1`}
     >
-      <div className="bg-sky-50 rounded p-2 inline-flex items-center justify-center">
-        <div className="text-sky-700 text-xl">{icon}</div>
+      <div className="bg-[var(--primary-light)] rounded p-2 inline-flex items-center justify-center">
+        <div className="text-[var(--primary-accent)] text-xl">{icon}</div>
       </div>
       <div className="text-left">
-        <div className="text-sm font-semibold text-sky-800">{title}</div>
+        <div className="text-sm font-semibold text-[var(--primary-text)]">{title}</div>
         {subtitle && <div className="text-xs text-gray-500 mt-0.5">{subtitle}</div>}
       </div>
     </button>
@@ -335,6 +336,8 @@ export default function ChemistryResourcesPage() {
    const combinedResources = useMemo(() => {
   if (!resource) return [];
 
+
+
   const items = [
     ...(resource.syllabus || []).map((s:any) => ({ type: "Syllabus", title: s.title, desc: s.board || "", link: s.link })),
     ...(resource.notes || []).map((n:any) => ({ type: "Notes", title: n.title, desc: n.source, link: n.link })),
@@ -377,11 +380,76 @@ const showPaperScrollbar = filteredPapers.length > 8;
       </div>
     );
 
+//       const theme = {
+//   primary: "#0084d1",          // sky-600
+//   primaryDark: "#0069a8",      // sky-700
+//   primaryAccent: "#0069a8",    // sky-700
+//   primaryLight: "#f0f9ff",     // sky-50
+//   primaryText: "#00598a",      // sky-800
+//   primaryTextStrong: "#024a70",// sky-900
+
+//   borderLight:"#b8e6fe",       // sky-200
+//   borderLighter:"#dff2fe",     // sky-100
+//   borderLightest:"#f0f9ff",    // sky-50
+
+//   gradientStart: "#eaf5ff",
+//   gradientMid: "#f9fbff",
+//   gradientEnd: "#ffffff",
+// };
+
+//       const theme = {
+//   primary: "#0084d1",          // sky-600
+//   primaryDark: "#0069a8",      // sky-700
+//   primaryAccent: "#0069a8",    // sky-700
+//   primaryLight: "#f0f9ff",     // sky-50
+//   primaryText: "#00598a",      // sky-800
+//   primaryTextStrong: "#024a70",// sky-900
+
+//   borderLight:"#b8e6fe",       // sky-200
+//   borderLighter:"#dff2fe",     // sky-100
+//   borderLightest:"#f0f9ff",    // sky-50
+
+//   gradientStart: "#eaf5ff",
+//   gradientMid: "#f9fbff",
+//   gradientEnd: "#ffffff",
+// };
+
+const roseTheme = {
+  primary: "#E4546E",
+  primaryDark: "#C04056",
+  primaryAccent: "#A13648",
+  primaryLight: "#FFF0F3",
+  primaryText: "#8A2B3B",
+  primaryTextStrong: "#611D29",
+
+  borderLight: "#F5C5CF",
+  borderLighter: "#FCE4E9",
+  borderLightest: "#FFF0F3",
+
+  gradientStart: "#FFE9EE",
+  gradientMid: "#FFF9FA",
+  gradientEnd: "#ffffff",
+};
+
+
     console.log(resource)
   return (
-    <main className="min-h-screen bg-white text-slate-800">
+    <main className="min-h-screen bg-white text-slate-800" style={{
+    "--primary": resource.theme.primary,
+    "--primary-dark": resource.theme.primaryDark,
+    "--primary-accent": resource.theme.primaryAccent,
+    "--primary-light": resource.theme.primaryLight,
+    "--primary-text": resource.theme.primaryText,
+    "--primary-text-strong": resource.theme.primaryTextStrong,
+    "--border-light": resource.theme.borderLight,
+    "--border-lighter": resource.theme.borderLighter,
+    "--border-lightest": resource.theme.borderLightest,
+    "--gradient-start": resource.theme.gradientStart,
+    "--gradient-mid": resource.theme.gradientMid,
+    "--gradient-end": resource.theme.gradientEnd,
+  } as React.CSSProperties}>
       {/* HERO */}
-      <section className="relative bg-gradient-to-b from-[#eaf5ff] via-[#f9fbff] to-white pt-16 pb-10 border-b border-sky-50">
+      <section className="relative bg-gradient-to-b from-[var(--gradient-start)] via-[var(--gradient-mid)] to-[var(--gradient-end)] pt-16 pb-10 border-b border-[var(--border-lightest]">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-center gap-14">
             <div className="flex-shrink-0">
@@ -391,7 +459,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
             </div>
 
             <div className="flex-1">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-sky-900">{resource.subject}</h1>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--primary-text-strong)]">{resource.subject}</h1>
               <p className="mt-3 text-gray-600 max-w-2xl">
                 Your curated hub for A-Level {resource.subject}: syllabus, notes, past papers, videos and tools —
                 everything you need in one place.
@@ -400,20 +468,20 @@ const showPaperScrollbar = filteredPapers.length > 8;
               <div className="mt-6 flex gap-3">
                 <button
                   onClick={() => scrollTo("notes")}
-                  className="px-4 py-2 bg-sky-600 text-white rounded-full shadow hover:bg-sky-700 transition"
+                  className="px-4 py-2 bg-[var(--primary)] text-white rounded-full shadow hover:bg-[var(--primary-dark)] transition"
                 >
                   Start with Notes
                 </button>
                 <button
                   onClick={() => scrollTo("papers")}
-                  className="px-4 py-2 border border-sky-100 text-sky-700 rounded-full shadow-sm hover:shadow transition"
+                  className="px-4 py-2 border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full shadow-sm hover:shadow transition"
                 >
                   Past Papers
                 </button>
 
                 <button
                   onClick={() => setShowContribute(true)}
-                  className="ml-2 px-3 py-2 bg-white border border-sky-100 text-sky-700 rounded-full hover:shadow transition"
+                  className="ml-2 px-3 py-2 bg-white border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full hover:shadow transition"
                 >
                   Contribute a resource
                 </button>
@@ -427,7 +495,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search notes, videos, past papers..."
-                  className="w-full px-4 py-3 rounded-2xl border border-sky-100 focus:ring-2 focus:ring-sky-200 outline-none"
+                  className="w-full px-4 py-3 rounded-2xl border border-[var(--border-lighter] focus:ring-2 focus:ring-[var(--border-light] outline-none"
                 />
                 <div className="absolute right-3 top-3 text-sm text-gray-400">⌘K</div>
               </div>
@@ -444,10 +512,11 @@ const showPaperScrollbar = filteredPapers.length > 8;
               title="Notes & Summaries"
               subtitle="Unit-by-unit, concise"
               onClick={() => scrollTo("notes")}
+              border={`${resource.theme.borderLighter}`}
             />
-            <IconCard icon="🎥" title="Youtube Channels" subtitle="Channels & walkthroughs" onClick={() => scrollTo("videos")} />
-            <IconCard icon="🧾" title="Past Papers" subtitle="Papers + mark schemes" onClick={() => scrollTo("papers")} />
-            <IconCard icon="📚" title="Books & Textbooks" subtitle="Recommended reads" onClick={() => scrollTo("books")} />
+            <IconCard icon="🎥" title="Youtube Channels" subtitle="Channels & walkthroughs" onClick={() => scrollTo("videos")} border={`${resource.theme.borderLighter}`}/>
+            <IconCard icon="🧾" title="Past Papers" subtitle="Papers + mark schemes" onClick={() => scrollTo("papers")} border={`${resource.theme.borderLighter}`}/>
+            <IconCard icon="📚" title="Books & Textbooks" subtitle="Recommended reads" onClick={() => scrollTo("books")} border={`${resource.theme.borderLighter}`}/>
           </motion.div>
         </div>
       </section>
@@ -461,16 +530,16 @@ const showPaperScrollbar = filteredPapers.length > 8;
             {/* SYLLABUS */}
             
 
-            <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            <motion.section {...fade} id="syllabus" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">Syllabus & Specification</h2>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">Syllabus & Specification</h2>
                   <p className="text-sm text-gray-500 mt-1">Official specifications & exam board notes.</p>
                 </div>
 
                 <button
                   onClick={() => setShowAllSyllabus((prev) => !prev)}
-                  className={`text-sm text-sky-700 underline ${resource.syllabus.length >6 ? "visible" : "hidden"}`}
+                  className={`text-sm text-[var(--primary-accent)] underline ${resource.syllabus.length >6 ? "visible" : "hidden"}`}
                 >
                   {showAllSyllabus ? "View less" : "View all"}
                 </button>
@@ -500,12 +569,12 @@ const showPaperScrollbar = filteredPapers.length > 8;
                       layout
                       className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-sm transition"
                     >
-                      <div className="w-10 h-10 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">
+                      <div className="w-10 h-10 rounded-md bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary-accent)]">
                         <Image src={`/syllabus_icons/${s.board.replace("/", "")}.png`} alt={`${s.board} logo`} width={25} height={25}/>
                       </div>
 
                       <div>
-                        <div className="font-medium text-sky-800">{s.title}</div>
+                        <div className="font-medium text-[var(--primary-text)]">{s.title}</div>
                         <div className="text-xs text-gray-500">{s.board}</div>
                       </div>
                     </motion.a>
@@ -515,17 +584,17 @@ const showPaperScrollbar = filteredPapers.length > 8;
             </motion.section>
 
          {/* NOTES */}
-            <motion.section {...fade} id="notes" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            <motion.section {...fade} id="notes" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">Notes & Summaries</h2>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">Notes & Summaries</h2>
                   <p className="text-sm text-gray-500 mt-1">Concise unit notes, printable summaries and cheat sheets.</p>
                 </div>
 
                 {resource.notes.length > 6 && (
                   <button
                     onClick={() => setShowAllNotes(prev => !prev)}
-                    className="text-sm text-sky-700 underline"
+                    className="text-sm text-[var(--primary-accent)] underline"
                   >
                     {showAllNotes ? "View less" : "View all"}
                   </button>
@@ -543,10 +612,10 @@ const showPaperScrollbar = filteredPapers.length > 8;
                     transition={{ duration: 0.25, delay: showAllNotes ? idx * 0.02 : 0 }}
                     className="p-4 border rounded-lg hover:shadow-md transition flex gap-3 bg-white"
                   >
-                    <div className="w-12 h-12 rounded-md bg-sky-50 flex items-center justify-center text-sky-700">📝</div>
+                    <div className="w-12 h-12 rounded-md bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary-accent)]">📝</div>
 
                     <div className="flex-1">
-                      <div className="font-medium text-sky-800">{n.title}</div>
+                      <div className="font-medium text-[var(--primary-text)]">{n.title}</div>
                       <div className="text-xs text-gray-500 mt-1">{n.source}</div>
                       {n.tags?.length > 0 && (
                         <div className="text-xs text-gray-400 mt-2 line-clamp-1">{n.tags.join(", ")}</div>
@@ -559,17 +628,17 @@ const showPaperScrollbar = filteredPapers.length > 8;
 
            
             {/* YOUTUBE CHANNELS */}
-            <motion.section {...fade} id="videos" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            <motion.section {...fade} id="videos" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">YouTube Channels</h2>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">YouTube Channels</h2>
                   <p className="text-sm text-gray-500 mt-1">Walkthroughs, concept explainers, and past-paper guides.</p>
                 </div>
 
                 {resource.youtubeChannel.length > 6 && (
                   <button
                     onClick={() => setShowAllChannels(prev => !prev)}
-                    className="text-sm text-sky-700 underline"
+                    className="text-sm text-[var(--primary-accent)] underline"
                   >
                     {showAllChannels ? "View less" : "View all"}
                   </button>
@@ -592,7 +661,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
                     </div>
 
                     <div className="flex-1 text-left">
-                      <div className="font-medium text-sky-800">{y.channel}</div>
+                      <div className="font-medium text-[var(--primary-text)]">{y.channel}</div>
                       {y.description && (
                         <div className="text-xs text-gray-500 mt-1 line-clamp-2">{y.description}</div>
                       )}
@@ -604,17 +673,17 @@ const showPaperScrollbar = filteredPapers.length > 8;
 
 
             {/* VIDEOS — PLAYLISTS (NEW) */}
-            <motion.section {...fade} id="yt-playlists" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            <motion.section {...fade} id="yt-playlists" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">Useful Playlists & Videos</h2>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">Useful Playlists & Videos</h2>
                   <p className="text-sm text-gray-500 mt-1">Curated topic modules, revision series, and past-paper walkthrough sets.</p>
                 </div>
 
                 {(resource.youtubePlaylist?.length > 6) && (
                   <button
                     onClick={() => setShowAllPlaylists(prev => !prev)}
-                    className="text-sm text-sky-700 underline"
+                    className="text-sm text-[var(--primary-accent)] underline"
                   >
                     {showAllPlaylists ? "View less" : "View all"}
                   </button>
@@ -637,7 +706,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.25, delay: showAllPlaylists ? idx * 0.02 : 0 }}
-                      className="group rounded-2xl border border-sky-50 bg-white overflow-hidden shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
+                      className="group rounded-2xl border border-[var(--border-lightest] bg-white overflow-hidden shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
                     >
                       {/* Thumbnail */}
                       <div className="relative w-full aspect-video bg-gray-100">
@@ -650,7 +719,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
 
                       {/* Body */}
                       <div className="p-4">
-                        <div className="text-sm font-semibold text-sky-900 line-clamp-2">{title}</div>
+                        <div className="text-sm font-semibold text-[var(--primary-text-strong)] line-clamp-2">{title}</div>
 
                         {description && (
                           <p className="mt-1 text-xs text-gray-600 line-clamp-3">
@@ -667,10 +736,10 @@ const showPaperScrollbar = filteredPapers.length > 8;
 
             {/* PAST PAPERS */}
 {/* PAST PAPERS */}
-<motion.section {...fade} id="papers" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+<motion.section {...fade} id="papers" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
   <div className="flex items-center justify-between">
     <div>
-      <h2 className="text-xl font-semibold text-sky-900">Past Papers & Mark Schemes</h2>
+      <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">Past Papers & Mark Schemes</h2>
       <p className="text-sm text-gray-500 mt-1">Filter by board and download individual papers.</p>
     </div>
 
@@ -690,7 +759,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
         onClick={() => {
           alert("Download all (demo): combine links server-side for full export.");
         }}
-        className="px-3 py-2 bg-sky-600 text-white rounded-full"
+        className="px-3 py-2 bg-[var(--primary)] text-white rounded-full"
       >
         Download all
       </button>
@@ -713,7 +782,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
             <td className="py-3">{p.year}</td>
             <td>{p.board}</td>
             <td>
-              <a className="text-sky-700 underline" target="_blank" href={p.link}>
+              <a className="text-[var(--primary-accent)] underline" target="_blank" href={p.link}>
                 Download PDF
               </a>
             </td>
@@ -734,17 +803,17 @@ const showPaperScrollbar = filteredPapers.length > 8;
 
               {/* BOOKS */}
 
-            <motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            <motion.section {...fade} id="books" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">Books & Textbooks</h2>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">Books & Textbooks</h2>
                   <p className="text-sm text-gray-500 mt-1">Recommended references & editions.</p>
                 </div>
 
                 {resource.books.length > 6 && (
                   <button
                     onClick={() => setShowAllBooks((prev) => !prev)}
-                    className="text-sm text-sky-700 underline"
+                    className="text-sm text-[var(--primary-accent)] underline"
                   >
                     {showAllBooks ? "View less" : "View all"}
                   </button>
@@ -763,8 +832,8 @@ const showPaperScrollbar = filteredPapers.length > 8;
                     <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
                       <Image src={b.cover} alt={b.title} fill className="object-contain" />
                     </div>
-                    <div className="text-sm font-medium text-sky-800 line-clamp-2">{b.title}</div>
-                    <a className="text-xs text-sky-700 underline" target="_blank" href={b.buy}>Buy / Details</a>
+                    <div className="text-sm font-medium text-[var(--primary-text)] line-clamp-2">{b.title}</div>
+                    <a className="text-xs text-[var(--primary-accent)] underline" target="_blank" href={b.buy}>Buy / Details</a>
                   </motion.div>
                 ))}
               </div>
@@ -772,17 +841,17 @@ const showPaperScrollbar = filteredPapers.length > 8;
 
               
             {/* TOOLS */}
-            <motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            <motion.section {...fade} id="tools" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">Tools & Utilities</h2>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">Tools & Utilities</h2>
                   <p className="text-sm text-gray-500 mt-1">Useful calculators, references, and quick-access utilities.</p>
                 </div>
 
                 {resource.tools.length > 6 && (
                   <button
                     onClick={() => setShowAllTools((prev) => !prev)}
-                    className="text-sm text-sky-700 underline"
+                    className="text-sm text-[var(--primary-accent)] underline"
                   >
                     {showAllTools ? "View less" : "View all"}
                   </button>
@@ -800,10 +869,10 @@ const showPaperScrollbar = filteredPapers.length > 8;
                     transition={{ duration: 0.25, delay: showAllTools ? idx * 0.02 : 0 }} // subtle stagger when expanding
                     className="p-4 pr-2 border rounded-lg hover:shadow-md transition flex justify-center items-start gap-3 bg-white"
                   >
-                    <div className="w-10 h-10 rounded bg-sky-50 flex items-center justify-center text-xl">🔧</div>
+                    <div className="w-10 h-10 rounded bg-[var(--primary-light)] flex items-center justify-center text-xl">🔧</div>
 
                     <div className="flex-1">
-                      <div className="text-sm font-semibold text-sky-800">{t.name}</div>
+                      <div className="text-sm font-semibold text-[var(--primary-text)]">{t.name}</div>
 
                       {t.description && (
                         <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">
@@ -817,30 +886,30 @@ const showPaperScrollbar = filteredPapers.length > 8;
             </motion.section>
 
             {/* COMMUNITY */}
-            <motion.section {...fade} id="community" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
+            <motion.section {...fade} id="community" className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]">
               <div className="flex justify-between items-center">
                 <div>
                   
-                  <h2 className="text-xl font-semibold text-sky-900">Community Help</h2>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">Community Help</h2>
                   <p className="text-sm text-gray-500 mt-1">Discord, subreddit and places to ask for help.</p>
                   
                 </div>
                 <div>
-                  <a className="text-sky-700 underline" href="https://discord.gg/vS7eTFKZfD">Join Discord</a>
+                  <a className="text-[var(--primary-accent)] underline" href="https://discord.gg/vS7eTFKZfD">Join Discord</a>
                 </div>
               </div>
 
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-3 border rounded-lg">
                   <a href="https://discord.gg/vS7eTFKZfD" target="_blank">
-                  <div className="text-sm font-medium text-sky-800">r/alevel Discord</div>
+                  <div className="text-sm font-medium text-[var(--primary-text)]">r/alevel Discord</div>
                   <div className="text-xs text-gray-500">Active channels for Chemistry Q&A</div>
                   </a>
                 </div>
 
                 <div className="p-3 border rounded-lg">
                   <a href="https://www.reddit.com/r/alevel/" target="_blank">
-                  <div className="text-sm font-medium text-sky-800">Ask r/alevel Reddit</div>
+                  <div className="text-sm font-medium text-[var(--primary-text)]">Ask r/alevel Reddit</div>
                   <div className="text-xs text-gray-500">Post a question — volunteers respond</div>
                   </a>
                 </div>
@@ -855,7 +924,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
                 <div className="text-xs text-gray-500">Quick search results</div>
                 <div className="mt-3 space-y-2">
                   {combinedResources.slice(0, 6).map((r, i) => (
-                    <a key={i} href={r.link} target="_blank" className="block text-sm text-sky-800 hover:underline">
+                    <a key={i} href={r.link} target="_blank" className="block text-sm text-[var(--primary-text)] hover:underline">
                       {r.title} <span className="text-xs text-gray-400">— {r.type}</span>
                     </a>
                   ))}
@@ -865,10 +934,10 @@ const showPaperScrollbar = filteredPapers.length > 8;
               <div className="p-4 bg-white border rounded-2xl shadow-sm">
                 <div className="text-xs text-gray-500">Top picks</div>
                 <div className="mt-3">
-                  <a className="block text-sm text-sky-800 hover:underline" target="_blank" href={resource.notes[0]?.link}>
+                  <a className="block text-sm text-[var(--primary-text)] hover:underline" target="_blank" href={resource.notes[0]?.link}>
                     {resource.notes[0]?.title}
                   </a>
-                  <a className="block text-sm text-sky-800 hover:underline mt-2" target="_blank" href={resource.books[0]?.buy}>
+                  <a className="block text-sm text-[var(--primary-text)] hover:underline mt-2" target="_blank" href={resource.books[0]?.buy}>
                     {resource.books[0]?.title}
                   </a>
                 </div>
@@ -876,7 +945,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
 
               <div className="p-4 bg-white border rounded-2xl shadow-sm text-center">
                 <div className="text-sm text-gray-700">Want to contribute?</div>
-                <button onClick={() => setShowContribute(true)} className="mt-3 px-3 py-2 bg-sky-600 text-white rounded-full">
+                <button onClick={() => setShowContribute(true)} className="mt-3 px-3 py-2 bg-[var(--primary)] text-white rounded-full">
                   Submit a resource
                 </button>
               </div>
@@ -890,7 +959,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
           <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setShowContribute(false)} />
           <motion.div initial={{ scale: 0.98, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative max-w-xl w-full bg-white rounded-2xl p-6 shadow-lg z-10">
-            <h3 className="text-lg font-semibold text-sky-900">Contribute a Resource</h3>
+            <h3 className="text-lg font-semibold text-[var(--primary-text-strong)]">Contribute a Resource</h3>
             <p className="text-sm text-gray-500 mt-1">Share a helpful link or upload notes to help other students.</p>
 
             <form className="mt-4 grid gap-3">
@@ -913,7 +982,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
                     alert("Thanks — submission received (demo). In production, POST to your server.");
                     setShowContribute(false);
                   }}
-                  className="px-3 py-2 bg-sky-600 text-white rounded"
+                  className="px-3 py-2 bg-[var(--primary)] text-white rounded"
                 >
                   Submit
                 </button>

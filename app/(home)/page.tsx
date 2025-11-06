@@ -2,7 +2,7 @@ import Hero from "./ui/hero";
 import AboutUs from "./ui/about-us";
 import OurProgress from "./ui/our-progress";
 import OurTeam from "./ui/our-team";
-import JoinBanner from "./ui/join-banner";
+import JoinBanner from "./ui/join-banner.client";
 import { Poppins } from "next/font/google";
 
 const poppins = Poppins({

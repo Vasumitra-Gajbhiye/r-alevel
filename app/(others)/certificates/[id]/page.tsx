@@ -29,7 +29,9 @@ const Skeleton = function (){
     );
 }
 
-export default function SingleResource({ params: { id } }: any) {
+export default async function SingleResource({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   return (
     <div className="bg-white min-h-screen">
       {/* You can keep Navbar here */}
@@ -79,19 +81,16 @@ let cert: Certificate | null = null;
 
   let admin;
   let adminSign;
-  let height;
-  let width;
+  const width = admin === "Kush" ? 300 : 1263;
+const height = admin === "Kush" ? 200 : 360;
+
   if(cert?.admin=="kush") {
     admin="Kush";
     adminSign="Kush_sign.png"
-    width=300
-    height=200
     } 
   if(cert?.admin=="scrim") {
     admin = "Jake Schwegler";
      adminSign="Jake_sign.jpg"
-     width=1263
-    height=360
   }
   
 const src = adminSign ? `/certificateImages/${adminSign}` : "/fallback.png";

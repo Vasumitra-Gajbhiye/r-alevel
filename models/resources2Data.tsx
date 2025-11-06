@@ -48,6 +48,23 @@ const toolsSchema = new mongoose.Schema({
   description: { type: String},
 });
 
+const themeSchema = new mongoose.Schema({
+  primary: { type: String, required: true },
+  primaryDark: { type: String, required: true },
+  primaryAccent: { type: String, required: true },
+  primaryLight: { type: String, required: true },
+  primaryText: { type: String, required: true },
+  primaryTextStrong: { type: String, required: true },
+
+  borderLight: { type: String, required: true },
+  borderLighter: { type: String, required: true },
+  borderLightest: { type: String, required: true },
+
+  gradientStart: { type: String, required: true },
+  gradientMid: { type: String, required: true },
+  gradientEnd: { type: String, required: true },
+});
+
 const resources2dataSchema = new mongoose.Schema(
   {
     subject: { type: String, required: true }, // e.g. "Chemistry"
@@ -59,6 +76,7 @@ const resources2dataSchema = new mongoose.Schema(
     youtubePlaylist: [youtubePlaylistSchema],
     pastPapers: [pastPaperSchema],
     tools: [toolsSchema],
+    theme: themeSchema,
   },
   { timestamps: true }
 );
