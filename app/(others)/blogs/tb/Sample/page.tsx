@@ -280,7 +280,7 @@ return(
 const content = function (i:any){
     if(i=="intro") return (
     <div className="flex flex-col gap-4">
-          
+          some intro
     </div> 
   )
   
@@ -288,7 +288,15 @@ const content = function (i:any){
    if(i==1){
     return(
       <div className="flex flex-col gap-3 mt-5">
-        
+        some para
+      </div>
+    )
+  }
+
+  if(i==2){
+    return(
+      <div className="flex flex-col gap-3 mt-5">
+        some para...
       </div>
     )
   }

@@ -557,20 +557,14 @@ const content = function (i:any){
           <p>
             Selecting activities that align with your studies can enhance
                 your personal growth, strengthen your university applications,
-                and make your academic journey more fulfilling. Here’s how to
-                choose extracurriculars that effectively complement your
+                and make your academic journey more fulfilling. 
                 studies.
           </p>
-           <p>
-                Extracurricular activities play a vital role in your academic
-                experience. They offer valuable skills, experiences, and major
-                insight that might even compliment your academic pursuits.
-              </p>
               <p>
-                Here, I’ll provide you with insight on how to choose
+                Here, I'll provide you with insight on how to choose
                 extracurriculars that effectively complement your studies.
               </p>
-{quote("Extracurriculars aren’t distractions — they’re extensions of who you are becoming.", true)}
+{quote("Extracurriculars aren't distractions — they're extensions of who you are becoming.", true)}
           
 </div>
   )
@@ -578,10 +572,10 @@ const content = function (i:any){
   if(i==1){
 return(
   <div className="flex flex-col gap-3 mt-5">
-    <p>  Attempt to reflect on the subjects you are currently studying,
+    <p>  Fristly, attempt to reflect on the subjects you are currently studying,
                 along with the areas of interests surrounding them. For example,
-                if you’re studying Science, then activities like science clubs
-                or research projects may be more ideal as they might deepen your
+                if you're studying Science, then activities like science clubs
+                or research projects may be more ideal as they deepen your
                 understanding and passion for that specific subject.</p>
                 <p><strong>Career aspirations:</strong> Try to take a moment and
                 think about your long-term goals. How might extracurricular
@@ -592,7 +586,7 @@ return(
                  It&apos;s common that universities will require a series of
                  extracurricular activities that demonstrate relevant skills that
                  relate to the course that you&apos;re intending to study.</p>
-                 {quote("Science students may find research or club work fuels both curiosity and skill.", false)}
+                 {quote("Computer Science & IT students who actively participate in hackathons will have an edge over other University applicants", false)}
   </div>
 )
   }
@@ -601,15 +595,12 @@ return(
     return(
       <div className="flex flex-col gap-3 mt-5">
               <p>
-                <strong>Leadership and teamwork:</strong> You should try to
-                engage in activities that help to build leadership and teamwork
+                <strong>Leadership and teamwork:</strong> Universities and Scholarship organisations LOVE ❤️ Leaders. They also like people who have worked in teams. You should try to
+                engage in activities that help build leadership and teamwork
                 skills.{" "}
               </p>
-              <p>
-                For example, roles such as president of a club, a team captain
-                or being a project, leader can help you to develop these
-                attributes that will help you throughout your studies
-              </p>
+              {quote("Roles such as president of a club, a team captain or being a project leader, can help you to develop these attributes that will help you throughout your studies.", false)}
+              
               <p>
                 <strong>Communication Skills:</strong> Communication skills are
                 also extremely vital.
@@ -621,6 +612,7 @@ return(
                 student journalism. Strong communication skills are vital to
                 almost every field of study and profession.
               </p>
+              {quote("🗣️ Communication skill is not just taking 'confidently', it's about coveying your message in the most efficient way possible.", false)}
               <p>
                 <strong>Problem-solving and creativity:</strong> One thing that
                 people lose as they grow up is their ability to solve problems
@@ -635,7 +627,7 @@ return(
                 These skills are also transferable and can even enhance your
                 academic work and future career prospects.
               </p>
-              {quote("Join debate, coding, or theatre — they all teach collaboration and creativity.", false, "💡 Tip:")}
+              {quote("Join debate, coding, or theatre groups — they all teach collaboration and creativity.", false, "💡 Tip:")}
       </div>
     )
   }
@@ -650,24 +642,15 @@ return(
               </p>
               <p>
                 Deep involvement in these sorts of areas can demonstrate to both
-                employers and universities your commitment along with more a
-                larger showcases of experience and achievements.
+                employers and universities your commitment along with a
+                larger showcase of experiences and achievements.
               </p>
+                
               <p>
-                <strong>Breadth for variety:</strong> Include a range of
-                activities to show versatility and a well-rounded character.{" "}
-              </p>
-              <p>
-                While depth is important, having a variety of experiences can
+                <strong>Breadth for variety:</strong>  While depth is important, having a variety of experiences can
                 highlight your adaptability and diverse skills. Try to show a
                 range of activities that showcase versatility and a well-rounded
                 character.{" "}
-              </p>
-              <p>
-                Whilst depth is important, having a variety of experiences can
-                also help to highlight your capability to adapt along with your
-                diverse skill set. Try to identify a middle-point between the
-                two.
               </p>
 </div>
     )
@@ -691,10 +674,7 @@ return(
                 to be deeply involved in a few activities rather than to spread
                 yourself thinly across many activities.
               </p>
-              <p>
-                Quality participation can help to provide meaningful
-                contribution and experiences
-              </p>
+              {quote("Universites would much rather admit a person with great achievements in just one field, compared to someone who skims the surface off 10 different fields", false, "🚨 Note:")}
   </div>
     )}
 
@@ -712,6 +692,7 @@ return(
                 studies. The worst-case scenario is you dont&apos;t like it, and
                 you drop the activity, but at least you know you tried it.
               </p>
+              {quote("In 9th grade my dad foced me to learn web-development because someone told him it's going to be useful. I hated it at first and thought it was nerdy. But the adrenelin rush from solving bugs and seeing my code come to life won over me. Thanks to that random person I gained skills that enabled me to build this website you are using (ALL by myself) ", false, "🎀 Anecdote:")}
               <p>
                 <strong>Challenge yourself:</strong> Much like exploring your
                 interests, try to choose activities that push you outside of
@@ -719,12 +700,12 @@ return(
               </p>
               <p>
                 Growth often comes from stepping beyond your usual boundaries.
-                An example of this is when yout&apos;re playing a sport.
+                An example of this is when you&apos;re playing a sport.
               </p>
               <p>
-                Yout&apos;ll never get better playing against people that are
+                You&apos;ll never get better playing against people that are
                 the same skill level. You will always get better playing against
-                people who are far better than you.
+                people who are better than you.
               </p>
   </div>
     )}
@@ -739,9 +720,10 @@ return(
               </p>
               <p>
                 Participating in practical experience within a real-world
-                setting is always valuable and can always help provide a deeper
+                setting is always valuable and can help provide a deeper
                 understanding of your chosen field.
               </p>
+              {quote("If you are into writing, check out our 'certificates' page where you can apply to write blogs for us. NO experience need!", false)}
               <p>
                 <strong>Join clubs and societies:</strong> As said,
                 participating in clubs or societies related to your academic
@@ -752,9 +734,9 @@ return(
               <p>
                 Although it might seem daunting at first, I promise you in the
                 long run you will appreciate yourself for joining these clubs
-                and societies, as you will make friends, and you will people
-                throughout the journey.
+                and societies. As you meet more people and make new friends that share the same passion as you, you'll start to enjoy your journey even more.
               </p>
+              {quote("I found my passsion for making education accessible when I joined as a simple moderator in a reddit community - r/igcse. Fast forward to now, I'm the leader of the world's largest A level community - r/alevel.", false, "🎀 Anecdote:")}
               <p>
                 <strong>Contribute to projects:</strong> For whichever projects
                 or competitions that are occurring, try to engage in them, as
@@ -774,9 +756,9 @@ return(
     return(
   <div className="flex flex-col gap-3 mt-5">
      <p>
-                Remember that for most, academics within A-Levels take two
+                Most academics within A-Levels take two
                 years. Therefore, choosing extracurricular activities that both
-                complement your studies, along with aligning with your
+                complement your studies, as well as align with your
                 interests, goals, and skill sets, can help to create meaningful
                 experiences outside of the classroom.{" "}
               </p>
@@ -787,11 +769,7 @@ return(
               </p>
               <p>
                 Remember that the right extracurriculars can enrich and even
-                dramatically change the course of your education.{" "}
-              </p>
-              <p>
-                They will also help you build valuable skills and strengthen
-                your
+                dramatically change the course of your education and your life ✨✌️.
               </p>
   </div>
     )}
