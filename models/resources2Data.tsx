@@ -25,6 +25,8 @@ const youtubeChannelSchema = new mongoose.Schema({
   channelUrl: { type: String, required: true },
   description: { type: String },
   thumbnail: { type: String },
+  type: { type: String },
+
 });
 
 const youtubePlaylistSchema = new mongoose.Schema({

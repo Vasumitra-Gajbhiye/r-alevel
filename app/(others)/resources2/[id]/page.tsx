@@ -247,6 +247,7 @@ export default function SingleResource({ params: { id } }: any) {
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useParams } from "next/navigation";
 
 import Link from "next/link";
 
@@ -278,8 +279,9 @@ function IconCard({ icon, title, subtitle, onClick }: IconCardProps) {
   );
 }
 
-export default function ChemistryResourcesPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function ChemistryResourcesPage() {
+  const { id } = useParams();
+
 
   const [resource, setResource] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -384,14 +386,14 @@ const showPaperScrollbar = filteredPapers.length > 8;
           <div className="flex flex-col md:flex-row md:items-center gap-14">
             <div className="flex-shrink-0">
               <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-xl overflow-hidden shadow">
-                <Image src="/subjects/chem_new_main_thumb.png" alt="Chemistry hero" fill className="object-cover" />
+                <Image src={`/subjects/${resource.subject.toLowerCase()}_main_thumb.png`} alt="Chemistry hero" fill className="object-cover" />
               </div>
             </div>
 
             <div className="flex-1">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-sky-900">Chemistry</h1>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-sky-900">{resource.subject}</h1>
               <p className="mt-3 text-gray-600 max-w-2xl">
-                Your curated hub for A-Level Chemistry: syllabus, notes, past papers, videos and tools —
+                Your curated hub for A-Level {resource.subject}: syllabus, notes, past papers, videos and tools —
                 everything you need in one place.
               </p>
 
@@ -533,7 +535,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
               <div className="mt-4 grid sm:grid-cols-2 gap-4">
                 {(showAllNotes ? resource.notes : resource.notes.slice(0, 6)).map((n:any, idx:number) => (
                   <motion.a
-                    key={n.id}
+                    key={idx}
                     href={n.link}
                     target="_blank"
                     initial={{ opacity: 0, y: 4 }}
@@ -605,7 +607,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
             <motion.section {...fade} id="yt-playlists" className="bg-white p-6 rounded-2xl shadow-sm border border-sky-50">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-semibold text-sky-900">YouTube Playlists</h2>
+                  <h2 className="text-xl font-semibold text-sky-900">Useful Playlists & Videos</h2>
                   <p className="text-sm text-gray-500 mt-1">Curated topic modules, revision series, and past-paper walkthrough sets.</p>
                 </div>
 
@@ -625,6 +627,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
                   const title = p.title;
                   const description = p.description || "";
                   const thumb = p.thumbnail || "/playlist_thumb/fallback.png";
+                  const type = p.type
 
                   return (
                     <motion.a
@@ -641,7 +644,7 @@ const showPaperScrollbar = filteredPapers.length > 8;
                         <Image src={thumb} alt={title} fill className="object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition" />
                         <div className="absolute top-2 left-2 text-[10px] uppercase tracking-wide bg-white/90 backdrop-blur px-2 py-1 rounded-md">
-                          Playlist
+                          {type}
                         </div>
                       </div>
 

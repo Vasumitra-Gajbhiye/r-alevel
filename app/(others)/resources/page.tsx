@@ -142,7 +142,7 @@ import { ReactSearchAutocomplete } from "react-search-autocomplete";
 function Search() {
   const router = useRouter();
   const updated= [
-    {name:"chemistry", id:"690b1fb20678ed563fe6536e"}
+    {name:"chemistry", id:"690c29940678ed563fe65371"}
 ]
 
   const uuid = [
