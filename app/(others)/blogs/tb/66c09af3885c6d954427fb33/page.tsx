@@ -262,7 +262,6 @@
 import Image from "next/image";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { div } from "framer-motion/client";
 
 const quote = function (content: string, quote:boolean, boldText?:string){
 if (!quote) {return(
@@ -283,10 +282,9 @@ return(
     "3. Break Down Your Study Sessions",
     "4. Create a Visual Timetable",
     "5. Flexibility and Adaptability",
-    "6. Study Techniques and Productivity Tips",
+    "6. Incorporate Review Sessions",
     "7. Seek Support and Accountability",
-    "8. Incorporate Review Sessions",
-    "9. Rest and Self-Care",
+    "8. Rest and Self-Care",
     "Conclusion"
     ];
 
@@ -303,8 +301,8 @@ const content = function (i:any){
               </p>
               <p>
                 It helps you allocate time wisely, reduce stress, and stay on
-                track with your studies. Let’s dive into the steps to create a
-                study timetable that works for you.
+                track with your studies. In this blog, let's dive into the steps to create a
+                study timetable that works for YOU.
               </p>
 </div>
     )
@@ -315,7 +313,7 @@ const content = function (i:any){
            <div className="flex flex-col gap-4">
              <p>
                 <strong>Analyze Your Schedule:</strong> Start by mapping out
-                your current commitments. Include school hours, extracurricular
+                your current commitments. List EVERYTHING - school hours, extracurricular
                 activities, part-time jobs, and any other regular commitments.
                 This gives you a clear picture of your available study time.
               </p>
@@ -325,6 +323,7 @@ const content = function (i:any){
                 grades you aim to achieve) and short-term goals (e.g., chapters
                 to cover each week).
               </p>
+              {quote("Analyzing is the first step in solving any problem.", false)}
            </div>
     )}
 
@@ -337,7 +336,7 @@ const content = function (i:any){
                 to these areas to ensure you give them the attention they need.
               </p>
               <p>
-                <strong>Balance Your Study Load:</strong> While it’s essential
+                <strong>Balance Your Study Load:</strong> While it's essential
                 to focus on difficult subjects, don’t neglect your stronger
                 subjects. Balance your timetable to cover all areas adequately.
               </p>
@@ -349,8 +348,8 @@ const content = function (i:any){
            <div className="flex flex-col gap-4">
             <p>
                 <strong>Chunking:</strong> Break your study sessions into
-                manageable chunks. Research suggests that studying in 25- to
-                50-minute intervals with short breaks in between (Pomodoro
+                manageable chunks. Research suggests that studying in 25 to
+                50 minute intervals with short breaks in between (Pomodoro
                 Technique) enhances concentration and retention.
               </p>
               <p>
@@ -359,6 +358,8 @@ const content = function (i:any){
                 Chemistry” or “Solve 10 Maths problems”. This keeps you focused
                 and provides a sense of accomplishment.
               </p>
+              {quote("Use to-do list apps to manage your tasks. Checking tasks off the list can be immensely satisfying!", false, "✨ Tip:")}
+
            </div>
     )}
 
@@ -367,20 +368,23 @@ const content = function (i:any){
            <div className="flex flex-col gap-4">
              <p>
                 <strong>Choose a Format:</strong> Whether you prefer digital
-                tools like Google Calendar or a physical planner, choose a
-                format that you’re comfortable with and will consistently use.
+                tools like Google Calendar / Notion / GoodNotes or a physical planner, choose a
+                format that you're comfortable with and will consistently use.
               </p>
+              {quote("I recommend using Notion or Google Docs to create a digital timetable and then copying the final version on paper. Stick this physical timetable near your workstation", false, "🎀 Advice:")}
               <p>
                 <strong>Color-Coding:</strong> Use color-coding to differentiate
                 between subjects and activities. This makes your timetable
                 visually appealing and easier to read.
               </p>
+              {quote("Don't spend too much time trying to make those asthetic, Pinteresty time tables. They should just be functional!",false)}
               <p>
                 <strong>Include Breaks and Leisure Time:</strong> Schedule
-                regular breaks to relax and recharge. Include leisure
-                activities, exercise, and social time to maintain a healthy
-                balance.
+                regular breaks to relax and recharge. Watching Netflix as a primary why of relaxing is NOT a good idea 💔 
               </p>
+              <p>Include leisure
+                activities, exercise, and social time to maintain a healthy
+                balance.</p>
            </div>
     )}
 
@@ -398,29 +402,24 @@ const content = function (i:any){
                 schedule for unexpected events or additional study needs. This
                 prevents your timetable from becoming too rigid and stressful.
               </p>
+              {quote("⏰ Allocating 10-20% more time to each task ensures you have enough wiggle room.", false)}
            </div>
     )}
 
-    if(i==6){
+     if(i==6){
     return(
            <div className="flex flex-col gap-4">
-            <p>
-                <strong>Active Learning:</strong> Incorporate active learning
-                techniques such as summarizing notes, teaching concepts to
-                someone else, and using flashcards. This enhances understanding
-                and retention.
+<p>
+                <strong>Regular Reviews:</strong> Add regular review
+                sessions to your timetable to revisit previously covered material. This reinforces
+                learning and ensures you don’t forget earlier topics.
               </p>
               <p>
-                <strong>Eliminate Distractions:</strong> Identify and minimize
-                distractions during study sessions. Find a quiet study space,
-                turn off notifications, and set boundaries with family and
-                friends.
+                <strong>Mock Exams:</strong> Take periodic mock exams to assess
+                your progress and identify areas needing improvement. Simulate
+                exam conditions to build confidence and reduce anxiety.
               </p>
-              <p>
-                <strong>Stay Hydrated and Nourished:</strong> Proper nutrition
-                and hydration improve concentration and cognitive function. Keep
-                water and healthy snacks on hand while studying.
-              </p>
+              {quote("Incorporate active learning techniques such as summarizing notes, teaching concepts to someone else, and using flashcards. This enhances understanding and retention", false)}
            </div>
     )}
 
@@ -437,26 +436,13 @@ const content = function (i:any){
                 and timetable with a friend or family member. Having someone to
                 check in with can help you stay accountable and committed.
               </p>
+              {quote("Identify and minimize distractions during study sessions. Find a quiet study space, turn off notifications, and set boundaries with family and friends.", false)}
            </div>
     )}
 
-    if(i==8){
-    return(
-           <div className="flex flex-col gap-4">
-<p>
-                <strong>Regular Reviews:</strong> Schedule regular review
-                sessions to revisit previously covered material. This reinforces
-                learning and ensures you don’t forget earlier topics.
-              </p>
-              <p>
-                <strong>Mock Exams:</strong> Take periodic mock exams to assess
-                your progress and identify areas needing improvement. Simulate
-                exam conditions to build confidence and reduce anxiety.
-              </p>
-           </div>
-    )}
+   
 
-     if(i==9){
+     if(i==8){
     return(
            <div className="flex flex-col gap-4">
             <p>
@@ -470,10 +456,15 @@ const content = function (i:any){
                 breathing, or yoga. Don’t hesitate to seek professional help if
                 needed.
               </p>
+              <p>
+                <strong>Stay Hydrated and Nourished:</strong> Proper nutrition
+                and hydration improve concentration and cognitive function. Keep
+                water and healthy snacks on hand while studying.
+              </p>
            </div>
     )}
 
-    if(i==10){
+    if(i==9){
     return(
            <div className="flex flex-col gap-4">
             <p>
