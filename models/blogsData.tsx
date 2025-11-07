@@ -29,6 +29,7 @@ const blogsDataSchema = new Schema({
   timeToRead: String,
   tag: String,
   author: String,
+  slug:String,
 });
 
 const BlogsData = models.BlogsData || model("BlogsData", blogsDataSchema);

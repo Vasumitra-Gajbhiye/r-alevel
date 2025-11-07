@@ -335,7 +335,6 @@
 import Image from "next/image";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { div } from "framer-motion/client";
 
 const quote = function (content: string, quote:boolean, boldText?:string){
 if (!quote) {return(

@@ -14,7 +14,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "incremental": true,
     "plugins": [
       {
@@ -35,7 +35,8 @@
     ".next/types/**/*.ts",
     "app/api/user/route.js",
     "app/api/user/update/route.js",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "app/(others)/blogs2/mdx-components.tss"
   ],
   "exclude": [
     "node_modules"

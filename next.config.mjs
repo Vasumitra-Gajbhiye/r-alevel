@@ -1,31 +1,25 @@
+import createMDX from "@next/mdx";
+
+const withMDX = createMDX({
+  // Enables MDX for `.mdx` files
+  extension: /\.mdx?$/,
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // ✅ MUST be enabled for MDX in the app router
   experimental: {
-    appDir: true, // keep if you're using app router
+    mdxRs: true,
   },
+
   images: {
-    // simple domain list (works)
     domains: [
       "lh3.googleusercontent.com",
-      "avatars.githubusercontent.com", // GitHub avatars (optional)
-      "www.gravatar.com",             // gravatar (optional)
-    ],
-    // optional — more secure/specific: remotePatterns (allows paths)
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-        port: "",
-        pathname: "/**",
-      },
+      "avatars.githubusercontent.com",
+      "www.gravatar.com",
     ],
   },
 };
 
-export default nextConfig
+// ✅ Wrap the config last
+export default withMDX(nextConfig);

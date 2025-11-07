@@ -8,35 +8,24 @@ import { NextResponse, NextRequest } from "next/server";
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  console.log(id);
   try {
-    // const searchParams = useSearchParams();
-
-    // const id = searchParams.get("id");
-    console.log(id);
-
     await connectDB();
 
-    const blog = await BlogsData.findOne({ _id: id });
+    // ✅ slug-based lookup
+    const blog = await BlogsData.findOne({ slug: id });
+
+    if (!blog) {
+      return NextResponse.json({ message: "Blog not found" }, { status: 404 });
+    }
 
     return NextResponse.json(
-      {
-        message: "Successfully fetched single blog",
-        data: blog,
-      },
-      {
-        status: 200,
-      }
+      { message: "Successfully fetched blog metadata", data: blog },
+      { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(
-      {
-        message: "Failed to fetch single blog",
-        error: error,
-      },
-      {
-        status: 500,
-      }
+      { message: "Failed to fetch blog", error },
+      { status: 500 }
     );
   }
 }

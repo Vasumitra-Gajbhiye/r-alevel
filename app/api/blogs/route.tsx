@@ -2,31 +2,34 @@ import connectDB from "@/libs/mongodb";
 import BlogsData from "@/models/blogsData";
 import { NextResponse, NextRequest } from "next/server";
 
-// GET ALL SUBJECTS
-export async function GET(req: NextRequest) {
+// GET ALL blogs
+export async function GET() {
   try {
     await connectDB();
 
-    const blogs = await BlogsData.find();
+    const blogs = await BlogsData.find(
+      {}, // no filter
+      {
+        _id: 1,
+        slug: 1,
+        mainTitle: 1,
+        description: 1,
+        date: 1,
+        timeToRead: 1,
+        tag: 1,
+        author: 1,
+      }
+    ).lean(); // ← optional (faster)
 
     return NextResponse.json(
-      {
-        message: "Successfully fetched all blogs",
-        data: blogs,
-      },
-      {
-        status: 200,
-      }
+      { message: "Successfully fetched all blogs", data: blogs },
+      { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
-      {
-        message: "Failed to fetch all blogs",
-        error: error,
-      },
-      {
-        status: 500,
-      }
+      { message: "Failed to fetch all blogs", error },
+      { status: 500 }
     );
   }
 }
@@ -35,7 +38,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     // const { mainTitle, date, author, introSection, sections, id } =
-    const { mainTitle, description, date, timeToRead, tag, author } =
+    const { mainTitle, description, date, timeToRead, tag, author, slug } =
       await req.json();
 
     // const newBlogsData = {
@@ -53,6 +56,7 @@ export async function POST(req: NextRequest) {
       timeToRead: timeToRead,
       tag: tag,
       author: author,
+      slug: slug,
     };
 
     await connectDB();
