@@ -5,38 +5,43 @@ import React, { ReactNode, isValidElement } from "react";
 const cn = (...xs: Array<string | false | null | undefined>) =>
   xs.filter(Boolean).join(" ");
 
-/* Safely extract <li> children OR fallback to plain markdown text */
 function extractListItems(children: ReactNode): ReactNode[] {
   if (!children) return [];
 
-  // Case 1: direct <ul> or <ol> passed by MDX
-  if (
-    isValidElement(children) &&
-    (children.type === "ul" || children.type === "ol")
-  ) {
-    const liNodes = React.Children.toArray(children.props.children);
+  const getLiChildren = (element: React.ReactElement) => {
+    const liNodes = React.Children.toArray(element.props.children);
     return liNodes
-      .map((node: any) => (isValidElement(node) ? node.props?.children : null))
+      .map((node) => {
+        if (isValidElement(node) && node.props && "children" in node.props) {
+          return node.props.children;
+        }
+        return null;
+      })
       .filter(Boolean);
-  }
+  };
 
-  // Case 2: Markdown parsed list inside an array (<ul> inside array)
-  if (Array.isArray(children)) {
-    const first = children.find(
-      (n) => isValidElement(n) && (n.type === "ul" || n.type === "ol")
-    );
-
-    if (first && isValidElement(first)) {
-      const liNodes = React.Children.toArray(first.props.children);
-      return liNodes
-        .map((node: any) =>
-          isValidElement(node) ? node.props?.children : null
-        )
-        .filter(Boolean);
+  // Case 1: children is a single <ul> or <ol>
+  if (isValidElement(children)) {
+    const tag = String(children.type);
+    if (tag === "ul" || tag === "ol") {
+      return getLiChildren(children);
     }
   }
 
-  // Case 3: plain text separated by newlines (fallback)
+  // Case 2: children is an array containing a <ul> or <ol>
+  if (Array.isArray(children)) {
+    const listElement = children.find(
+      (c) =>
+        isValidElement(c) &&
+        (String(c.type) === "ul" || String(c.type) === "ol")
+    );
+
+    if (listElement && isValidElement(listElement)) {
+      return getLiChildren(listElement);
+    }
+  }
+
+  // Case 3: Plain text fallback
   const text = String(children);
   return text
     .split("\n")
@@ -71,13 +76,13 @@ export default function KeyPointsMinimal({
       )}
 
       {ordered ? (
-        <ol className="flex flex-col gap-2 mt-3 ml-5 space-y-2 list-decimal tracking-wide text-[1.02rem] leading-8 text-slate-700">
+        <ol className="flex flex-col gap-2 mt-3 ml-5 list-decimal tracking-wide text-[1.02rem] leading-8 text-slate-700">
           {items.map((node, i) => (
             <li key={i}>{node}</li>
           ))}
         </ol>
       ) : (
-        <ul className="ml-5 space-y-2 list-disc tracking-wide text-[1.02rem] leading-8 text-slate-700">
+        <ul className="ml-5 list-disc tracking-wide text-[1.02rem] leading-8 text-slate-700">
           {items.map((node, i) => (
             <li key={i}>{node}</li>
           ))}

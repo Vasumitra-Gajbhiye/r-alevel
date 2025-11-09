@@ -46,16 +46,20 @@
 //     </div>
 //   );
 // }
-
-import { notFound } from "next/navigation";
 import fs from "fs";
+import { notFound } from "next/navigation";
 import path from "path";
 import ContentsClient from "./ContentsClient";
 
 type Params = { id: string };
 
-export default async function SubjectPage({ params }: { params: Params }) {
-  const subjectName = params.id.toLowerCase(); // e.g. "physics"
+export default async function SubjectPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { id } = await params;
+  const subjectName = id.toLowerCase();
 
   // Construct path to subject.json
   const filePath = path.join(
@@ -84,11 +88,17 @@ export default async function SubjectPage({ params }: { params: Params }) {
       {/* Breadcrumb */}
       <div className="mb-8">
         <nav className="text-sm text-gray-600 mb-3">
-          <a className="hover:underline" href="/">Home</a>
+          <a className="hover:underline" href="/">
+            Home
+          </a>
           <span className="mx-2">/</span>
-          <a className="hover:underline" href="/subject_guide">Subject Guide</a>
+          <a className="hover:underline" href="/subject_guide">
+            Subject Guide
+          </a>
           <span className="mx-2">/</span>
-          <span className="font-medium capitalize">{subjectData.subjectName}</span>
+          <span className="font-medium capitalize">
+            {subjectData.subjectName}
+          </span>
         </nav>
 
         {/* Heading */}
