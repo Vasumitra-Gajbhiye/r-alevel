@@ -1,4 +1,4 @@
-// app/(others)/blogs2/[slug]/page.tsx
+// app/(others)/blogs/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import BlogPostLayout from "./BlogPostLayout";
 
@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 
 export async function generateStaticParams() {
-  const postsDir = path.join(process.cwd(), "app/(others)/blogs2/posts");
+  const postsDir = path.join(process.cwd(), "app/(others)/blogs/posts");
 
   // Read all filenames in the folder
   const files = fs.readdirSync(postsDir);
@@ -32,11 +32,9 @@ export default async function Page({
     // const Post = require(`../posts/${params.slug}.mdx`).default;
 
     const { default: Post } = await import(
-      `@/app/(others)/blogs2/posts/${slug}.mdx`
+      `@/app/(others)/blogs/posts/${slug}.mdx`
     );
-    const { metadata } = await import(
-      `@/app/(others)/blogs2/posts/${slug}.mdx`
-    );
+    const { metadata } = await import(`@/app/(others)/blogs/posts/${slug}.mdx`);
 
     return (
       <BlogPostLayout metadata={metadata}>

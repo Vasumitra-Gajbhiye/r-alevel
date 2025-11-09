@@ -1,18 +1,18 @@
-import MDXImage from "@/app/(others)/blogs2/components/MDXImage";
+import MDXImage from "@/app/(others)/blogs/components/MDXImage";
 import type { MDXComponents } from "mdx/types";
 
-import BlogHeading from "@/app/(others)/blogs2/components/BlogHeading";
-import BlogImage from "@/app/(others)/blogs2/components/BlogImage";
-import BlogParagraph from "@/app/(others)/blogs2/components/BlogParagraph";
-import Callout from "@/app/(others)/blogs2/components/Callout";
-import Divider from "@/app/(others)/blogs2/components/Divider";
-import Heading3 from "@/app/(others)/blogs2/components/Heading3";
-import KeyPoints from "@/app/(others)/blogs2/components/KeyPoints";
-import KeyPointsMinimal from "@/app/(others)/blogs2/components/KeyPointsMinimal";
-import NextRead from "@/app/(others)/blogs2/components/NextRead";
-import Note from "@/app/(others)/blogs2/components/Note";
-import Quote from "@/app/(others)/blogs2/components/Quote";
-import Video from "@/app/(others)/blogs2/components/Video";
+import BlogHeading from "@/app/(others)/blogs/components/BlogHeading";
+import BlogImage from "@/app/(others)/blogs/components/BlogImage";
+import BlogParagraph from "@/app/(others)/blogs/components/BlogParagraph";
+import Callout from "@/app/(others)/blogs/components/Callout";
+import Divider from "@/app/(others)/blogs/components/Divider";
+import Heading3 from "@/app/(others)/blogs/components/Heading3";
+import KeyPoints from "@/app/(others)/blogs/components/KeyPoints";
+import KeyPointsMinimal from "@/app/(others)/blogs/components/KeyPointsMinimal";
+import NextRead from "@/app/(others)/blogs/components/NextRead";
+import Note from "@/app/(others)/blogs/components/Note";
+import Quote from "@/app/(others)/blogs/components/Quote";
+import Video from "@/app/(others)/blogs/components/Video";
 
 export function useMDXComponents(): MDXComponents {
   return {
