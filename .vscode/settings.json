@@ -1,3 +1,24 @@
 {
-  "liveServer.settings.port": 5501
+  "liveServer.settings.port": 5501,
+  // Format on save everywhere
+  "editor.formatOnSave": true,
+
+  // Tell VSCode to use Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Allow Prettier + ESLint to work correctly in Next.js
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  // Tailwind IntelliSense
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+
+  // Treat MDX as Markdown (for formatting + preview)
+  "files.associations": {
+    "*.mdx": "markdown"
+  }
 }

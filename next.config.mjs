@@ -1,12 +1,10 @@
 import createMDX from "@next/mdx";
 
-const withMDX = createMDX({
-  // Enables MDX for `.mdx` files
-  extension: /\.mdx?$/,
-});
+
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   // ✅ MUST be enabled for MDX in the app router
   experimental: {
     mdxRs: true,
@@ -20,6 +18,8 @@ const nextConfig = {
     ],
   },
 };
+
+const withMDX = createMDX({});
 
 // ✅ Wrap the config last
 export default withMDX(nextConfig);
