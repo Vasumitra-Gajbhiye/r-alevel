@@ -49,3 +49,14 @@
   animation: shimmer 1.5s infinite linear;
 }
 
+
+/* Auto-numbered blog section headings */
+article {
+  counter-reset: section-counter;
+}
+
+/* Increment the counter on each H2 heading */
+article h2 .counter-h2::before {
+  counter-increment: section-counter;
+  content: counter(section-counter) ". ";
+}

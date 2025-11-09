@@ -1,58 +1,51 @@
-
-
 // app/(others)/blogs2/[slug]/page.tsx
-import fs from "fs/promises";
-import path from "path";
 import { notFound } from "next/navigation";
-import { compileMDX } from "next-mdx-remote/rsc";
 import BlogPostLayout from "./BlogPostLayout";
 
-// Let Next know which slugs exist by reading /content
+import fs from "fs";
+import path from "path";
+
 export async function generateStaticParams() {
-  const dir = path.join(process.cwd(), "content/blogs");
-  let files: string[] = [];
-  try {
-    files = await fs.readdir(dir);
-  } catch {
-    files = [];
-  }
+  const postsDir = path.join(process.cwd(), "app/(others)/blogs2/posts");
+
+  // Read all filenames in the folder
+  const files = fs.readdirSync(postsDir);
+
+  // Filter only `.mdx` files → remove extension → return slug objects
   return files
-    .filter((f) => f.endsWith(".mdx"))
-    .map((f) => ({ slug: f.replace(/\.mdx$/, "") }));
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => ({
+      slug: file.replace(/\.mdx$/, ""),
+    }));
 }
 
-export default async function BlogPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
-  const filePath = path.join(process.cwd(), "content/blogs", `${slug}.mdx`);
+  console.log(slug);
 
-  let source: string;
   try {
-    source = await fs.readFile(filePath, "utf8");
+    // const Post = require(`../posts/${params.slug}.mdx`).default;
+
+    const { default: Post } = await import(
+      `@/app/(others)/blogs2/posts/${slug}.mdx`
+    );
+    const { metadata } = await import(
+      `@/app/(others)/blogs2/posts/${slug}.mdx`
+    );
+
+    return (
+      <BlogPostLayout metadata={metadata}>
+        <Post />
+      </BlogPostLayout>
+    );
   } catch {
     return notFound();
   }
-
-  // Compile the MDX into a React Server Component
-  const { content, frontmatter } = await compileMDX<{
-    slug: string;
-    title: string;
-    author: string;
-    date: string;
-    tag?: string;
-    image?: string;
-  }>({
-    source,
-    options: {
-      parseFrontmatter: true,
-      // You can add remark/rehype plugins here later if you want
-      mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
-    },
-  });
-
-  return (
-    <BlogPostLayout metadata={frontmatter}>
-      {content}
-    </BlogPostLayout>
-  );
 }
+
+export const dynamicParams = false;
