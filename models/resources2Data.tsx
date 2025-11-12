@@ -26,7 +26,6 @@ const youtubeChannelSchema = new mongoose.Schema({
   description: { type: String },
   thumbnail: { type: String },
   type: { type: String },
-
 });
 
 const youtubePlaylistSchema = new mongoose.Schema({
@@ -45,7 +44,7 @@ const pastPaperSchema = new mongoose.Schema({
 const toolsSchema = new mongoose.Schema({
   name: { type: String, required: true },
   url: { type: String, required: true },
-  description: { type: String},
+  description: { type: String },
 });
 
 const themeSchema = new mongoose.Schema({
@@ -65,15 +64,37 @@ const themeSchema = new mongoose.Schema({
   gradientEnd: { type: String, required: true },
 });
 
+const worksheetSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  link: { type: String, required: true },
+
+  // Optional metadata
+  board: { type: String }, // e.g., "CAIE", "Edexcel"
+  topic: { type: String }, // e.g., "Organic Chemistry"
+  difficulty: { type: String }, // e.g., "Easy", "Medium", "Hard"
+  yearRange: { type: String }, // e.g., "2016–2023"
+});
+
+const pdfBookSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  link: { type: String, required: true }, // direct PDF link
+
+  // Optional branding
+  cover: { type: String }, // image url for thumbnail
+  source: { type: String }, // e.g., "OpenStax", "Author Release"
+});
+
 const resources2dataSchema = new mongoose.Schema(
   {
     subject: { type: String, required: true }, // e.g. "Chemistry"
     level: { type: String, default: "A-Level" }, // optional field
     syllabus: [syllabusSchema],
     notes: [notesSchema],
+    pdfBooks: [pdfBookSchema],
     books: [booksSchema],
     youtubeChannel: [youtubeChannelSchema],
     youtubePlaylist: [youtubePlaylistSchema],
+    worksheets: [worksheetSchema],
     pastPapers: [pastPaperSchema],
     tools: [toolsSchema],
     theme: themeSchema,
