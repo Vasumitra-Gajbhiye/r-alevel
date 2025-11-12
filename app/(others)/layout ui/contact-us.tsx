@@ -139,7 +139,7 @@
 //   return (
 //     <div
 //       className=" bg-gray-100 overflow-hidden bg-right
-//       md:bg-center bg-scroll	
+//       md:bg-center bg-scroll
 //     bg-no-repeat bg-cover flex justify-center items-center flex-col gap-12 text-gray-900"
 //     >
 //       <MainContact />
@@ -147,7 +147,6 @@
 //     </div>
 //   );
 // }
-
 
 // "use client";
 
@@ -307,9 +306,9 @@
 
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -322,7 +321,10 @@ const MainContact = () => {
   const communityItems = [
     { title: "Discord", link: "https://discord.gg/vS7eTFKZfD" },
     { title: "Reddit", link: "https://www.reddit.com/r/alevel/" },
-    { title: "r.alevelserver@gmail.com", link: "mailto:r.alevelserver@gmail.com" },
+    {
+      title: "r.alevelserver@gmail.com",
+      link: "mailto:r.alevelserver@gmail.com",
+    },
   ];
 
   const navigationItems = [
@@ -419,22 +421,22 @@ const MainContact = () => {
         <div className="flex flex-col space-y-2">
           {[
             {
-              img: "/contact/discord-ic-b.png",
+              img: "/Contact/discord-ic-b.png",
               text: "Vasumitra Gajbhiye",
               link: "https://discord.com/users/1058932081629069363",
             },
             {
-              img: "/contact/discord-ic-b.png",
+              img: "/Contact/discord-ic-b.png",
               text: "Jake Schwegler",
               link: "https://discord.com/users/503876266844356628",
             },
             {
-              img: "/contact/reddit-ic-b.png",
+              img: "/Contact/reddit-ic-b.png",
               text: "Vasumitra Gajbhiye",
               link: "https://www.reddit.com/user/VasumitraGajbhiye/",
             },
             {
-              img: "/contact/gmail-ic-b.png",
+              img: "/Contact/gmail-ic-b.png",
               text: "r.alevelserver@gmail.com",
               link: "mailto:r.alevelserver@gmail.com",
             },
@@ -464,11 +466,13 @@ const Credit = () => (
     className="text-sm flex-col items-center gap-2 mb-8 text-center flex"
   >
     <p className="hidden sm:block">
-      Website designed & developed with <span className="animate-pulse">🖤</span> by{" "}
+      Website designed & developed with{" "}
+      <span className="animate-pulse">🖤</span> by{" "}
       <span className="font-medium">Vasumitra</span>
     </p>
     <p className="sm:hidden">
-      Website designed & developed with <span className="animate-pulse">🖤</span> <br /> by{" "}
+      Website designed & developed with{" "}
+      <span className="animate-pulse">🖤</span> <br /> by{" "}
       <span className="font-medium">Vasumitra</span>
     </p>
     <p className="opacity-70">© 2025 r/alevel • All Rights Reserved</p>

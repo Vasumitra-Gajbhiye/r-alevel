@@ -511,7 +511,7 @@ export default function ChemistryResourcesPage() {
                 one place.
               </p>
 
-              <div className="mt-6 flex gap-3 max-md2:flex-col">
+              <div className="mt-6 flex gap-3 max-md2:flex-col justify-center">
                 <button
                   onClick={() => scrollTo("notes")}
                   className="px-4 py-2 bg-[var(--primary)] text-white rounded-full shadow hover:bg-[var(--primary-dark)] transition max-lg:text-sm"
@@ -528,7 +528,7 @@ export default function ChemistryResourcesPage() {
                 <a
                   href="https://forms.gle/hAaHLimxKMB5WN4w9"
                   target="_blank"
-                  className="ml-2 px-3 py-2 bg-white border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full hover:shadow transition max-lg:text-sm"
+                  className="ml-2 px-3 py-2 text-center bg-white border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full hover:shadow transition max-lg:text-sm"
                 >
                   Contribute a resource
                 </a>
