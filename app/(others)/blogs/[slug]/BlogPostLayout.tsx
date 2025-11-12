@@ -294,7 +294,7 @@ export default function BlogPostLayout({
           transition={{ duration: 0.6 }}
           className="w-full max-w-3xl text-center"
         >
-          <h1 className="text-3xl md:text-4xl font-extrabold leading-snug text-black">
+          <h1 className="max-xxs:text-xl max-xs:text-2xl max-md:text-3xl text-4xl font-extrabold leading-snug text-black">
             {metadata.title}
           </h1>
 

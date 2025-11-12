@@ -1,5 +1,4 @@
 import { Poppins } from "next/font/google";
-import Script from "next/script";
 import "../globals.css";
 import SessionProviderWrapper from "../SessionProviderWrapper";
 import ContactUs from "./layout ui/contact-us";
@@ -34,36 +33,16 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en">
-      <head>
-        {/* Google Analytics */}
-        <Script
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=G-8WQ1YNJQR8`}
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-8WQ1YNJQR8', {
-            page_path: window.location.pathname,
-          });
-        `}
-        </Script>
-        <link rel="icon" href="/favicon.png" />
-      </head>
-      <body className={poppins.className}>
-        <SessionProviderWrapper>
-          <Navigation />
-          <div className="pt-11">{children}</div>
-          <ContactUs />
-        </SessionProviderWrapper>
-      </body>
-    </html>
+    <main className={poppins.className + " tracking-widest	"}>
+      <SessionProviderWrapper>
+        <Navigation />
+        <div className="pt-11">{children}</div>
+        <ContactUs />
+      </SessionProviderWrapper>
+    </main>
   );
 }

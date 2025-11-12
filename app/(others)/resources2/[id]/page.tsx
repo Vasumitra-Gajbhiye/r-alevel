@@ -1103,7 +1103,7 @@ export default function ChemistryResourcesPage() {
                   <select
                     value={filterBoard || ""}
                     onChange={(e) => setFilterBoard(e.target.value || null)}
-                    className="px-3 py-2 border rounded-full"
+                    className="px-3 py-2 border max-md:rounded-full bg-[var(--primary)] max-md:text-white"
                   >
                     <option value="">All boards</option>
                     <option value="CAIE">CAIE</option>
@@ -1117,7 +1117,7 @@ export default function ChemistryResourcesPage() {
                         "Sorry! Download all button is still in development"
                       );
                     }}
-                    className="px-3 py-2 bg-[var(--primary)] text-white rounded-full"
+                    className="px-3 py-2 bg-[var(--primary)] text-white rounded-full max-md:hidden"
                   >
                     Download all
                   </button>

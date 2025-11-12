@@ -1,4 +1,3 @@
-
 /*
 
 
@@ -315,7 +314,7 @@ export default function Team() {
 //       initial="hidden"
 //       whileInView="visible"
 //       viewport={{ once: true, amount: 0.3 }}
-//       className="relative flex flex-col items-center bg-gradient-to-b from-white to-blue-50 p-6 rounded-2xl shadow-md 
+//       className="relative flex flex-col items-center bg-gradient-to-b from-white to-blue-50 p-6 rounded-2xl shadow-md
 //                  hover:shadow-xl transition-all duration-300 w-[260px] overflow-hidden group"
 //       whileHover={{ y: -5, transition: { duration: 0.3 } }}
 //     >
@@ -486,7 +485,7 @@ export default function Team() {
 //       whileInView="visible"
 //       viewport={{ once: true, amount: 0.3 }}
 //       whileHover={{ y: -5, transition: { duration: 0.3 } }}
-//       className={`relative flex flex-col items-center bg-gradient-to-b ${gradient} 
+//       className={`relative flex flex-col items-center bg-gradient-to-b ${gradient}
 //         p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 w-[260px] overflow-hidden group`}
 //     >
 //       {/* Background shimmer */}
@@ -632,10 +631,10 @@ export default function Team() {
 "use client";
 
 import getAllTeam from "@/app/controller/getAllTeam";
-import { useEffect, useState } from "react";
-import { motion, Variants } from "framer-motion";
-import { FaDiscord, FaLinkedin } from "react-icons/fa";
 import Skeleton from "@/app/skeleton";
+import { motion, Variants } from "framer-motion";
+import { useEffect, useState } from "react";
+import { FaDiscord, FaLinkedin } from "react-icons/fa";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -676,7 +675,7 @@ const Profile = ({
   i: number;
 }) => {
   const gradient = getGradient(title);
-  console.log(imgSrc)
+  console.log(imgSrc);
 
   return (
     <motion.div
@@ -735,7 +734,11 @@ const Profile = ({
       {/* Profile image */}
       <div className="relative mb-4 z-10">
         <img
-          src={`${imgSrc ? imgSrc : `https://api.dicebear.com/9.x/avataaars/svg?seed=encodeURIComponent(${name})`}`}
+          src={`${
+            imgSrc
+              ? imgSrc
+              : `https://api.dicebear.com/9.x/avataaars/svg?seed=encodeURIComponent(${name})`
+          }`}
           alt={name}
           className="w-32 h-32 rounded-full border-4 border-white/60 shadow-sm group-hover:scale-105 transition-transform duration-300"
         />
@@ -744,7 +747,9 @@ const Profile = ({
       </div>
 
       {/* Text */}
-      <h2 className="text-lg font-semibold text-gray-800 z-10">{name}</h2>
+      <h2 className="text-lg font-semibold text-gray-800 z-10 text-center">
+        {name}
+      </h2>
       <h3 className="text-sm text-gray-700 mb-4 z-10 font-medium">{title}</h3>
 
       {/* Socials */}

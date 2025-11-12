@@ -102,7 +102,7 @@ export default function BlogsClient({ data }: { data: any[] }) {
                         alt={featuredBlogs[current].mainTitle}
                         width={1200}
                         height={600}
-                        className="object-cover w-full h-[400px] md:h-[480px] transition-transform duration-700 hover:scale-[1.03]"
+                        className="object-cover w-full max-xxs:h-[140px] max-xs:h-[220px] max-sm:h-[270px] max-md:h-[350px] h-[480px] transition-transform duration-700 hover:scale-[1.03]"
                       />
                     </a>
 

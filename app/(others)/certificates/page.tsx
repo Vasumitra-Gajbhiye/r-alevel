@@ -315,9 +315,7 @@
 //   );
 // }
 
-
 // app/certificates/page.tsx
-
 
 // "use client";
 
@@ -623,46 +621,42 @@
 
 "use client";
 
-import React from "react";
+import { motion, Variants } from "framer-motion";
+import { CheckCircle, PenTool, Share2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
-import { motion } from "framer-motion";
-import { CheckCircle, PenTool, Share2 } from "lucide-react";
-import { Variants } from "framer-motion";
-
 
 /* ---------------------------
   Data for search
 --------------------------- */
-  const uuid = [
-    { name: "2a00sg309itg", id: "2a00sg309itg" },
-    { name: "2g00of311lek", id: "2g00of311lek" },
-    { name: "2d00io308jke", id: "2d00io308jke" },
-    { name: "2h00vd310gdf", id: "2h00vd310gdf" },
-    { name: "2t00ml394ndi", id: "2t00ml394ndi" },
-    { name: "2f00bk313iru", id: "2f00bk313iru" },
-    { name: "2a00rt412uji", id: "2a00rt412uji" },
-  ];
+const uuid = [
+  { name: "2a00sg309itg", id: "2a00sg309itg" },
+  { name: "2g00of311lek", id: "2g00of311lek" },
+  { name: "2d00io308jke", id: "2d00io308jke" },
+  { name: "2h00vd310gdf", id: "2h00vd310gdf" },
+  { name: "2t00ml394ndi", id: "2t00ml394ndi" },
+  { name: "2f00bk313iru", id: "2f00bk313iru" },
+  { name: "2a00rt412uji", id: "2a00rt412uji" },
+];
 
-  const items = [
-    { name: "2a00sg309itg", id: 1 },
-    { name: "Martin Fernando Pramanik", id: 1 },
-    { name: "2g00of311lek", id: 2 },
-    { name: "Abdur Rafay Khan", id: 2 },
-    { name: "2d00io308jke", id: 3 },
-    { name: "Kyaw Nyi Nyi", id: 3 },
-    { name: "2h00vd310gdf", id: 4 },
-    { name: "Syed Ibrahim Ali", id: 4 },
-    { name: "2t00ml394ndi", id: 5 },
-    { name: "Molly Bonsall", id: 5 },
-    { name: "2f00bk313iru", id: 6 },
-    { name: "Jake Schwegler", id: 6 },
-  ];
+const items = [
+  { name: "2a00sg309itg", id: 1 },
+  { name: "Martin Fernando Pramanik", id: 1 },
+  { name: "2g00of311lek", id: 2 },
+  { name: "Abdur Rafay Khan", id: 2 },
+  { name: "2d00io308jke", id: 3 },
+  { name: "Kyaw Nyi Nyi", id: 3 },
+  { name: "2h00vd310gdf", id: 4 },
+  { name: "Syed Ibrahim Ali", id: 4 },
+  { name: "2t00ml394ndi", id: 5 },
+  { name: "Molly Bonsall", id: 5 },
+  { name: "2f00bk313iru", id: 6 },
+  { name: "Jake Schwegler", id: 6 },
+];
 
 /* ---------------------------
   UI Components
 --------------------------- */
-
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -709,7 +703,9 @@ function CertificateBlock({
           <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
             <Icon className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-2xl font-semibold text-white">{title} Certificate</h2>
+          <h2 className="text-2xl font-semibold text-white">
+            {title} Certificate
+          </h2>
         </div>
 
         <p className="text-white/90 mb-6 leading-relaxed text-lg max-w-2xl">
@@ -823,11 +819,12 @@ export default function CertificatesPage() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center"
         >
-          <h1 className="text-6xl sm:text-7xl font-extrabold leading-tight mb-8 text-center">
+          <h1 className="text-6xl sm:text-7xl font-extrabold leading-tight mb-8 text-center max-md:text-5xl">
             Certificates
           </h1>
           <p className="max-w-2xl text-center text-gray-600 mb-8">
-            Recognition for members who elevate r/alevel — through mentorship, writing, or sharing resources.
+            Recognition for members who elevate r/alevel — through mentorship,
+            writing, or sharing resources.
           </p>
           <AnimatedSearch onSelect={handleSelect} />
         </motion.div>
@@ -838,12 +835,14 @@ export default function CertificatesPage() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 1, delay:0.8 } }
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 1, delay: 0.8 }}
         >
           <h3 className="text-3xl font-semibold mb-6">How certificates work</h3>
           <p className="text-gray-700 text-lg mb-16">
-            Every r/alevel certificate celebrates genuine contribution — whether through solving doubts, writing insightful articles, or building resources that help thousands of students.
+            Every r/alevel certificate celebrates genuine contribution — whether
+            through solving doubts, writing insightful articles, or building
+            resources that help thousands of students.
           </p>
 
           {/* NEW, MODERNIZED Certificate Sections */}
@@ -854,10 +853,16 @@ export default function CertificatesPage() {
             gradientFrom="from-green-600"
             gradientTo="to-lime-300"
             steps={[
-              { label: "Join Discord and Reddit", link: "https://discord.gg/r-alevel-1114437735692902481" },
+              {
+                label: "Join Discord and Reddit",
+                link: "https://discord.gg/r-alevel-1114437735692902481",
+              },
               { label: "Answer questions and support peers regularly" },
-              { label: "Earn ~100 reputation points on Discord" },
-              { label: "Admins verify your impact before issuing the certificate" },
+              { label: "Earn 50 reputation points on Discord" },
+              {
+                label:
+                  "Admins verify your impact before issuing the certificate",
+              },
             ]}
           />
 
@@ -868,10 +873,19 @@ export default function CertificatesPage() {
             gradientFrom="from-pink-500"
             gradientTo="to-rose-600"
             steps={[
-              { label: "Join r/alevel community on Discord or Reddit", link: "https://discord.gg/r-alevel-1114437735692902481" },
-              { label: "Apply as a writer via Google Form", link: "https://docs.google.com/forms/d/e/1FAIpQLSeQ7LAYUjRtWunMRPPwdZyAtBN1lCXZt2A-tbcz_psc-DTC8Q/viewform?usp=sf_link" },
+              {
+                label: "Join r/alevel community on Discord or Reddit",
+                link: "https://discord.gg/r-alevel-1114437735692902481",
+              },
+              {
+                label: "Apply as a writer via Google Form",
+                link: "https://docs.google.com/forms/d/e/1FAIpQLSeQ7LAYUjRtWunMRPPwdZyAtBN1lCXZt2A-tbcz_psc-DTC8Q/viewform?usp=sf_link",
+              },
               { label: "Publish 10 approved posts on r/alevel Blogs" },
-              { label: "Receive a Writer Certificate after your 10th publication" },
+              {
+                label:
+                  "Receive a Writer Certificate after your 10th publication",
+              },
             ]}
             actionLink="https://docs.google.com/forms/d/e/1FAIpQLSeQ7LAYUjRtWunMRPPwdZyAtBN1lCXZt2A-tbcz_psc-DTC8Q/viewform?usp=sf_link"
             actionText="Apply as Writer"
@@ -884,12 +898,21 @@ export default function CertificatesPage() {
             gradientFrom="from-indigo-500"
             gradientTo="to-sky-600"
             steps={[
-              { label: "Join Discord and Reddit", link: "https://discord.gg/r-alevel-1114437735692902481" },
-              { label: "Submit your resources using our official form", link: "https://docs.google.com/forms/d/e/1FAIpQLSfUhcZGsksSn8GRLQAOwYW8wTpJLWTZZ7SPmlRJ5T6rgYUPUQ/viewform?usp=sf_link" },
+              {
+                label: "Join Discord and Reddit",
+                link: "https://discord.gg/r-alevel-1114437735692902481",
+              },
+              {
+                label: "Submit your resources using our official form",
+                link: "https://forms.gle/hAaHLimxKMB5WN4w9",
+              },
               { label: "Wait for moderator approval" },
-              { label: "Earn a Contributor Certificate for accepted submissions" },
+              {
+                label:
+                  "Earn a Contributor Certificate for accepted submissions",
+              },
             ]}
-            actionLink="https://docs.google.com/forms/d/e/1FAIpQLSfUhcZGsksSn8GRLQAOwYW8wTpJLWTZZ7SPmlRJ5T6rgYUPUQ/viewform?usp=sf_link"
+            actionLink="https://forms.gle/hAaHLimxKMB5WN4w9"
             actionText="Submit a Resource"
           />
         </motion.div>
@@ -905,22 +928,26 @@ export default function CertificatesPage() {
       >
         <div className="rounded-2xl p-8 bg-gradient-to-r from-blue-50 to-white border shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-2xl font-semibold">Want a certificate but unsure where to start?</h3>
-            <p className="text-gray-700 mt-2">Join Discord, help others, and apply for the role that fits you.</p>
+            <h3 className="text-2xl font-semibold">
+              Want a certificate but unsure where to start?
+            </h3>
+            <p className="text-gray-700 mt-2">
+              Join Discord, help others, and apply for the role that fits you.
+            </p>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 md:flex-col">
             <a
               href="https://discord.gg/r-alevel-1114437735692902481"
               target="_blank"
               rel="noreferrer"
-              className="px-4 py-2 rounded-full bg-cy-600 text-white font-semibold hover:scale-110 bg-cy-700 transition"
+              className="px-4 py-2 text-center rounded-full bg-cy-600 text-white font-semibold hover:scale-110 bg-cy-700 transition"
             >
               Join Discord
             </a>
             <a
               href="/team"
-              className="px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 transition"
+              className="px-4 py-2 text-center rounded-full border border-gray-200 hover:bg-gray-50 transition"
             >
               Meet the Team
             </a>
