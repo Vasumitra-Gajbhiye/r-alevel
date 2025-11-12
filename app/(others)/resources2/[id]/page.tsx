@@ -654,10 +654,9 @@ export default function ChemistryResourcesPage() {
                     >
                       <div className="w-10 h-10 rounded-md bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary-accent)]">
                         <Image
-                          src={`/syllabus_icons/${s.board.replace(
-                            "/",
-                            ""
-                          )}.png`}
+                          src={`/syllabus_icons/${s.board
+                            .replace("/", "")
+                            .toLowerCase()}.png`}
                           alt={`${s.board} logo`}
                           width={25}
                           height={25}
