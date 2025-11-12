@@ -1018,7 +1018,7 @@ export default function ChemistryResourcesPage() {
                     </p>
                   </div>
 
-                  {resource.worksheets.length > 8 && (
+                  {resource.worksheets.length > 9 && (
                     <button
                       onClick={() => setShowAllWorksheets((s) => !s)}
                       className="text-sm text-[var(--primary-accent)] underline"
@@ -1031,7 +1031,7 @@ export default function ChemistryResourcesPage() {
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {(showAllWorksheets
                     ? resource.worksheets
-                    : resource.worksheets.slice(0, 8)
+                    : resource.worksheets.slice(0, 9)
                   ).map((w: any, idx: number) => (
                     <motion.a
                       key={w.title + idx}
@@ -1187,7 +1187,7 @@ export default function ChemistryResourcesPage() {
                     </p>
                   </div>
 
-                  {resource.pdfBooks.length > 6 && (
+                  {resource.pdfBooks.length > 8 && (
                     <button
                       onClick={() => setShowAllPdfBooks((s) => !s)}
                       className="text-sm text-[var(--primary-accent)] underline"
@@ -1200,7 +1200,7 @@ export default function ChemistryResourcesPage() {
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {(showAllPdfBooks
                     ? resource.pdfBooks
-                    : resource.pdfBooks.slice(0, 6)
+                    : resource.pdfBooks.slice(0, 8)
                   ).map((b: any, idx: number) => (
                     <motion.a
                       key={b.title + idx}
