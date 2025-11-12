@@ -2,7 +2,6 @@
 // import { navigate } from "./action";
 // import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-
 // function Search() {
 //   // const subjects = await getAllSubjects();
 
@@ -141,10 +140,10 @@ import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
 function Search() {
   const router = useRouter();
-  const updated= [
-    {name:"chemistry", id:"690c29940678ed563fe65371"},
-    {name:"physics", id:"690c5f830678ed563fe65372"}
-]
+  const updated = [
+    { name: "chemistry", id: "690c29940678ed563fe65371" },
+    { name: "physics", id: "690c5f830678ed563fe65372" },
+  ];
 
   const uuid = [
     { name: "accounting", id: "6655b6b02e379ceca333520c" },
@@ -161,7 +160,7 @@ function Search() {
     { name: "history", id: "6655b6b02e379ceca3335217" },
     { name: "information technology", id: "6655b6b02e379ceca3335218" },
     { name: "mathematics", id: "6655b6b02e379ceca3335219" },
-    { name: "physics", id: "6655b6b02e379ceca333521a", updated: false  },
+    { name: "physics", id: "6655b6b02e379ceca333521a", updated: true },
     { name: "psychology", id: "6655b6b02e379ceca333521b" },
     { name: "sociology", id: "6655b6b02e379ceca333521c" },
     { name: "spanish", id: "6655b6b02e379ceca333521d" },
@@ -169,18 +168,17 @@ function Search() {
 
   const items = uuid.map((item, index) => ({ name: item.name, id: index + 1 }));
 
- 
-
   const handleOnSelect = (item: any) => {
     const selected = uuid[item.id - 1];
     if (selected) {
       // ✅ navigate client-side
       // CODE TO REDIRECT TO UPDATED RESOURCES
-       const isUpdated = function(sub:any)
-       {
-         return sub.name==selected.name
-       }   
-     selected.updated?router.push(`/resources2/${updated.find(isUpdated)?.id}`): router.push(`/resources/${selected.id}`);
+      const isUpdated = function (sub: any) {
+        return sub.name == selected.name;
+      };
+      selected.updated
+        ? router.push(`/resources2/${updated.find(isUpdated)?.id}`)
+        : router.push(`/resources/${selected.id}`);
     }
   };
 

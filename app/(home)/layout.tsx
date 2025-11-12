@@ -16,17 +16,18 @@ export const metadata = {
   metadataBase: new URL("https://ralevel.com"),
   openGraph: {
     title: "r/alevel - Notes & Past Papers",
-    description: "The largest A Level community with free notes and resources.",
+    description:
+      "Join 100k+ students sharing free A Level notes, past papers, and advice. For Students. By Students.",
     url: "https://ralevel.com",
     siteName: "r/alevel",
-    images: ["/opengraph-image.jpg"],
+    images: ["/opengraph-image-2.png"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "r/alevel - Notes, Past Papers & Resources",
     description: "By Students. For Students.",
-    images: ["/opengraph-image.jpg"],
+    images: ["/opengraph-image-2.png"],
   },
 };
 
