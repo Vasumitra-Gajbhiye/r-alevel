@@ -511,26 +511,27 @@ export default function ChemistryResourcesPage() {
                 one place.
               </p>
 
-              <div className="mt-6 flex gap-3">
+              <div className="mt-6 flex gap-3 max-md2:flex-col">
                 <button
                   onClick={() => scrollTo("notes")}
-                  className="px-4 py-2 bg-[var(--primary)] text-white rounded-full shadow hover:bg-[var(--primary-dark)] transition"
+                  className="px-4 py-2 bg-[var(--primary)] text-white rounded-full shadow hover:bg-[var(--primary-dark)] transition max-lg:text-sm"
                 >
                   Start with Notes
                 </button>
                 <button
                   onClick={() => scrollTo("papers")}
-                  className="px-4 py-2 border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full shadow-sm hover:shadow transition"
+                  className="px-4 py-2 border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full shadow-sm hover:shadow transition max-lg:text-sm"
                 >
                   Past Papers
                 </button>
 
-                <button
-                  onClick={() => setShowContribute(true)}
-                  className="ml-2 px-3 py-2 bg-white border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full hover:shadow transition"
+                <a
+                  href="https://forms.gle/hAaHLimxKMB5WN4w9"
+                  target="_blank"
+                  className="ml-2 px-3 py-2 bg-white border border-[var(--border-lighter] text-[var(--primary-accent)] rounded-full hover:shadow transition max-lg:text-sm"
                 >
                   Contribute a resource
-                </button>
+                </a>
               </div>
             </div>
 
@@ -676,7 +677,7 @@ export default function ChemistryResourcesPage() {
             </motion.section>
 
             {/* NOTES */}
-            <motion.section
+            {/* <motion.section
               {...fade}
               id="notes"
               className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
@@ -701,43 +702,6 @@ export default function ChemistryResourcesPage() {
                 )}
               </div>
 
-              {/* <div className="mt-4 grid sm:grid-cols-1 gap-4">
-                {(showAllNotes
-                  ? resource.notes
-                  : resource.notes.slice(0, 6)
-                ).map((n: any, idx: number) => (
-                  <motion.a
-                    key={idx}
-                    href={n.link}
-                    target="_blank"
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.25,
-                      delay: showAllNotes ? idx * 0.02 : 0,
-                    }}
-                    className="p-4 border rounded-lg hover:shadow-md transition flex gap-3 bg-white"
-                  >
-                    <div className="w-12 h-12 rounded-md bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary-accent)]">
-                      📝
-                    </div>
-
-                    <div className="flex-1">
-                      <div className="font-medium text-[var(--primary-text)]">
-                        {n.title}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {n.source}
-                      </div>
-                      {n.tags?.length > 0 && (
-                        <div className="text-xs text-gray-400 mt-2 line-clamp-1">
-                          {n.tags.join(", ")}
-                        </div>
-                      )}
-                    </div>
-                  </motion.a>
-                ))}
-              </div> */}
 
               <div className="mt-4 grid sm:grid-cols-1 gap-3">
                 {(showAllNotes
@@ -787,6 +751,95 @@ export default function ChemistryResourcesPage() {
                             {n.tags.length > 4 && (
                               <span className="px-2 py-[2px] rounded-full bg-[var(--primary-light)] text-[var(--primary-accent)] text-[10px]">
                                 +{n.tags.length - 4}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.a>
+                ))}
+              </div>
+            </motion.section> */}
+
+            <motion.section
+              {...fade}
+              id="notes"
+              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest)]"
+            >
+              <div className="flex items-start justify-between flex-wrap gap-2">
+                <div>
+                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
+                    Notes & Summaries
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Concise unit notes, printable summaries and cheat sheets.
+                  </p>
+                </div>
+
+                {resource.notes.length > 8 && (
+                  <button
+                    onClick={() => setShowAllNotes((prev) => !prev)}
+                    className="text-sm text-[var(--primary-accent)] underline self-center"
+                  >
+                    {showAllNotes ? "View less" : "View all"}
+                  </button>
+                )}
+              </div>
+
+              {/* Responsive list layout like syllabus cards */}
+              <div className="mt-4 flex flex-col divide-y divide-[var(--border-lightest)]">
+                {(showAllNotes
+                  ? resource.notes
+                  : resource.notes.slice(0, 8)
+                ).map((n: any, idx: number) => (
+                  <motion.a
+                    key={idx}
+                    href={n.link}
+                    target="_blank"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.25,
+                      delay: showAllNotes ? idx * 0.02 : 0,
+                    }}
+                    className="flex items-start gap-3 py-3 px-1 hover:bg-[var(--primary-lightest)] rounded-lg transition-all duration-200"
+                  >
+                    {/* Icon */}
+                    <div className="flex-shrink-0 w-10 h-10 rounded-md bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary-accent)] text-sm">
+                      📝
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-[var(--primary-text)] leading-snug truncate max-sm:text-sm">
+                        {n.title}
+                      </div>
+
+                      <div className="mt-1 flex flex-wrap items-center gap-1 text-xs">
+                        {/* Source */}
+                        {n.source && (
+                          <span className="text-gray-500 whitespace-nowrap">
+                            {n.source}
+                          </span>
+                        )}
+
+                        {/* Tags */}
+                        {n.tags?.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {n.tags
+                              .slice(0, 3)
+                              .map((tag: string, i: number) => (
+                                <span
+                                  key={i}
+                                  className="px-2 py-[2px] rounded-full bg-[var(--primary-light)] text-[var(--primary-accent)] text-[10px] whitespace-nowrap"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            {n.tags.length > 3 && (
+                              <span className="px-2 py-[2px] rounded-full bg-[var(--primary-light)] text-[var(--primary-accent)] text-[10px]">
+                                +{n.tags.length - 3}
                               </span>
                             )}
                           </div>
@@ -1037,7 +1090,7 @@ export default function ChemistryResourcesPage() {
               id="papers"
               className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between max-md:flex-col max-md:gap-5 max-md:items-start">
                 <div>
                   <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
                     Past Papers & Mark Schemes
@@ -1047,7 +1100,7 @@ export default function ChemistryResourcesPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ">
                   <select
                     value={filterBoard || ""}
                     onChange={(e) => setFilterBoard(e.target.value || null)}
@@ -1100,7 +1153,7 @@ export default function ChemistryResourcesPage() {
                             target="_blank"
                             href={p.link}
                           >
-                            Download PDF
+                            Download ZIP
                           </a>
                         </td>
                       </tr>
@@ -1229,22 +1282,22 @@ export default function ChemistryResourcesPage() {
                     }} // subtle stagger when expanding
                     className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white"
                   >
-                    <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
-                      <Image
-                        src={b.cover}
-                        alt={b.title}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                    <div className="text-sm font-medium text-[var(--primary-text)] line-clamp-2">
-                      {b.title}
-                    </div>
                     <a
                       className="text-xs text-[var(--primary-accent)] underline"
                       target="_blank"
                       href={b.buy}
                     >
+                      <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
+                        <Image
+                          src={b.cover}
+                          alt={b.title}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <div className="text-sm font-medium text-[var(--primary-text)] line-clamp-2">
+                        {b.title}
+                      </div>
                       Buy / Details
                     </a>
                   </motion.div>
@@ -1408,14 +1461,15 @@ export default function ChemistryResourcesPage() {
                 </div>
               </div>
 
-              <div className="p-4 bg-white border rounded-2xl shadow-sm text-center">
+              <div className="p-4 bg-white border rounded-2xl shadow-sm text-center flex flex-col ">
                 <div className="text-sm text-gray-700">Want to contribute?</div>
-                <button
-                  onClick={() => setShowContribute(true)}
+                <a
+                  href="https://forms.gle/hAaHLimxKMB5WN4w9"
+                  target="_blank"
                   className="mt-3 px-3 py-2 bg-[var(--primary)] text-white rounded-full"
                 >
                   Submit a resource
-                </button>
+                </a>
               </div>
             </div>
           </aside>
@@ -1459,18 +1513,13 @@ export default function ChemistryResourcesPage() {
                 >
                   Cancel
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    alert(
-                      "Thanks — submission received (demo). In production, POST to your server."
-                    );
-                    setShowContribute(false);
-                  }}
+                <a
+                  href="https://forms.gle/hAaHLimxKMB5WN4w9"
+                  target="_blank"
                   className="px-3 py-2 bg-[var(--primary)] text-white rounded"
                 >
                   Submit
-                </button>
+                </a>
               </div>
             </form>
           </motion.div>
