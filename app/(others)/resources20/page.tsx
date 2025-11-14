@@ -142,9 +142,9 @@ function Search() {
   const router = useRouter();
 
   const uuid = [
-    { name: "chemistry", id: "chemistry" },
-    { name: "physics", id: "physics" },
-    { name: "economics", id: "economics" },
+    { name: "chemistry", id: "690c29940678ed563fe65371" },
+    { name: "physics", id: "690c5f830678ed563fe65372" },
+    { name: "economics", id: "6915e8ba19a1d396626762ed" },
   ];
 
   const items = uuid.map((item, index) => ({ name: item.name, id: index + 1 }));

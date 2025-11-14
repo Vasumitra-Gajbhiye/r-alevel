@@ -87,6 +87,7 @@ const pdfBookSchema = new mongoose.Schema({
 const resources2dataSchema = new mongoose.Schema(
   {
     subject: { type: String, required: true }, // e.g. "Chemistry"
+    slug: { type: String, required: true }, // e.g. "Chemistry"
     level: { type: String, default: "A-Level" }, // optional field
     syllabus: [syllabusSchema],
     notes: [notesSchema],

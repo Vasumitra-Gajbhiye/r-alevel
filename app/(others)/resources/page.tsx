@@ -141,8 +141,9 @@ import { ReactSearchAutocomplete } from "react-search-autocomplete";
 function Search() {
   const router = useRouter();
   const updated = [
-    { name: "chemistry", id: "690c29940678ed563fe65371" },
-    { name: "physics", id: "690c5f830678ed563fe65372" },
+    { name: "chemistry", id: "chemistry" },
+    { name: "physics", id: "physics" },
+    { name: "economics", id: "economics" },
   ];
 
   const uuid = [
@@ -152,7 +153,7 @@ function Search() {
     { name: "business", id: "6655b6b02e379ceca333520f" },
     { name: "chemistry", id: "6655b6b02e379ceca3335210", updated: false },
     { name: "computer science", id: "6655b6b02e379ceca3335211" },
-    { name: "economics", id: "6655b6b02e379ceca3335212" },
+    { name: "economics", id: "6655b6b02e379ceca3335212", updated: true },
     { name: "english language", id: "6655b6b02e379ceca3335213" },
     { name: "environmental studies", id: "6655b6b02e379ceca3335214" },
     { name: "further mathematics", id: "6655b6b02e379ceca3335215" },
