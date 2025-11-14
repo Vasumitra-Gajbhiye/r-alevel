@@ -494,7 +494,7 @@ export default function ChemistryResourcesPage() {
               <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-xl overflow-hidden shadow">
                 <Image
                   src={`/subjects/${resource.subject.toLowerCase()}_main_thumb.png`}
-                  alt="Chemistry hero"
+                  alt={`${resource.subject} hero`}
                   fill
                   className="object-cover"
                 />
@@ -511,7 +511,7 @@ export default function ChemistryResourcesPage() {
                 one place.
               </p>
 
-              <div className="mt-6 flex gap-3 max-md2:flex-col justify-center">
+              <div className="mt-6 flex gap-3 max-md2:flex-col max-md2:justify-center">
                 <button
                   onClick={() => scrollTo("notes")}
                   className="px-4 py-2 bg-[var(--primary)] text-white rounded-full shadow hover:bg-[var(--primary-dark)] transition max-lg:text-sm"
