@@ -19,14 +19,57 @@ export async function generateStaticParams() {
     }));
 }
 
+const baseUrl = "https://ralevel.com";
+
+// ⭐ Pull metadata directly from the MDX file
+export async function generateMetadata({ params }: any) {
+  const { slug } = await params;
+
+  try {
+    const { metadata } = await import(`@/app/(others)/blogs/posts/${slug}.mdx`);
+
+    return {
+      title: metadata?.title,
+      description: metadata?.description,
+
+      openGraph: {
+        title: metadata?.title,
+        description: metadata?.description,
+        type: "article",
+        images: [
+          {
+            url: baseUrl + metadata?.image,
+            width: 2240,
+            height: 1260,
+            alt: metadata?.title,
+          },
+        ],
+      },
+
+      twitter: {
+        card: "summary_large_image",
+        title: metadata?.title,
+        description: metadata?.description,
+        images: [baseUrl + metadata?.image],
+      },
+
+      keywords: metadata?.tag ?? [],
+      authors: [{ name: "r/alevel" }],
+      alternates: {
+        canonical: `https://ralevel.com/blogs/${slug}`,
+      },
+    };
+  } catch (e) {
+    return {};
+  }
+}
+
 export default async function Page({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-
-  console.log(slug);
 
   try {
     // const Post = require(`../posts/${params.slug}.mdx`).default;
@@ -35,6 +78,7 @@ export default async function Page({
       `@/app/(others)/blogs/posts/${slug}.mdx`
     );
     const { metadata } = await import(`@/app/(others)/blogs/posts/${slug}.mdx`);
+    // const meta = await generateMetadata(metadata);
 
     return (
       <BlogPostLayout metadata={metadata}>
