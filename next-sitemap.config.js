@@ -1,5 +1,5 @@
 module.exports = {
-  siteUrl: "https://r-alevel.com",
+  siteUrl: "https://ralevel.com",
   generateRobotsTxt: true,
   sitemapSize: 7000,
 };
