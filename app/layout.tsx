@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -57,6 +58,7 @@ export default function RootLayout({
       <body className={poppins.className + " tracking-widest	"}>
         {/* <Navigation /> */}
         {children}
+        <Analytics />
         {/* <ContactUs /> */}
       </body>
     </html>

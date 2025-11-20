@@ -932,7 +932,7 @@ export default function ResourceClient({ resource }: Props) {
               <motion.section
                 {...fade}
                 id="pdf-books"
-                className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
+                className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest] hidden"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -1001,7 +1001,7 @@ export default function ResourceClient({ resource }: Props) {
             <motion.section
               {...fade}
               id="books"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
+              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest] "
             >
               <div className="flex items-start justify-between">
                 <div>
