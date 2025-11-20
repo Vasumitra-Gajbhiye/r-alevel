@@ -636,22 +636,46 @@ const uuid = [
   { name: "2h00vd310gdf", id: "2h00vd310gdf" },
   { name: "2t00ml394ndi", id: "2t00ml394ndi" },
   { name: "2f00bk313iru", id: "2f00bk313iru" },
-  { name: "2a00rt412uji", id: "2a00rt412uji" },
+
+  { name: "2b00rk724vji", id: "2b00rk724vji" },
+  { name: "2c00dj713vra", id: "2c00dj713vra" },
+  { name: "2n00kp459twe", id: "2n00kp459twe" },
+  { name: "2m00tl648qpd", id: "2m00tl648qpd" },
+  { name: "2r00ml825hqi", id: "2r00ml825hqi" },
+  { name: "2t00gh312jln", id: "2t00gh312jln" },
+  { name: "2f00sn582yuk", id: "2f00sn582yuk" },
+  { name: "2s00bv970mdf", id: "2s00bv970mdf" },
 ];
 
 const items = [
-  { name: "2a00sg309itg", id: 1 },
-  { name: "Martin Fernando Pramanik", id: 1 },
-  { name: "2g00of311lek", id: 2 },
-  { name: "Abdur Rafay Khan", id: 2 },
-  { name: "2d00io308jke", id: 3 },
-  { name: "Kyaw Nyi Nyi", id: 3 },
-  { name: "2h00vd310gdf", id: 4 },
-  { name: "Syed Ibrahim Ali", id: 4 },
-  { name: "2t00ml394ndi", id: 5 },
-  { name: "Molly Bonsall", id: 5 },
-  { name: "2f00bk313iru", id: 6 },
-  { name: "Jake Schwegler", id: 6 },
+  { name: "2a00sg309itg", searchId: 1, id: 1 },
+  { name: "Martin Fernando Pramanik", searchId: 1, id: 2 },
+  { name: "2g00of311lek", searchId: 2, id: 3 },
+  { name: "Abdur Rafay Khan", searchId: 2, id: 4 },
+  { name: "2d00io308jke", searchId: 3, id: 5 },
+  { name: "Kyaw Nyi Nyi", searchId: 3, id: 6 },
+  { name: "2h00vd310gdf", searchId: 4, id: 7 },
+  { name: "Syed Ibrahim Ali", searchId: 4, id: 8 },
+  { name: "2t00ml394ndi", searchId: 5, id: 9 },
+  { name: "Molly Bonsall", searchId: 5, id: 10 },
+  { name: "2f00bk313iru", searchId: 6, id: 11 },
+  { name: "Jake Schwegler", searchId: 6, id: 12 },
+  { name: "2b00rk724vji", searchId: 7, id: 13 },
+  { name: "Muntasir Chowdhury", searchId: 7, id: 14 },
+  { name: "2c00dj713vra", searchId: 8, id: 15 },
+  { name: "Syed Kashif", searchId: 8, id: 16 },
+  { name: "2n00kp459twe", searchId: 9, id: 17 },
+  { name: "Soufian Ibrahim", searchId: 9, id: 18 },
+  { name: "2m00tl648qpd", searchId: 10, id: 19 },
+  { name: "Aditya Kavthekar", searchId: 10, id: 20 },
+  { name: "2r00ml825hqi", searchId: 11, id: 21 },
+  { name: "Elvin Varghese", searchId: 11, id: 22 },
+  { name: "2t00gh312jln", searchId: 12, id: 23 },
+  { name: "Muhammad Awan", searchId: 12, id: 24 },
+  { name: "2f00sn582yuk", searchId: 13, id: 25 },
+  { name: "Layal Alzuhair", searchId: 13, id: 26 },
+  { name: "2s00bv970mdf", searchId: 14, id: 28 },
+  { name: "Mohid Sheraz", searchId: 14, id: 29 },
 ];
 
 /* ---------------------------
@@ -784,7 +808,8 @@ function AnimatedSearch({ onSelect }: { onSelect: (id: string) => void }) {
       <ReactSearchAutocomplete
         items={items}
         onSelect={(item) => {
-          const idx = item.id - 1;
+          const idx = item.searchId - 1;
+          console.log(item);
           if (uuid[idx]) onSelect(uuid[idx].id);
         }}
         styling={{
