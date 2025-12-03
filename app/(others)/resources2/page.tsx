@@ -145,6 +145,7 @@ function Search() {
     { name: "chemistry", id: "chemistry" },
     { name: "physics", id: "physics" },
     { name: "economics", id: "economics" },
+    { name: "business", id: "business" },
   ];
 
   const items = uuid.map((item, index) => ({ name: item.name, id: index + 1 }));
