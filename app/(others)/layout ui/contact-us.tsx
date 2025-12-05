@@ -422,22 +422,22 @@ const MainContact = () => {
         <div className="flex flex-col space-y-2">
           {[
             {
-              img: "/contact/discord-ic-b.png",
+              img: "/contact-us/discord-ic-b.png",
               text: "Vasumitra Gajbhiye",
               link: "https://discord.com/users/1058932081629069363",
             },
             {
-              img: "/contact/discord-ic-b.png",
+              img: "/contact-us/discord-ic-b.png",
               text: "Jake Schwegler",
               link: "https://discord.com/users/503876266844356628",
             },
             {
-              img: "/contact/reddit-ic-b.png",
+              img: "/contact-us/reddit-ic-b.png",
               text: "Vasumitra Gajbhiye",
               link: "https://www.reddit.com/user/VasumitraGajbhiye/",
             },
             {
-              img: "/contact/gmail-ic-b.png",
+              img: "/contact-us/gmail-ic-b.png",
               text: "r.alevelserver@gmail.com",
               link: "mailto:r.alevelserver@gmail.com",
             },
