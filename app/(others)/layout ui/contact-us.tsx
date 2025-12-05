@@ -336,6 +336,7 @@ const MainContact = () => {
   const legalItems = [
     { title: "Privacy Policy", link: "/legal/privacy-policy" },
     { title: "Terms of Service", link: "/legal/terms-of-service" },
+    { title: "Discord Regulations", link: "/legal/discord-regulations" },
   ];
 
   return (

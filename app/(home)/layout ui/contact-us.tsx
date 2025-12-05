@@ -272,7 +272,7 @@
 //   return (
 //     <div
 //       className=" bg-gray-100 overflow-hidden bg-right
-//       md:bg-center bg-scroll	
+//       md:bg-center bg-scroll
 //     bg-no-repeat bg-cover flex justify-center items-center flex-col gap-12 text-gray-900"
 //     >
 //       <MainContact />
@@ -439,9 +439,9 @@
 
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -454,7 +454,10 @@ const MainContact = () => {
   const communityItems = [
     { title: "Discord", link: "https://discord.gg/vS7eTFKZfD" },
     { title: "Reddit", link: "https://www.reddit.com/r/alevel/" },
-    { title: "r.alevelserver@gmail.com", link: "mailto:r.alevelserver@gmail.com" },
+    {
+      title: "r.alevelserver@gmail.com",
+      link: "mailto:r.alevelserver@gmail.com",
+    },
   ];
 
   const navigationItems = [
@@ -466,6 +469,7 @@ const MainContact = () => {
   const legalItems = [
     { title: "Privacy Policy", link: "/legal/privacy-policy" },
     { title: "Terms of Service", link: "/legal/terms-of-service" },
+    { title: "Discord Regulations", link: "/legal/discord-regulations" },
   ];
 
   return (
@@ -596,11 +600,13 @@ const Credit = () => (
     className="text-sm flex-col items-center gap-2 mb-8 text-center flex"
   >
     <p className="hidden sm:block">
-      Website designed & developed with <span className="animate-pulse">🖤</span> by{" "}
+      Website designed & developed with{" "}
+      <span className="animate-pulse">🖤</span> by{" "}
       <span className="font-medium">Vasumitra</span>
     </p>
     <p className="sm:hidden">
-      Website designed & developed with <span className="animate-pulse">🖤</span> <br /> by{" "}
+      Website designed & developed with{" "}
+      <span className="animate-pulse">🖤</span> <br /> by{" "}
       <span className="font-medium">Vasumitra</span>
     </p>
     <p className="opacity-70">© 2025 r/alevel • All Rights Reserved</p>
