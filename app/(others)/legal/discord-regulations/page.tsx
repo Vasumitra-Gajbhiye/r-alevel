@@ -137,9 +137,9 @@ export default function DiscordRegulationsPage() {
             id="general"
             title="General Regulations"
             items={[
-              "You admit to being at least 13 years old, per Discord’s minimum age requirement.",
+              "You admit to being at least 13 years old, per Discord's minimum age requirement.",
               <>
-                You agree to follow all of Discord's platform-wide{" "}
+                You agree to follow all of Discord&apos;s platform-wide{" "}
                 <Link
                   className="text-blue-600 underline"
                   href="https://discord.com/terms"
@@ -198,6 +198,7 @@ export default function DiscordRegulationsPage() {
             title="Links"
             items={[
               <Link
+                key={1}
                 className="text-blue-600 underline"
                 href="https://ralevel.com/"
                 target="_blank"
@@ -205,6 +206,7 @@ export default function DiscordRegulationsPage() {
                 r/alevel Website
               </Link>,
               <Link
+                key={2}
                 className="text-blue-600 underline"
                 href="https://www.reddit.com/r/alevel/"
                 target="_blank"
@@ -301,7 +303,7 @@ export default function DiscordRegulationsPage() {
               },
               {
                 subtitle: "3.3 Harassment & Trolling",
-                text: "The act of direct/indirect bullying, intimidation, or harassment will not be permitted. This involves the deliberate spread of off-topic, inflammatory statements with the purpose of provoking others into an emotional response, oftentimes disrupting on-topic discussion, either via public channels or DM’s.",
+                text: "The act of direct/indirect bullying, intimidation, or harassment will not be permitted. This involves the deliberate spread of off-topic, inflammatory statements with the purpose of provoking others into an emotional response, oftentimes disrupting on-topic discussion, either via public channels or DM's.",
               },
               {
                 subtitle: "3.4 Argumentative Statements",
@@ -309,7 +311,7 @@ export default function DiscordRegulationsPage() {
               },
               {
                 subtitle: "3.5 General Disruptive Behaviour",
-                text: "Please avoid any act of deliberate disruptive behaviour. If an act is not specified in the regulations, but it still holds a disruptive or derogatory intention, then it’s best to keep it to yourself. Please ensure to refrain from derailing any ongoing discussions or debates between others.",
+                text: "Please avoid any act of deliberate disruptive behaviour. If an act is not specified in the regulations, but it still holds a disruptive or derogatory intention, then it's best to keep it to yourself. Please ensure to refrain from derailing any ongoing discussions or debates between others.",
               },
               {
                 subtitle: "3.6 Language Usage",
@@ -317,7 +319,7 @@ export default function DiscordRegulationsPage() {
               },
               {
                 subtitle: "3.7 Dating",
-                text: "Refrain from engaging in any form of digital intimacy, otherwise known as ‘e-dating’. This includes but is not limited to sexual affirmations, roleplay, and scenarios.",
+                text: "Refrain from engaging in any form of digital intimacy, otherwise known as 'e-dating'. This includes but is not limited to sexual affirmations, roleplay, and scenarios.",
               },
             ]}
           />
@@ -340,7 +342,7 @@ export default function DiscordRegulationsPage() {
               },
               {
                 subtitle: "4.4 Restricted Role Mentions",
-                text: "If you possess the permissions, the usage of @everyone and @here mentions, along with other, mass-possessed roles, should not be pinged without proper permission. If you have the ability to ping a role that you feel you shouldn’t be able to ping, please inform the Administrative team immediately.",
+                text: "If you possess the permissions, the usage of @everyone and @here mentions, along with other, mass-possessed roles, should not be pinged without proper permission. If you have the ability to ping a role that you feel you shouldn't be able to ping, please inform the Administrative team immediately.",
               },
             ]}
           />
@@ -355,7 +357,7 @@ export default function DiscordRegulationsPage() {
               },
               {
                 subtitle: "5.2 Academic Focus",
-                text: "Given we’re an A-Level Discord, it is preferred that the majority of discussions relate to A-Level progression. This regulation is lenient depending on the purpose of a channel. As always, discussions regarding study methods, subject content, exam preparation, university applications, syllabus info, and academic resources are encouraged.",
+                text: "Given we're an A-Level Discord, it is preferred that the majority of discussions relate to A-Level progression. This regulation is lenient depending on the purpose of a channel. As always, discussions regarding study methods, subject content, exam preparation, university applications, syllabus info, and academic resources are encouraged.",
               },
               {
                 subtitle: "5.3 Sensitive Topics",
@@ -378,11 +380,11 @@ export default function DiscordRegulationsPage() {
               },
               {
                 subtitle: "6.2 Discord Invites",
-                text: "Refrain from sharing invite links to other Discord servers via server channels or DM’s. Please seek permission from a member of the Administrative team.",
+                text: "Refrain from sharing invite links to other Discord servers via server channels or DM's. Please seek permission from a member of the Administrative team.",
               },
               {
                 subtitle: "6.3 DM Advertising",
-                text: "Sending advertisements or recruitment forms via DM’s is prohibited. Members of the r/alevel community maintain the right to open a support ticket if they receive an advertisement via DM’s.",
+                text: "Sending advertisements or recruitment forms via DM's is prohibited. Members of the r/alevel community maintain the right to open a support ticket if they receive an advertisement via DM's.",
               },
               {
                 subtitle: "6.4 Leniency",
@@ -428,7 +430,7 @@ export default function DiscordRegulationsPage() {
               },
               {
                 subtitle: "8.2 Technical Bypass",
-                text: "Please refrain from exploiting system errors/vulnerabilities. This includes but is not limited to exploiting bot issues, channel/role permissions, or utilising external tools to circumvent systems. If you see a bug within the system, we’d appreciate you coming forward and informing us.",
+                text: "Please refrain from exploiting system errors/vulnerabilities. This includes but is not limited to exploiting bot issues, channel/role permissions, or utilising external tools to circumvent systems. If you see a bug within the system, we'd appreciate you coming forward and informing us.",
               },
               {
                 subtitle: "8.3 Bypass Encouragement",
