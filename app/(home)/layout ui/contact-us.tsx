@@ -574,7 +574,7 @@ const MainContact = () => {
               text: "r.alevelserver@gmail.com",
               link: "mailto:r.alevelserver@gmail.com",
             },
-          ].map((contact, i) => (
+          ].map((contact: any, i) => (
             <a
               key={i}
               href={contact.link}
