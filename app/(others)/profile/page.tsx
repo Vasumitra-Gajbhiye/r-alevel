@@ -4953,6 +4953,13 @@ export default function ProfilePage() {
     return combined;
   }, [boards]);
 
+  async function handleSwitchAccount() {
+    // Step 1: fully sign out and redirect
+    await signOut({
+      callbackUrl: "/auth/switch",
+    });
+  }
+
   const sessionOptions = useMemo(() => {
     const out: any[] = [];
     boards.forEach((b) => {
@@ -5216,6 +5223,7 @@ export default function ProfilePage() {
           subjectsA2={subjectsA2}
           examSession={examSession}
           receiveEmails={receiveEmails}
+          onSwitchAccount={handleSwitchAccount}
           onToggleBoard={(b) =>
             setBoards((prev) =>
               prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]

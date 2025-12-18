@@ -25,7 +25,9 @@ export default function BlogHeading({ children, className, ...rest }: Props) {
   return (
     <h2
       id={id}
-      className={`numbered-h2 text-[1.35rem] md:text-[1.55rem] font-semibold text-sky-900 tracking-tight leading-snug mt-16 mb-6 ${className ?? ""}`}
+      className={`numbered-h2 text-[1.35rem] md:text-[1.55rem] font-semibold text-sky-900 tracking-tight leading-snug mt-16 mb-6 ${
+        className ?? ""
+      }`}
       {...rest}
     >
       {children}
@@ -33,7 +35,7 @@ export default function BlogHeading({ children, className, ...rest }: Props) {
       {/* Scoped CSS counter for the number prefix */}
       <style jsx>{`
         .numbered-h2::before {
-          color: #024a70;                   /* sky-900 */
+          color: #024a70; /* sky-900 */
           font-weight: 800;
           margin-right: 0.5rem;
         }

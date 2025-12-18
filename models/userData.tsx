@@ -1,3 +1,4 @@
+import { ROLES } from "@/lib/roles";
 import mongoose from "mongoose";
 
 const userDataSchema = new mongoose.Schema(
@@ -6,7 +7,13 @@ const userDataSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
 
     boards: { type: [String], default: [] },
+    // models/userData.ts
 
+    roles: {
+      type: [String],
+      enum: ROLES,
+      default: [],
+    },
     subjectsAS: { type: [String], default: [] },
     subjectsA2: { type: [String], default: [] },
 

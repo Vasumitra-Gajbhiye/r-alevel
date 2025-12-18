@@ -231,49 +231,83 @@
 
 import { motion, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+type BlogPostLayoutProps = {
+  metadata: any;
+  children: React.ReactNode;
+  showToc?: boolean; // 👈 NEW
+};
+function isValidImageSrc(src?: string) {
+  if (!src) return false;
+
+  // ✅ internal public asset
+  if (src.startsWith("/")) return true;
+
+  // ✅ external URL
+  try {
+    const url = new URL(src);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 export default function BlogPostLayout({
   metadata,
   children,
-}: {
-  metadata: any;
-  children: ReactNode;
-}) {
+  showToc = true, // 👈 default ON for real blogs
+}: BlogPostLayoutProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref });
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
   const [activeHeading, setActiveHeading] = useState("");
-  const [toc, setToc] = useState<string[]>([]);
+  const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
 
   useEffect(() => {
-    // 1) Assign IDs to H2s
-    document.querySelectorAll("h2").forEach((el) => {
+    const headings = Array.from(document.querySelectorAll("h2"));
+
+    const tocItems = headings.map((el, index) => {
       const text = el.textContent || "";
-      const id = text.toLowerCase().replace(/\s+/g, "-");
+      const baseId = text.toLowerCase().replace(/\s+/g, "-");
+
+      // 👇 ensures uniqueness even with duplicate headings
+      const id = `${baseId}-${index}`;
+
       el.setAttribute("id", id);
+
+      return { id, text };
     });
 
-    // 2) Collect TOC items
-    const headers = Array.from(document.querySelectorAll("h2")).map(
-      (el) => el.textContent || ""
-    );
-    setToc(headers);
+    setToc(tocItems);
 
-    // 3) Active section highlight
     const observer = new IntersectionObserver(
       (entries) =>
         entries.forEach((entry) => {
-          if (entry.isIntersecting)
-            setActiveHeading(entry.target.textContent || "");
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute("id");
+            if (!id) return;
+            const match = tocItems.find((t) => t.id === id);
+            if (match) setActiveHeading(match.id);
+          }
         }),
       { rootMargin: "0px 0px -60% 0px" }
     );
 
-    document.querySelectorAll("h2").forEach((h) => observer.observe(h));
+    headings.forEach((h) => observer.observe(h));
+
     return () => observer.disconnect();
   }, []);
+
+  const hasImageInput = Boolean(metadata.image?.trim());
+  const imageIsValid = isValidImageSrc(metadata.image);
+
+  const heroImageSrc = hasImageInput
+    ? imageIsValid
+      ? metadata.image
+      : "/opengraph-image-2.png"
+    : null;
 
   return (
     <>
@@ -303,14 +337,16 @@ export default function BlogPostLayout({
             <span className="text-blue-600 font-medium">{metadata.author}</span>
           </div>
 
-          {metadata.image && (
+          {heroImageSrc && (
             <div className="mt-8 rounded-2xl overflow-hidden shadow-md">
               <Image
-                src={metadata.image}
+                src={heroImageSrc}
                 alt="blog hero"
                 width={1200}
                 height={600}
-                className="object-cover w-full"
+                className={`object-cover w-full ${
+                  imageIsValid ? "" : "opacity-60"
+                }`}
                 priority
               />
             </div>
@@ -318,7 +354,7 @@ export default function BlogPostLayout({
         </motion.div>
 
         {/* FLOATING TOC (fixed) */}
-        {toc.length > 1 && (
+        {showToc && toc.length > 1 && (
           <motion.aside
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -329,23 +365,22 @@ export default function BlogPostLayout({
             <div className="p-4 bg-white/60 backdrop-blur-md border border-sky-100/60 rounded-2xl shadow-md">
               <h3 className="font-semibold text-gray-700 mb-3">On this page</h3>
               <ul className="space-y-2 text-gray-600">
-                {toc.map((h) => (
+                {toc.map(({ id, text }) => (
                   <li
-                    key={h}
+                    key={id}
                     className={`cursor-pointer relative pl-2 transition-all ${
-                      activeHeading === h
+                      activeHeading === id
                         ? "text-sky-600 font-medium before:absolute before:left-0 before:top-[5px] before:h-4 before:w-[3px] before:bg-sky-500 rounded-full"
                         : "hover:text-sky-700 hover:translate-x-1"
                     }`}
-                    onClick={() => {
-                      const id = h.toLowerCase().replace(/\s+/g, "-");
+                    onClick={() =>
                       document.getElementById(id)?.scrollIntoView({
                         behavior: "smooth",
                         block: "start",
-                      });
-                    }}
+                      })
+                    }
                   >
-                    {h}
+                    {text}
                   </li>
                 ))}
               </ul>

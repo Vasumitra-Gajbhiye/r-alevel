@@ -23,6 +23,7 @@ export interface PremiumSidebarProps {
   onToggleBoard?: (board: BoardKey) => void;
   onSignOut?: () => void;
   onUpgrade?: () => void;
+  onSwitchAccount: () => void;
 }
 
 /** Helper: resolve subject name from SUBJECTS_BY_BOARD safely */
@@ -54,6 +55,7 @@ export default function PremiumSidebar({
   onToggleBoard,
   onSignOut,
   onUpgrade,
+  onSwitchAccount,
 }: PremiumSidebarProps) {
   const boardsCount = boards.length;
   const totalSubjects = subjectsAS.length + subjectsA2.length;
@@ -161,9 +163,12 @@ export default function PremiumSidebar({
               <div className="text-base font-semibold tracking-tight text-slate-900">
                 {name}
               </div>
-              <div className="text-xs text-slate-500">
-                Signed in with Google
-              </div>
+              <button
+                onClick={onSwitchAccount}
+                className="w-full px-3 py-2 text-sm rounded-md border hover:bg-slate-50"
+              >
+                Switch Google account
+              </button>
             </div>
           </div>
 

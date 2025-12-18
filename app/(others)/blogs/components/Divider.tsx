@@ -1,5 +1,7 @@
 export default function Divider() {
   return (
-    <div className="my-12 w-full h-[1px] bg-gradient-to-r from-transparent via-sky-200 to-transparent" />
+    <div className="my-12">
+      <div className="h-px w-full bg-slate-200/60" />
+    </div>
   );
 }
