@@ -142,29 +142,64 @@ function Search() {
   const router = useRouter();
   const updated = [
     { name: "chemistry", id: "chemistry" },
+    { name: "biology", id: "biology" },
+    { name: "business", id: "business" },
     { name: "physics", id: "physics" },
+    { name: "accounting", id: "accounting" },
+    { name: "arabic", id: "arabic" },
+    { name: "business studies", id: "business_studies" },
+    { name: "chemistry", id: "chemistry" },
+    { name: "computer science", id: "computer_science" },
     { name: "economics", id: "economics" },
+    { name: "english language", id: "english_language" },
+    { name: "english literature", id: "english_literature" },
+    { name: "environmental studies", id: "environmental_studies" },
+    { name: "further mathematics", id: "further_mathematics" },
+    { name: "geography", id: "geography" },
+    { name: "history", id: "history" },
+    { name: "information technology", id: "information_technology" },
+    { name: "media studies", id: "media_studies" },
+    { name: "mathematics", id: "mathematics" },
+    { name: "art and design", id: "art_and_design" },
+    { name: "physics", id: "physics" },
+    { name: "drama", id: "drama" },
+    { name: "psychology", id: "psychology" },
+    { name: "sociology", id: "sociology" },
+    { name: "spanish", id: "spanish" },
+    { name: "french", id: "french" },
+    { name: "law", id: "law" },
+    { name: "music", id: "music" },
+    { name: "urdu", id: "urdu" },
   ];
 
   const uuid = [
-    { name: "accounting", id: "6655b6b02e379ceca333520c" },
+    { name: "accounting", id: "6655b6b02e379ceca333520c", updated: true },
     { name: "biology", id: "6655b6b02e379ceca333520d" },
     { name: "business studies", id: "6655b6b02e379ceca333520e" },
     { name: "business", id: "6655b6b02e379ceca333520f" },
     { name: "chemistry", id: "6655b6b02e379ceca3335210", updated: true },
     { name: "computer science", id: "6655b6b02e379ceca3335211" },
+    { name: "arabic", id: "69720245a1db954b6b71c0f7" },
+    { name: "art and design", id: "69720257a1db954b6b71c0f8" },
+    { name: "drama", id: "6972028da1db954b6b71c0fb" },
     { name: "economics", id: "6655b6b02e379ceca3335212", updated: true },
     { name: "english language", id: "6655b6b02e379ceca3335213" },
+    { name: "english literature", id: "697202a6a1db954b6b71c0fd" },
     { name: "environmental studies", id: "6655b6b02e379ceca3335214" },
     { name: "further mathematics", id: "6655b6b02e379ceca3335215" },
     { name: "geography", id: "6655b6b02e379ceca3335216" },
     { name: "history", id: "6655b6b02e379ceca3335217" },
     { name: "information technology", id: "6655b6b02e379ceca3335218" },
     { name: "mathematics", id: "6655b6b02e379ceca3335219" },
+    { name: "music", id: "6655b6b02e379ceca3335219" },
     { name: "physics", id: "6655b6b02e379ceca333521a", updated: true },
     { name: "psychology", id: "6655b6b02e379ceca333521b" },
     { name: "sociology", id: "6655b6b02e379ceca333521c" },
     { name: "spanish", id: "6655b6b02e379ceca333521d" },
+    { name: "media studies", id: "6655b6b02e379ceca333521d" },
+    { name: "french", id: "697202b0a1db954b6b71c0fe" },
+    { name: "law", id: "697202b0a1db954b6b71c0fe" },
+    { name: "urdu", id: "697202b0a1db954b6b71c0fe" },
   ];
 
   const items = uuid.map((item, index) => ({ name: item.name, id: index + 1 }));
@@ -177,9 +212,10 @@ function Search() {
       const isUpdated = function (sub: any) {
         return sub.name == selected.name;
       };
-      selected.updated
-        ? router.push(`/resources2/${updated.find(isUpdated)?.id}`)
-        : router.push(`/resources/${selected.id}`);
+      router.push(`/resources2/${updated.find(isUpdated)?.id}`);
+      // selected.updated
+      //   ? router.push(`/resources2/${updated.find(isUpdated)?.id}`)
+      //   : router.push(`/resources/${selected.id}`);
     }
   };
 

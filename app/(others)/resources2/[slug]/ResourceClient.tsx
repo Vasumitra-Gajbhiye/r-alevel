@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import Image, { type ImageProps } from "next/image";
 import { useMemo, useState } from "react";
 
 /* -------------------------
@@ -13,6 +13,31 @@ interface IconCardProps {
   subtitle?: string;
   onClick?: () => void;
   border: string;
+}
+type ImageWithFallbackProps = Omit<ImageProps, "src"> & {
+  src: string;
+  fallbackSrc: string;
+};
+function ImageWithFallback({
+  src,
+  fallbackSrc,
+  alt,
+  ...props
+}: ImageWithFallbackProps) {
+  const [imgSrc, setImgSrc] = useState<string>(src);
+
+  return (
+    <Image
+      {...props}
+      src={imgSrc}
+      alt={alt} // enforced by ImageProps
+      onError={() => {
+        if (imgSrc !== fallbackSrc) {
+          setImgSrc(fallbackSrc);
+        }
+      }}
+    />
+  );
 }
 
 function IconCard({ icon, title, subtitle, onClick, border }: IconCardProps) {
@@ -41,12 +66,6 @@ interface Props {
 }
 
 export default function ResourceClient({ resource }: Props) {
-  //   const { id } = useParams();
-
-  //   const [resource, setResource] = useState<any>(null);
-  //   const [loading, setLoading] = useState(true);
-  //   const [notFound, setNotFound] = useState(false);
-
   const [query, setQuery] = useState("");
   const [filterBoard, setFilterBoard] = useState<string | null>(null);
   const [showContribute, setShowContribute] = useState(false);
@@ -59,29 +78,6 @@ export default function ResourceClient({ resource }: Props) {
   const [showAllNotes, setShowAllNotes] = useState(false);
   const [showAllPdfBooks, setShowAllPdfBooks] = useState(false);
   const [showAllWorksheets, setShowAllWorksheets] = useState(false);
-
-  //   useEffect(() => {
-  //     async function fetchResource() {
-  //       try {
-  //         const res = await fetch(`/api/resources2/${id}`);
-  //         if (res.status === 404) {
-  //           setNotFound(true);
-  //           setLoading(false);
-  //           return;
-  //         }
-  //         const data = await res.json();
-  //         setResource(data);
-  //         setLoading(false);
-  //       } catch (err) {
-  //         console.error(err);
-  //         setNotFound(true);
-  //         setLoading(false);
-  //       }
-  //     }
-  //     fetchResource();
-  //   }, [id]);
-
-  // quick-access anchors
   const anchors = [
     { id: "syllabus", label: "Syllabus" },
     { id: "notes", label: "Notes" },
@@ -171,40 +167,6 @@ export default function ResourceClient({ resource }: Props) {
   if (!resource)
     return <div className="p-10 text-center">Resource not found.</div>;
 
-  //       const theme = {
-  //   primary: "#0084d1",          // sky-600
-  //   primaryDark: "#0069a8",      // sky-700
-  //   primaryAccent: "#0069a8",    // sky-700
-  //   primaryLight: "#f0f9ff",     // sky-50
-  //   primaryText: "#00598a",      // sky-800
-  //   primaryTextStrong: "#024a70",// sky-900
-
-  //   borderLight:"#b8e6fe",       // sky-200
-  //   borderLighter:"#dff2fe",     // sky-100
-  //   borderLightest:"#f0f9ff",    // sky-50
-
-  //   gradientStart: "#eaf5ff",
-  //   gradientMid: "#f9fbff",
-  //   gradientEnd: "#ffffff",
-  // };
-
-  //       const theme = {
-  //   primary: "#0084d1",          // sky-600
-  //   primaryDark: "#0069a8",      // sky-700
-  //   primaryAccent: "#0069a8",    // sky-700
-  //   primaryLight: "#f0f9ff",     // sky-50
-  //   primaryText: "#00598a",      // sky-800
-  //   primaryTextStrong: "#024a70",// sky-900
-
-  //   borderLight:"#b8e6fe",       // sky-200
-  //   borderLighter:"#dff2fe",     // sky-100
-  //   borderLightest:"#f0f9ff",    // sky-50
-
-  //   gradientStart: "#eaf5ff",
-  //   gradientMid: "#f9fbff",
-  //   gradientEnd: "#ffffff",
-  // };
-
   const roseTheme = {
     primary: "#E4546E",
     primaryDark: "#C04056",
@@ -223,6 +185,7 @@ export default function ResourceClient({ resource }: Props) {
   };
 
   console.log(resource);
+
   return (
     <main
       className="min-h-screen bg-white text-slate-800"
@@ -249,8 +212,9 @@ export default function ResourceClient({ resource }: Props) {
           <div className="flex flex-col md:flex-row md:items-center gap-14">
             <div className="flex-shrink-0">
               <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-xl overflow-hidden shadow">
-                <Image
+                <ImageWithFallback
                   src={`/subjects/${resource.subject.toLowerCase()}_main_thumb.png`}
+                  fallbackSrc="/subjects/default.png"
                   alt={`${resource.subject} hero`}
                   fill
                   className="object-cover"
@@ -432,92 +396,6 @@ export default function ResourceClient({ resource }: Props) {
               </motion.div>
             </motion.section>
 
-            {/* NOTES */}
-            {/* <motion.section
-              {...fade}
-              id="notes"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
-                    Notes & Summaries
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Concise unit notes, printable summaries and cheat sheets.
-                  </p>
-                </div>
-
-                {resource.notes.length > 6 && (
-                  <button
-                    onClick={() => setShowAllNotes((prev) => !prev)}
-                    className="text-sm text-[var(--primary-accent)] underline"
-                  >
-                    {showAllNotes ? "View less" : "View all"}
-                  </button>
-                )}
-              </div>
-
-
-              <div className="mt-4 grid sm:grid-cols-1 gap-3">
-                {(showAllNotes
-                  ? resource.notes
-                  : resource.notes.slice(0, 6)
-                ).map((n: any, idx: number) => (
-                  <motion.a
-                    key={idx}
-                    href={n.link}
-                    target="_blank"
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.25,
-                      delay: showAllNotes ? idx * 0.02 : 0,
-                    }}
-                    className="p-3 border rounded-lg hover:shadow-md transition flex gap-3 bg-white"
-                  >
-                    <div className="w-10 h-10 rounded-md bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary-accent)] text-sm">
-                      📝
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-[var(--primary-text)] leading-snug truncate">
-                        {n.title}
-                      </div>
-
-                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                        {n.source && (
-                          <span className="text-gray-500 whitespace-nowrap">
-                            {n.source}
-                          </span>
-                        )}
-
-                        {n.tags?.length > 0 && (
-                          <div className="flex flex-wrap gap-1">
-                            {n.tags
-                              .slice(0, 4)
-                              .map((tag: string, i: number) => (
-                                <span
-                                  key={i}
-                                  className="px-2 py-[2px] rounded-full bg-[var(--primary-light)] text-[var(--primary-accent)] text-[10px] whitespace-nowrap"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            {n.tags.length > 4 && (
-                              <span className="px-2 py-[2px] rounded-full bg-[var(--primary-light)] text-[var(--primary-accent)] text-[10px]">
-                                +{n.tags.length - 4}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.section> */}
-
             <motion.section
               {...fade}
               id="notes"
@@ -651,9 +529,10 @@ export default function ResourceClient({ resource }: Props) {
                     className="p-3 border rounded-lg hover:shadow-md transition flex gap-3 items-center bg-white"
                   >
                     <div className="w-12 h-12 rounded-full relative overflow-hidden bg-gray-100">
-                      <Image
-                        src={y.thumbnail}
-                        alt={y.channel}
+                      <ImageWithFallback
+                        src={y.thumbnail || "/youtube_thumb/default.jpg"}
+                        fallbackSrc="/youtube_thumb/default.jpg"
+                        alt={`${y.channel} thumbnail`}
                         fill
                         className="object-cover"
                       />
@@ -1044,9 +923,10 @@ export default function ResourceClient({ resource }: Props) {
                       href={b.buy}
                     >
                       <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
-                        <Image
-                          src={b.cover}
-                          alt={b.title}
+                        <ImageWithFallback
+                          src={b.cover || "/books_thumb/default.png"}
+                          fallbackSrc="/books_thumb/default.png"
+                          alt={`${b.title} cover`}
                           fill
                           className="object-contain"
                         />

@@ -56,6 +56,12 @@ function Sidebar({ roles }: { roles: string[] }) {
             >
               Informative Dept.
             </a>
+            <a
+              href="/admin/forms"
+              className="block px-3 py-2 rounded hover:bg-gray-100"
+            >
+              Form submission
+            </a>
           </>
         )}
 
