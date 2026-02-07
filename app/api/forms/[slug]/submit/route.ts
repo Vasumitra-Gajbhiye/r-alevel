@@ -21,7 +21,7 @@ export async function POST(
   }
 
   // 1️⃣ Fetch form definition
-  const form = await Form.findOne({ slug }).lean();
+  const form = await Form.findOne({ slug });
 
   if (!form) {
     return NextResponse.json({ error: "Form not found" }, { status: 404 });

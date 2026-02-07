@@ -1294,14 +1294,14 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import Link from "next/link";
+import { cldImage } from "@/lib/cloudinary";
+import { LogIn, Menu, X } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession, signIn } from "next-auth/react";
-import logo from "@/public/logo/Logo only.svg";
-import { Menu, X, LogIn } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -1364,8 +1364,17 @@ export default function Navigation() {
         >
           {/* header */}
           <div className="h-[72px] flex items-center justify-between px-4 border-b bg-white/90 backdrop-blur-sm z-10">
-            <Link href="/" onClick={handleClose} className="flex items-center gap-3">
-              <Image src={logo} alt="Logo" width={44} height={44} />
+            <Link
+              href="/"
+              onClick={handleClose}
+              className="flex items-center gap-3"
+            >
+              <Image
+                src={cldImage("/logo/Logo only.svg")}
+                alt="Logo"
+                width={44}
+                height={44}
+              />
               <span className="font-semibold text-gray-800">r/alevel</span>
             </Link>
 
@@ -1399,34 +1408,34 @@ export default function Navigation() {
                     {item.title}
                   </Link> */}
                   <Link
-        href={item.href}
-        onClick={handleClose}
-        className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
-          pathname === item.href
-            ? "text-blue-600 bg-blue-50"
-            : "text-gray-800 hover:bg-gray-100"
-        }`}
-      >
-        {item.title}
-      </Link>
+                    href={item.href}
+                    onClick={handleClose}
+                    className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
+                      pathname === item.href
+                        ? "text-blue-600 bg-blue-50"
+                        : "text-gray-800 hover:bg-gray-100"
+                    }`}
+                  >
+                    {item.title}
+                  </Link>
                 </li>
               ))}
               {/* ✅ Profile link - visible only on mobile */}
-  {session?.user && (
-    <li>
-      <Link
-        href="/profile"
-        onClick={handleClose}
-        className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
-          pathname === "/profile"
-            ? "text-blue-600 bg-blue-50"
-            : "text-gray-800 hover:bg-gray-100"
-        }`}
-      >
-        Profile
-      </Link>
-    </li>
-  )}
+              {session?.user && (
+                <li>
+                  <Link
+                    href="/profile"
+                    onClick={handleClose}
+                    className={`block w-full text-lg font-semibold py-3 rounded-md px-3 transition-colors ${
+                      pathname === "/profile"
+                        ? "text-blue-600 bg-blue-50"
+                        : "text-gray-800 hover:bg-gray-100"
+                    }`}
+                  >
+                    Profile
+                  </Link>
+                </li>
+              )}
             </ul>
 
             {/* mobile footer */}
@@ -1467,7 +1476,12 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
           {/* logo */}
           <Link href="/" className="flex items-center gap-3">
-            <Image src={logo} alt="Logo" width={56} height={56} />
+            <Image
+              src={cldImage("/logo/Logo only.svg")}
+              alt="Logo"
+              width={56}
+              height={56}
+            />
             <span className="hidden sm:block font-semibold text-lg text-gray-800">
               r/alevel
             </span>
@@ -1490,7 +1504,9 @@ export default function Navigation() {
                   {item.title}
                   <span
                     className={`absolute left-0 -bottom-1 h-[2px] w-full bg-blue-600 transform origin-left transition-transform duration-300 ${
-                      isCurrent ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      isCurrent
+                        ? "scale-x-100"
+                        : "scale-x-0 group-hover:scale-x-100"
                     }`}
                   />
                 </Link>
@@ -1545,7 +1561,9 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {isActive && mounted && <MobileOverlay onClose={() => setIsActive(false)} />}
+      {isActive && mounted && (
+        <MobileOverlay onClose={() => setIsActive(false)} />
+      )}
     </>
   );
 }

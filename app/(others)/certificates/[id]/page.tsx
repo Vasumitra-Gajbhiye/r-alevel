@@ -1,10 +1,5 @@
 import { CertImgSkeleton } from "@/app/skeleton";
-import group39 from "@/public/certificateImages/Group 39.png";
-import group40 from "@/public/certificateImages/Group 40.png";
-import group41 from "@/public/certificateImages/Group 41.png";
-import group42 from "@/public/certificateImages/Group 42.png";
-import vasuSign from "@/public/certificateImages/Vasu_sign.jpg";
-import verticalLog from "@/public/logo/Vertical logo.png";
+import { cldImage, cldRaw } from "@/lib/cloudinary";
 import Image from "next/image";
 import { Suspense } from "react";
 
@@ -170,27 +165,35 @@ async function CertificateDisplay({ id }: { id: string }) {
               <div className="design ">
                 <Image
                   className="c-design-img top-des absolute max-w-96 -z-10 top-0 left-0"
-                  src={group41}
+                  src={cldImage("/certificateImages/Group 41.png")}
+                  width={486}
+                  height={505}
                   alt="something"
                 />
 
                 <Image
                   className="c-design-img bottom-des absolute -z- bottom-0 left-0 w-full"
-                  src={group42}
+                  src={cldImage("/certificateImages/Group 42.png")}
                   alt="something"
+                  height={539}
+                  width={1135}
                 />
 
                 <Image
                   className="c-design-img bottom-dot absolute max-w-14 -z-10"
-                  src={group40}
+                  src={cldImage("/certificateImages/Group 40.png")}
+                  width={114}
+                  height={477}
                   alt="something"
                   style={{ bottom: "16%", left: "2%" }}
                 />
 
                 <Image
                   className="c-design-img top-dot absolute max-w-14 -z-10 "
-                  src={group39}
+                  src={cldImage("/certificateImages/Group 39.png")}
                   alt="something"
+                  height={381}
+                  width={116}
                   style={{ top: "2%", right: "2%" }}
                 />
               </div>
@@ -243,7 +246,9 @@ async function CertificateDisplay({ id }: { id: string }) {
                   <div className=" owner-info flex flex-col items-center gap-4">
                     <Image
                       className="owner-sign max-w-52 border-1 border-black "
-                      src={vasuSign}
+                      src={cldImage("/certificateImages/Vasu_sign.jpg")}
+                      width={1263}
+                      height={360}
                       alt="Signature"
                     />
                     <h4 className="owner-name text-themBlue-300 text-2xl font-semibold">
@@ -259,7 +264,9 @@ async function CertificateDisplay({ id }: { id: string }) {
                   <div className="server-logo w-44 self-center">
                     <Image
                       className="server-logo-img w-full"
-                      src={verticalLog}
+                      src={cldImage("/logo/Vertical logo.png")}
+                      width={400}
+                      height={292}
                       alt="Signature"
                     />
                   </div>
@@ -272,7 +279,7 @@ async function CertificateDisplay({ id }: { id: string }) {
                       className={`admin-sign max-w-52 border-1 border-black ${
                         admin == "Kush" ? "" : ""
                       }`}
-                      src={src}
+                      src={cldImage(src)}
                       height={height}
                       width={width}
                       alt="Signature"
@@ -297,7 +304,7 @@ async function CertificateDisplay({ id }: { id: string }) {
             {/* </div> */}
             <div className="download-btn mt-14 mb-44 max-w-96 bg-cy-500 py-1 px-12 rounded-2xl  transition-all hover:cursor-pointer hover:scale-10">
               <a
-                href={`/cert_pdf_doc/${cert?.certId}-pdf.pdf`}
+                href={cldRaw(`cert_pdf_doc/${cert?.certId}-pdf.pdf`)}
                 target="_blank"
                 className="download-btn-text text-white text-3xl font-bold no-underline flex justify-center items-center gap-8"
                 style={{ letterSpacing: "0.5rem" }}

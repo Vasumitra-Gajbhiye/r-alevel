@@ -439,6 +439,7 @@
 
 "use client";
 
+import { cldImage } from "@/lib/cloudinary";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -581,7 +582,11 @@ const MainContact = () => {
               target="_blank"
               className="flex gap-3 items-center justify-center sm:justify-start hover:translate-x-1 transition-all duration-300"
             >
-              <img src={contact.img} alt="icon" className="w-4 opacity-80" />
+              <img
+                src={cldImage(contact.img)}
+                alt="icon"
+                className="w-4 opacity-80"
+              />
               <span className="hover:text-gray-600">{contact.text}</span>
             </a>
           ))}

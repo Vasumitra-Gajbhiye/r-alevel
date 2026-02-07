@@ -1,5 +1,6 @@
 "use client";
 
+import { cldImage } from "@/lib/cloudinary";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -98,7 +99,9 @@ export default function BlogsClient({ data }: { data: any[] }) {
                       className="block rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all mx-auto max-w-4xl"
                     >
                       <Image
-                        src={`/blogs/${featuredBlogs[current]._id}/mainImgThumb.jpg`}
+                        src={cldImage(
+                          `blogs/${featuredBlogs[current]._id}/mainImgThumb.jpg`
+                        )}
                         alt={featuredBlogs[current].mainTitle}
                         width={1200}
                         height={600}

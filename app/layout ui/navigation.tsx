@@ -107,7 +107,6 @@
 //   );
 // }
 
-
 // "use client";
 
 // import React, { useEffect, useState } from "react";
@@ -278,7 +277,7 @@
 //             onClick={() => setIsActive(true)}
 //             aria-label="Open menu"
 //             className="lg2:hidden p-2 rounded-md hover:bg-gray-100 transition"
-            
+
 //           >
 //             <Menu size={22} color="#ffffff"/>
 //           </button>
@@ -290,7 +289,6 @@
 //     </>
 //   );
 // }
-
 
 // "use client";
 
@@ -739,14 +737,14 @@
 // }
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import logo from "@/public/logo/Logo only.svg";
+import { cldImage } from "@/lib/cloudinary";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -801,8 +799,17 @@ export default function Navigation() {
           >
             {/* header */}
             <div className="h-[72px] flex items-center justify-between px-4 border-b bg-white/90 backdrop-blur-sm">
-              <Link href="/" onClick={onClose} className="flex items-center gap-3">
-                <Image src={logo} alt="Logo" width={44} height={44} />
+              <Link
+                href="/"
+                onClick={onClose}
+                className="flex items-center gap-3"
+              >
+                <Image
+                  src={cldImage("/logo/Logo only.svg")}
+                  alt="Logo"
+                  width={44}
+                  height={44}
+                />
                 <span className="font-semibold text-gray-800">r/alevel</span>
               </Link>
               <button
@@ -903,9 +910,17 @@ export default function Navigation() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
           {/* Logo */}
-          <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-3"
+          >
             <Link href="/">
-              <Image src={logo} alt="Logo" width={56} height={56} />
+              <Image
+                src={cldImage("/logo/Logo only.svg")}
+                alt="Logo"
+                width={56}
+                height={56}
+              />
             </Link>
             <span
               className={`hidden sm:block font-semibold text-lg transition-colors duration-300 ${
@@ -982,7 +997,9 @@ export default function Navigation() {
         </div>
       </motion.nav>
 
-      {isActive && mounted && <MobileOverlay onClose={() => setIsActive(false)} />}
+      {isActive && mounted && (
+        <MobileOverlay onClose={() => setIsActive(false)} />
+      )}
     </>
   );
 }

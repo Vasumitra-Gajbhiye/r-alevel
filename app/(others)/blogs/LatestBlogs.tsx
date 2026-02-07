@@ -1,4 +1,5 @@
 // app/blogs/BlogGrid.tsx (SERVER)
+import { cldImage } from "@/lib/cloudinary";
 import { motion } from "framer-motion";
 
 export default function BlogGrid({ blogs }: { blogs: any[] }) {
@@ -17,7 +18,7 @@ export default function BlogGrid({ blogs }: { blogs: any[] }) {
         >
           <div className="overflow-hidden relative">
             <img
-              src={`/blogs/${blog._id}/mainImgThumb.jpg`}
+              src={cldImage(`/blogs/${blog._id}/mainImgThumb.jpg`)}
               alt={blog.mainTitle}
               className="object-cover w-full h-56 group-hover:scale-105 transition-all duration-500"
             />
