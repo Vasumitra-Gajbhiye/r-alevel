@@ -489,156 +489,159 @@ export default function ResourceClient({ resource }: Props) {
             </motion.section>
 
             {/* YOUTUBE CHANNELS */}
-            <motion.section
-              {...fade}
-              id="videos"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
-                    YouTube Channels
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Walkthroughs, concept explainers, and past-paper guides.
-                  </p>
+            {(resource.youtubeChannel?.length || 0) > 0 && (
+              <motion.section
+                {...fade}
+                id="videos"
+                className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
+                      YouTube Channels
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Walkthroughs, concept explainers, and past-paper guides.
+                    </p>
+                  </div>
+
+                  {resource.youtubeChannel.length > 6 && (
+                    <button
+                      onClick={() => setShowAllChannels((prev) => !prev)}
+                      className="text-sm text-[var(--primary-accent)] underline"
+                    >
+                      {showAllChannels ? "View less" : "View all"}
+                    </button>
+                  )}
                 </div>
 
-                {resource.youtubeChannel.length > 6 && (
-                  <button
-                    onClick={() => setShowAllChannels((prev) => !prev)}
-                    className="text-sm text-[var(--primary-accent)] underline"
-                  >
-                    {showAllChannels ? "View less" : "View all"}
-                  </button>
-                )}
-              </div>
-
-              <div className="mt-4 grid sm:grid-cols-2 gap-4">
-                {(showAllChannels
-                  ? resource.youtubeChannel
-                  : resource.youtubeChannel.slice(0, 6)
-                ).map((y: any, idx: number) => (
-                  <motion.a
-                    key={y.channel}
-                    href={y.channelUrl}
-                    target="_blank"
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.25,
-                      delay: showAllChannels ? idx * 0.02 : 0,
-                    }}
-                    className="p-3 border rounded-lg hover:shadow-md transition flex gap-3 items-center bg-white"
-                  >
-                    <div className="w-12 h-12 rounded-full relative overflow-hidden bg-gray-100">
-                      <ImageWithFallback
-                        src={y.thumbnail || "/youtube_thumb/default.jpg"}
-                        fallbackSrc="/youtube_thumb/default.jpg"
-                        alt={`${y.channel} thumbnail`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-
-                    <div className="flex-1 text-left">
-                      <div className="font-medium text-[var(--primary-text)]">
-                        {y.channel}
-                      </div>
-                      {y.description && (
-                        <div className="text-xs text-gray-500 mt-1 line-clamp-2">
-                          {y.description}
-                        </div>
-                      )}
-                    </div>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.section>
-
-            {/* VIDEOS — PLAYLISTS (NEW) */}
-            <motion.section
-              {...fade}
-              id="yt-playlists"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
-                    Useful Playlists & Videos
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Curated topic modules, revision series, and past-paper
-                    walkthrough sets.
-                  </p>
-                </div>
-
-                {resource.youtubePlaylist?.length > 6 && (
-                  <button
-                    onClick={() => setShowAllPlaylists((prev) => !prev)}
-                    className="text-sm text-[var(--primary-accent)] underline"
-                  >
-                    {showAllPlaylists ? "View less" : "View all"}
-                  </button>
-                )}
-              </div>
-
-              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {(showAllPlaylists
-                  ? resource.youtubePlaylist
-                  : resource.youtubePlaylist.slice(0, 6)
-                ).map((p: any, idx: number) => {
-                  const href = p.playlistUrl;
-                  const title = p.title;
-                  const description = p.description || "";
-                  const thumb = p.thumbnail || "/playlist_thumb/fallback.png";
-                  const type = p.type;
-
-                  return (
+                <div className="mt-4 grid sm:grid-cols-2 gap-4">
+                  {(showAllChannels
+                    ? resource.youtubeChannel
+                    : resource.youtubeChannel.slice(0, 6)
+                  ).map((y: any, idx: number) => (
                     <motion.a
-                      key={title + href}
-                      href={href}
+                      key={y.channel}
+                      href={y.channelUrl}
                       target="_blank"
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{
                         duration: 0.25,
-                        delay: showAllPlaylists ? idx * 0.02 : 0,
+                        delay: showAllChannels ? idx * 0.02 : 0,
                       }}
-                      className="group rounded-2xl border border-[var(--border-lightest] bg-white overflow-hidden shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
+                      className="p-3 border rounded-lg hover:shadow-md transition flex gap-3 items-center bg-white"
                     >
-                      {/* Thumbnail */}
-                      <div className="relative w-full aspect-video bg-gray-100">
-                        <Image
-                          src={cldImage(thumb)}
-                          alt={title}
+                      <div className="w-12 h-12 rounded-full relative overflow-hidden bg-gray-100">
+                        <ImageWithFallback
+                          src={y.thumbnail || "/youtube_thumb/default.jpg"}
+                          fallbackSrc="/youtube_thumb/default.jpg"
+                          alt={`${y.channel} thumbnail`}
                           fill
                           className="object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition" />
-                        <div className="absolute top-2 left-2 text-[10px] uppercase tracking-wide bg-white/90 backdrop-blur px-2 py-1 rounded-md">
-                          {type}
-                        </div>
                       </div>
 
-                      {/* Body */}
-                      <div className="p-4">
-                        <div className="text-sm font-semibold text-[var(--primary-text-strong)] line-clamp-2">
-                          {title}
+                      <div className="flex-1 text-left">
+                        <div className="font-medium text-[var(--primary-text)]">
+                          {y.channel}
                         </div>
-
-                        {description && (
-                          <p className="mt-1 text-xs text-gray-600 line-clamp-3">
-                            {description}
-                          </p>
+                        {y.description && (
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {y.description}
+                          </div>
                         )}
                       </div>
                     </motion.a>
-                  );
-                })}
-              </div>
-            </motion.section>
+                  ))}
+                </div>
+              </motion.section>
+            )}
 
+            {/* VIDEOS — PLAYLISTS (NEW) */}
+            {(resource.youtubePlaylist?.length || 0) > 0 && (
+              <motion.section
+                {...fade}
+                id="yt-playlists"
+                className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
+                      Useful Playlists & Videos
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Curated topic modules, revision series, and past-paper
+                      walkthrough sets.
+                    </p>
+                  </div>
+
+                  {resource.youtubePlaylist?.length > 6 && (
+                    <button
+                      onClick={() => setShowAllPlaylists((prev) => !prev)}
+                      className="text-sm text-[var(--primary-accent)] underline"
+                    >
+                      {showAllPlaylists ? "View less" : "View all"}
+                    </button>
+                  )}
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {(showAllPlaylists
+                    ? resource.youtubePlaylist
+                    : resource.youtubePlaylist.slice(0, 6)
+                  ).map((p: any, idx: number) => {
+                    const href = p.playlistUrl;
+                    const title = p.title;
+                    const description = p.description || "";
+                    const thumb = p.thumbnail || "/playlist_thumb/fallback.png";
+                    const type = p.type;
+
+                    return (
+                      <motion.a
+                        key={title + href}
+                        href={href}
+                        target="_blank"
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.25,
+                          delay: showAllPlaylists ? idx * 0.02 : 0,
+                        }}
+                        className="group rounded-2xl border border-[var(--border-lightest] bg-white overflow-hidden shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
+                      >
+                        {/* Thumbnail */}
+                        <div className="relative w-full aspect-video bg-gray-100">
+                          <Image
+                            src={cldImage(thumb)}
+                            alt={title}
+                            fill
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                          <div className="absolute top-2 left-2 text-[10px] uppercase tracking-wide bg-white/90 backdrop-blur px-2 py-1 rounded-md">
+                            {type}
+                          </div>
+                        </div>
+
+                        {/* Body */}
+                        <div className="p-4">
+                          <div className="text-sm font-semibold text-[var(--primary-text-strong)] line-clamp-2">
+                            {title}
+                          </div>
+
+                          {description && (
+                            <p className="mt-1 text-xs text-gray-600 line-clamp-3">
+                              {description}
+                            </p>
+                          )}
+                        </div>
+                      </motion.a>
+                    );
+                  })}
+                </div>
+              </motion.section>
+            )}
             {/* WORKSHEETS & TOPICALS */}
             {(resource.worksheets?.length || 0) > 0 && (
               <motion.section
@@ -879,134 +882,136 @@ export default function ResourceClient({ resource }: Props) {
             )}
 
             {/* BOOKS */}
+            {(resource.books?.length || 0) > 0 && (
+              <motion.section
+                {...fade}
+                id="books"
+                className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest] "
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
+                      Books & Textbooks
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Recommended references & editions.
+                    </p>
+                  </div>
 
-            <motion.section
-              {...fade}
-              id="books"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest] "
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
-                    Books & Textbooks
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Recommended references & editions.
-                  </p>
-                </div>
-
-                {resource.books.length > 6 && (
-                  <button
-                    onClick={() => setShowAllBooks((prev) => !prev)}
-                    className="text-sm text-[var(--primary-accent)] underline"
-                  >
-                    {showAllBooks ? "View less" : "View all"}
-                  </button>
-                )}
-              </div>
-
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {(showAllBooks
-                  ? resource.books
-                  : resource.books.slice(0, 6)
-                ).map((b: any, idx: number) => (
-                  <motion.div
-                    key={b.title}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.25,
-                      delay: showAllBooks ? idx * 0.02 : 0,
-                    }} // subtle stagger when expanding
-                    className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white"
-                  >
-                    <a
-                      className="text-xs text-[var(--primary-accent)] underline"
-                      target="_blank"
-                      href={b.buy}
+                  {resource.books.length > 6 && (
+                    <button
+                      onClick={() => setShowAllBooks((prev) => !prev)}
+                      className="text-sm text-[var(--primary-accent)] underline"
                     >
-                      <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
-                        <ImageWithFallback
-                          src={b.cover || "/books_thumb/default.png"}
-                          fallbackSrc="/books_thumb/default.png"
-                          alt={`${b.title} cover`}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                      <div className="text-sm font-medium text-[var(--primary-text)] line-clamp-2">
-                        {b.title}
-                      </div>
-                      Buy / Details
-                    </a>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.section>
-
-            {/* TOOLS */}
-            <motion.section
-              {...fade}
-              id="tools"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
-                    Tools & Utilities
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Useful calculators, references, and quick-access utilities.
-                  </p>
+                      {showAllBooks ? "View less" : "View all"}
+                    </button>
+                  )}
                 </div>
 
-                {resource.tools.length > 6 && (
-                  <button
-                    onClick={() => setShowAllTools((prev) => !prev)}
-                    className="text-sm text-[var(--primary-accent)] underline"
-                  >
-                    {showAllTools ? "View less" : "View all"}
-                  </button>
-                )}
-              </div>
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {(showAllBooks
+                    ? resource.books
+                    : resource.books.slice(0, 6)
+                  ).map((b: any, idx: number) => (
+                    <motion.div
+                      key={b.title}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.25,
+                        delay: showAllBooks ? idx * 0.02 : 0,
+                      }} // subtle stagger when expanding
+                      className="border rounded-lg p-3 flex flex-col items-start gap-3 hover:shadow transition bg-white"
+                    >
+                      <a
+                        className="text-xs text-[var(--primary-accent)] underline"
+                        target="_blank"
+                        href={b.buy}
+                      >
+                        <div className="w-full h-56 relative rounded overflow-hidden bg-gray-100">
+                          <ImageWithFallback
+                            src={b.cover || "/books_thumb/default.png"}
+                            fallbackSrc="/books_thumb/default.png"
+                            alt={`${b.title} cover`}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <div className="text-sm font-medium text-[var(--primary-text)] line-clamp-2">
+                          {b.title}
+                        </div>
+                        Buy / Details
+                      </a>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.section>
+            )}
+            {/* TOOLS */}
+            {(resource.tools?.length || 0) > 0 && (
+              <motion.section
+                {...fade}
+                id="tools"
+                className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[var(--primary-text-strong)]">
+                      Tools & Utilities
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Useful calculators, references, and quick-access
+                      utilities.
+                    </p>
+                  </div>
 
-              <div className="mt-4 grid grid-cols-1 gap-3">
-                {(showAllTools
-                  ? resource.tools
-                  : resource.tools.slice(0, 6)
-                ).map((t: any, idx: number) => (
-                  <motion.a
-                    key={t.name}
-                    href={t.url}
-                    target="_blank"
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.25,
-                      delay: showAllTools ? idx * 0.02 : 0,
-                    }} // subtle stagger when expanding
-                    className="p-4 pr-2 border rounded-lg hover:shadow-md transition flex justify-center items-start gap-3 bg-white"
-                  >
-                    <div className="w-10 h-10 rounded bg-[var(--primary-light)] flex items-center justify-center text-xl">
-                      🔧
-                    </div>
+                  {resource.tools.length > 6 && (
+                    <button
+                      onClick={() => setShowAllTools((prev) => !prev)}
+                      className="text-sm text-[var(--primary-accent)] underline"
+                    >
+                      {showAllTools ? "View less" : "View all"}
+                    </button>
+                  )}
+                </div>
 
-                    <div className="flex-1">
-                      <div className="text-sm font-semibold text-[var(--primary-text)]">
-                        {t.name}
+                <div className="mt-4 grid grid-cols-1 gap-3">
+                  {(showAllTools
+                    ? resource.tools
+                    : resource.tools.slice(0, 6)
+                  ).map((t: any, idx: number) => (
+                    <motion.a
+                      key={t.name}
+                      href={t.url}
+                      target="_blank"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.25,
+                        delay: showAllTools ? idx * 0.02 : 0,
+                      }} // subtle stagger when expanding
+                      className="p-4 pr-2 border rounded-lg hover:shadow-md transition flex justify-center items-start gap-3 bg-white"
+                    >
+                      <div className="w-10 h-10 rounded bg-[var(--primary-light)] flex items-center justify-center text-xl">
+                        🔧
                       </div>
 
-                      {t.description && (
-                        <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">
-                          {t.description}
-                        </p>
-                      )}
-                    </div>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.section>
+                      <div className="flex-1">
+                        <div className="text-sm font-semibold text-[var(--primary-text)]">
+                          {t.name}
+                        </div>
 
+                        {t.description && (
+                          <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">
+                            {t.description}
+                          </p>
+                        )}
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.section>
+            )}
             {/* COMMUNITY */}
             <motion.section
               {...fade}

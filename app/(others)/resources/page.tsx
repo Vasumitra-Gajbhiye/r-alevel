@@ -135,40 +135,39 @@
 
 "use client";
 
+import { slugify } from "@/lib/slugify";
 import { useRouter } from "next/navigation";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
-
 function Search() {
   const router = useRouter();
 
   const uuid = [
-    { name: "chemistry" },
-    { name: "biology" },
-    { name: "business" },
-    { name: "physics" },
-    { name: "accounting" },
-    { name: "arabic" },
-    { name: "business studies" },
-    { name: "computer science" },
-    { name: "economics" },
-    { name: "english language" },
-    { name: "english literature" },
-    { name: "environmental studies" },
-    { name: "further mathematics" },
-    { name: "geography" },
-    { name: "history" },
-    { name: "information technology" },
-    { name: "media studies" },
-    { name: "mathematics" },
-    { name: "art and design" },
-    { name: "drama" },
-    { name: "psychology" },
-    { name: "sociology" },
-    { name: "spanish" },
-    { name: "french" },
-    { name: "law" },
-    { name: "music" },
-    { name: "urdu" },
+    { name: "Chemistry" },
+    { name: "Biology" },
+    { name: "Business" },
+    { name: "Physics" },
+    { name: "Accounting" },
+    { name: "Arabic" },
+    { name: "Computer Science" },
+    { name: "Economics" },
+    { name: "English Language" },
+    { name: "English Literature" },
+    { name: "Environmental Studies" },
+    { name: "Further Mathematics" },
+    { name: "Geography" },
+    { name: "History" },
+    { name: "Information Technology" },
+    { name: "Media Studies" },
+    { name: "Mathematics" },
+    { name: "Art And Design" },
+    { name: "Drama" },
+    { name: "Psychology" },
+    { name: "Sociology" },
+    { name: "Spanish" },
+    { name: "French" },
+    { name: "Law" },
+    { name: "Music" },
+    { name: "Urdu" },
   ];
 
   const items = uuid.map((item, index) => ({ name: item.name, id: index + 1 }));
@@ -177,7 +176,7 @@ function Search() {
     const selected = uuid[item.id - 1];
     if (selected) {
       // ✅ navigate client-side
-      router.push(`/resources/${selected.name}`);
+      router.push(`/resources/${slugify(selected.name)}`);
     }
   };
 
