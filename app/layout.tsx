@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -58,6 +59,7 @@ export default function RootLayout({
       <body className={poppins.className + " tracking-widest	"}>
         {/* <Navigation /> */}
         {children}
+        <Toaster richColors position="top-right" />
         <Analytics />
         {/* <ContactUs /> */}
       </body>

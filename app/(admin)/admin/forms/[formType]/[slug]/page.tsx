@@ -1,4 +1,3 @@
-import connectDB from "@/libs/mongodb";
 import Form from "@/models/Form";
 import FormSubmission from "@/models/FormSubmission";
 import { FormDocument } from "@/types/form";
@@ -11,7 +10,6 @@ export default async function AdminFormPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  await connectDB();
 
   const form = (await Form.findOne({
     slug: slug,
@@ -25,7 +23,7 @@ export default async function AdminFormPage({
 
   const submissions = await FormSubmission.find(
     { formSlug: slug },
-    { responses: 1, createdAt: 1, status: 1 }
+    { responses: 1, createdAt: 1, status: 1, formType: 1, votes: 1 }
   )
     .sort({ createdAt: -1 })
     .lean();

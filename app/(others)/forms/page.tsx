@@ -293,7 +293,7 @@ export default async function FormsPage() {
               </div>
 
               {/* CTA */}
-              <a href={`/forms/${form.slug}`}>
+              <a href={`/forms/${form.slug}-intake-${form.activeCycleId}`}>
                 <button
                   disabled={form.status !== "open"}
                   className={`rounded-lg px-6 py-2.5 text-sm transition

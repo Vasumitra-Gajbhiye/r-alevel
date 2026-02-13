@@ -1,5 +1,5 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { requireRoles } from "@/lib/requireRoles";
+import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
 import ScheduleItem from "@/models/scheduleItem";
 import { getServerSession } from "next-auth";

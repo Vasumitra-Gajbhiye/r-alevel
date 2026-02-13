@@ -61,8 +61,22 @@ const FormSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["open", "closed"],
+      enum: ["open", "closed", "permanently-closed"],
       default: "open",
+    },
+    cycleId: {
+      type: Number,
+    },
+    formType: {
+      type: String,
+    },
+    ctaText: {
+      type: String,
+    },
+
+    responseCount: {
+      type: Number,
+      default: 0,
     },
 
     banner: {

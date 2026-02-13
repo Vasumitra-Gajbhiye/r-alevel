@@ -27,6 +27,7 @@ export async function POST(
     return NextResponse.json({ error: "Form not found" }, { status: 404 });
   }
 
+  console.log(body);
   if (form.status !== "open") {
     return NextResponse.json(
       { error: "This form is currently closed" },
@@ -36,7 +37,7 @@ export async function POST(
 
   // 2️⃣ Validate required fields (GENERIC & SAFE)
   for (const section of form.sections ?? []) {
-    const sectionResponses = body?.[section.id];
+    const sectionResponses = body?.responses[section.id];
 
     for (const field of section.fields ?? []) {
       if (!field.required) continue;
@@ -63,7 +64,9 @@ export async function POST(
   // 3️⃣ Save submission (schema-agnostic)
   const submission = await FormSubmission.create({
     formSlug: slug,
-    responses: body,
+    responses: body.responses,
+    cycleId: body.cycleId,
+    formType: body.formType,
     metadata: {
       ip:
         req.headers.get("x-forwarded-for") ??
@@ -72,6 +75,11 @@ export async function POST(
       userAgent: req.headers.get("user-agent") ?? undefined,
     },
   });
+
+  if (form) {
+    form.responseCount++;
+    await form.save();
+  }
 
   return NextResponse.json(
     {

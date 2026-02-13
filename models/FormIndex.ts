@@ -17,6 +17,7 @@ const FormIndexSchema = new mongoose.Schema(
     steps: [String],
     ctaText: String,
     order: Number, // for sorting
+    activeCycleId: Number,
   },
   { timestamps: true }
 );

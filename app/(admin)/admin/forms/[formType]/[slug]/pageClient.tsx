@@ -19,15 +19,16 @@ export default function AdminFormPageClient({
   totalResponses,
   submissions,
 }: Props) {
+  console.log(submissions);
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
       {/* BACK */}
       <Link
-        href="/admin/forms"
+        href={`/admin/forms/${form.formType}`}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to forms
+        Back to {form.formType} forms
       </Link>
 
       {/* HEADER */}
@@ -40,25 +41,36 @@ export default function AdminFormPageClient({
         </div>
 
         <p className="text-sm text-muted-foreground">
-          /forms/{form.slug} • {totalResponses} responses
+          {totalResponses} responses
         </p>
       </div>
 
       {/* TABS */}
-      <Tabs defaultValue="summary">
-        <TabsList className="mb-6">
-          <TabsTrigger value="summary">Summary</TabsTrigger>
-          <TabsTrigger value="responses">Responses</TabsTrigger>
-        </TabsList>
+      {totalResponses === 0 ? (
+        <>
+          <h1>No Response Yet</h1>
+        </>
+      ) : (
+        <Tabs defaultValue="summary">
+          <TabsList className="mb-6">
+            <TabsTrigger value="summary">Summary</TabsTrigger>
+            <TabsTrigger value="responses">Responses</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="summary">
-          <Summary submissions={submissions} />
-        </TabsContent>
+          <TabsContent value="summary">
+            <Summary submissions={submissions} />
+          </TabsContent>
 
-        <TabsContent value="responses">
-          <ResponsesTable formSlug={form.slug} submissions={submissions} />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="responses">
+            <ResponsesTable
+              form={form}
+              formSlug={form.slug}
+              submissions={submissions}
+              formType={form.formType}
+            />
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 }

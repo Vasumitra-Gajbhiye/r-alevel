@@ -96,7 +96,6 @@
 
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -109,6 +108,13 @@ import {
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -117,20 +123,39 @@ function formatDate(date: string) {
   });
 }
 
+type Vote = {
+  adminId: string;
+  adminName: string;
+  vote: 1 | -1;
+};
+
 type Submission = {
   _id: string;
   responses: Record<string, any>;
-  status?: "pending" | "approved" | "rejected";
   createdAt: string;
+  votes?: Vote[];
 };
 
 export default function ResponsesTable({
+  form,
   formSlug,
   submissions,
+  formType,
 }: {
+  form: any;
+  formType: string;
   formSlug: string;
   submissions: Submission[];
 }) {
+  console.log(submissions);
+  const firstSection = form?.sections?.[0];
+  const previewFields = firstSection?.fields?.slice(0, 3) ?? [];
+
+  console.log(submissions);
+
+  if (!form?.sections?.length) {
+    return <div>No sections found.</div>;
+  }
   return (
     <div className="space-y-4">
       {/* HEADER */}
@@ -151,44 +176,109 @@ export default function ResponsesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Level</TableHead>
+              {previewFields.map((field: any) => (
+                <TableHead key={field.id}>{field.label}</TableHead>
+              ))}
               <TableHead>Submitted</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Score</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {submissions.map((submission) => {
-              const personal =
-                submission.responses?.["personal-information"] ?? {};
-              const academic =
-                submission.responses?.["academic-background"] ?? {};
-
               return (
                 <TableRow key={submission._id} className="hover:bg-muted/50">
-                  <TableCell className="font-medium">
-                    {personal.fullName}
-                  </TableCell>
+                  {previewFields.map((field: any) => {
+                    const value =
+                      submission.responses?.[firstSection.id]?.[field.id];
 
-                  <TableCell>{personal.email}</TableCell>
-
-                  <TableCell>{academic.currentLevel}</TableCell>
+                    return (
+                      <TableCell key={field.id} className="font-medium">
+                        {Array.isArray(value) ? value.join(", ") : value ?? "-"}
+                      </TableCell>
+                    );
+                  })}
 
                   <TableCell>{formatDate(submission.createdAt)}</TableCell>
 
                   <TableCell>
-                    <Badge variant="secondary">
-                      {submission.status ?? "pending"}
-                    </Badge>
+                    {(() => {
+                      const votes = submission.votes ?? [];
+                      const upvotes = votes.filter((v) => v.vote === 1);
+                      const downvotes = votes.filter((v) => v.vote === -1);
+                      const net = upvotes.length - downvotes.length;
+
+                      return (
+                        <HoverCard openDelay={150}>
+                          <HoverCardTrigger asChild>
+                            <button
+                              className={`flex items-center gap-2 rounded-full border px-3 py-1 text-sm transition hover:bg-muted
+              ${net > 0 ? "text-green-600" : ""}
+              ${net < 0 ? "text-red-600" : ""}
+            `}
+                            >
+                              <ThumbsUp className="h-4 w-4 text-green-600" />
+                              <span>{upvotes.length}</span>
+
+                              <ThumbsDown className="h-4 w-4 text-red-600 ml-2" />
+                              <span>{downvotes.length}</span>
+                            </button>
+                          </HoverCardTrigger>
+
+                          <HoverCardContent className="w-64 space-y-4">
+                            {votes.length === 0 ? (
+                              <p className="text-sm text-muted-foreground">
+                                No moderation activity yet.
+                              </p>
+                            ) : (
+                              <>
+                                <div className="space-y-2">
+                                  {upvotes.length > 0 && (
+                                    <>
+                                      <div className="text-xs uppercase text-muted-foreground">
+                                        Approved
+                                      </div>
+                                      {upvotes.map((v) => (
+                                        <div
+                                          key={v.adminId}
+                                          className="flex items-center gap-2 text-sm"
+                                        >
+                                          <ThumbsUp className="h-3 w-3 text-green-600" />
+                                          <span>{v.adminName}</span>
+                                        </div>
+                                      ))}
+                                    </>
+                                  )}
+
+                                  {downvotes.length > 0 && (
+                                    <>
+                                      <div className="text-xs uppercase text-muted-foreground pt-2">
+                                        Rejected
+                                      </div>
+                                      {downvotes.map((v) => (
+                                        <div
+                                          key={v.adminId}
+                                          className="flex items-center gap-2 text-sm"
+                                        >
+                                          <ThumbsDown className="h-3 w-3 text-red-600" />
+                                          <span>{v.adminName}</span>
+                                        </div>
+                                      ))}
+                                    </>
+                                  )}
+                                </div>
+                              </>
+                            )}
+                          </HoverCardContent>
+                        </HoverCard>
+                      );
+                    })()}
                   </TableCell>
 
-                  {/* ACTION */}
                   <TableCell className="text-right">
                     <Link
-                      href={`/admin/forms/${formSlug}/responses/${submission._id}`}
+                      href={`/admin/forms/${formType}/${formSlug}/responses/${submission._id}`}
                     >
                       <Button variant="ghost" size="sm" className="gap-1">
                         View

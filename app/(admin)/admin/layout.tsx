@@ -1,7 +1,7 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import NoAccess from "@/components/NoAccess";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 import { hasAnyRole } from "@/lib/roles";
+import { authOptions } from "@/libs/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -61,6 +61,12 @@ function Sidebar({ roles }: { roles: string[] }) {
               className="block px-3 py-2 rounded hover:bg-gray-100"
             >
               Form submission
+            </a>
+            <a
+              href="/admin/certificates"
+              className="block px-3 py-2 rounded hover:bg-gray-100"
+            >
+              Certificates
             </a>
           </>
         )}

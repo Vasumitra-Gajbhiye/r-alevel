@@ -1,6 +1,6 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { requireRoles } from "@/lib/requireRoles";
 import { Role, highestAuthorityRole, roleRank } from "@/lib/roles";
+import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
 import UserData from "@/models/userData";
 import { getServerSession } from "next-auth";

@@ -1,6 +1,6 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import NoAccess from "@/components/NoAccess";
 import { hasRequiredRole } from "@/lib/roles";
+import { authOptions } from "@/libs/auth";
 import { getServerSession } from "next-auth";
 import React from "react";
 

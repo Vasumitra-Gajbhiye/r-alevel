@@ -49,6 +49,7 @@ export default async function SubmissionPage({
 
   // 1️⃣ Fetch form
   const form = (await Form.findOne({ slug }).lean()) as FormDocument | null;
+
   if (!form) notFound();
 
   // 2️⃣ Fetch submission

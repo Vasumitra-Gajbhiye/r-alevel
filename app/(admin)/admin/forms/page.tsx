@@ -83,7 +83,7 @@
 // }
 import { Badge } from "@/components/ui/badge";
 import connectDB from "@/libs/mongodb";
-import Form from "@/models/Form";
+import FormIndex from "@/models/FormIndex";
 import FormSubmission from "@/models/FormSubmission";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -91,12 +91,12 @@ import Link from "next/link";
 export default async function AdminFormsPage() {
   await connectDB();
 
-  const forms = await Form.find().lean();
+  const forms = await FormIndex.find().lean();
 
   const submissions = await FormSubmission.aggregate([
     {
       $group: {
-        _id: "$formSlug",
+        _id: "$formType",
         count: { $sum: 1 },
         lastSubmissionAt: { $max: "$submittedAt" },
       },
@@ -104,6 +104,7 @@ export default async function AdminFormsPage() {
   ]);
 
   const submissionMap = Object.fromEntries(submissions.map((s) => [s._id, s]));
+  console.log(submissions);
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-6">

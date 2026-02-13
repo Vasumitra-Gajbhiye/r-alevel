@@ -14,16 +14,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { CreateFormValues } from "@/types/form";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-type FormField = {
-  id: string;
-  label: string;
-  type: "text" | "email" | "textarea" | "url" | "file";
-  required?: boolean;
-};
 
 function IntroductionBlocks({ blocks }: { blocks: any[] }) {
   return (
@@ -62,34 +55,16 @@ function IntroductionBlocks({ blocks }: { blocks: any[] }) {
   );
 }
 
-function buildStructuredResponses(form: any, data: any) {
-  const structured: Record<string, Record<string, any>> = {};
-
-  for (const section of form.sections || []) {
-    const sectionData = data?.[section.id];
-    if (!sectionData) continue;
-
-    structured[section.id] = {};
-
-    for (const field of section.fields || []) {
-      const value = sectionData?.[field.id];
-
-      if (value !== undefined && value !== null && value !== "") {
-        structured[section.id][field.id] = value;
-      }
-    }
-
-    // Remove empty sections
-    if (Object.keys(structured[section.id]).length === 0) {
-      delete structured[section.id];
-    }
-  }
-
-  return structured;
-}
-
-export default function FormPageClient({ form }: { form: any }) {
+export default function FormPageClient() {
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [form, setForm] = useState<CreateFormValues | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("form-preview");
+    if (stored) {
+      setForm(JSON.parse(stored));
+    }
+  }, []);
 
   const {
     register,
@@ -99,99 +74,100 @@ export default function FormPageClient({ form }: { form: any }) {
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    try {
-      let res: Response;
+    // try {
+    //   let res: Response;
 
-      // 🔹 RESOURCE FORM → multipart + Drive
-      if (form.slug === "resource") {
-        const formData = new FormData();
+    //   // 🔹 RESOURCE FORM → multipart + Drive
+    //   if (form.slug === "resource") {
+    //     const formData = new FormData();
 
-        // 🔑 map form fields → API fields
-        const keyMap: Record<string, string> = {
-          "contributor.fullName": "fullName",
-          "contributor.email": "email",
-          "contributor.discordOrRedditId": "discordOrRedditId",
+    //     // 🔑 map form fields → API fields
+    //     const keyMap: Record<string, string> = {
+    //       "contributor.fullName": "fullName",
+    //       "contributor.email": "email",
+    //       "contributor.discordOrRedditId": "discordOrRedditId",
 
-          "academic.board": "board",
-          "academic.subject": "subject",
-          "academic.topic": "topic",
+    //       "academic.board": "board",
+    //       "academic.subject": "subject",
+    //       "academic.topic": "topic",
 
-          "resource.resourceTitle": "resourceTitle",
-          "resource.description": "description",
-          "resource.resourceType": "resourceType", // ✅ ADD THIS
+    //       "resource.resourceTitle": "resourceTitle",
+    //       "resource.description": "description",
+    //       "resource.resourceType": "resourceType", // ✅ ADD THIS
 
-          "resourceContent.links": "links",
-        };
+    //       "resourceContent.links": "links",
+    //     };
 
-        for (const section of form.sections) {
-          for (const field of section.fields) {
-            const value = data?.[section.id]?.[field.id];
-            if (value === undefined || value === null) continue;
+    //     for (const section of form.sections) {
+    //       for (const field of section.fields) {
+    //         const value = data?.[section.id]?.[field.id];
+    //         if (value === undefined || value === null) continue;
 
-            // 📁 FILES (handle BEFORE keyMap)
-            if (field.type === "file") {
-              if (value instanceof FileList) {
-                Array.from(value).forEach((file) => {
-                  formData.append("files", file);
-                });
-              }
-              continue; // ⬅️ important
-            }
+    //         // 📁 FILES (handle BEFORE keyMap)
+    //         if (field.type === "file") {
+    //           if (value instanceof FileList) {
+    //             Array.from(value).forEach((file) => {
+    //               formData.append("files", file);
+    //             });
+    //           }
+    //           continue; // ⬅️ important
+    //         }
 
-            const flatKey = keyMap[`${section.id}.${field.id}`];
-            if (!flatKey) continue;
-            else if (Array.isArray(value)) {
-              value.forEach((v) => formData.append(flatKey, String(v)));
-            } else {
-              formData.append(flatKey, String(value));
-            }
-          }
-        }
+    //         const flatKey = keyMap[`${section.id}.${field.id}`];
+    //         if (!flatKey) continue;
+    //         else if (Array.isArray(value)) {
+    //           value.forEach((v) => formData.append(flatKey, String(v)));
+    //         } else {
+    //           formData.append(flatKey, String(value));
+    //         }
+    //       }
+    //     }
 
-        // 🔍 DEBUG (remove later)
-        // for (const pair of formData.entries()) {
-        //   console.log(pair[0], pair[1]);
-        // }
-        // for (const pair of formData.entries()) {
-        //   console.log(pair[0], pair[1]);
-        // }
+    //     // 🔍 DEBUG (remove later)
+    //     // for (const pair of formData.entries()) {
+    //     //   console.log(pair[0], pair[1]);
+    //     // }
+    //     // for (const pair of formData.entries()) {
+    //     //   console.log(pair[0], pair[1]);
+    //     // }
 
-        res = await fetch("/api/resources/submit", {
-          method: "POST",
-          body: formData, // ❗ no headers
-        });
-      }
+    //     res = await fetch("/api/resources/submit", {
+    //       method: "POST",
+    //       body: formData, // ❗ no headers
+    //     });
+    //   }
 
-      // 🔹 ALL OTHER FORMS → JSON
-      else {
-        const enrichedResponses = buildStructuredResponses(form, data);
+    //   // 🔹 ALL OTHER FORMS → JSON
+    //   else {
+    //     res = await fetch(`/api/forms/${form.slug}/submit`, {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({
+    //         cycleId: form.cycleId, // ✅ inject here
+    //         formType: form.slug, // ✅ inject here
+    //         responses: data,
+    //       }),
+    //     });
+    //   }
 
-        res = await fetch(`/api/forms/${form.slug}/submit`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            cycleId: form.cycleId, // ✅ inject here
-            formType: form.slug, // ✅ inject here
-            responses: enrichedResponses,
-          }),
-        });
-      }
+    //   const json = await res.json();
 
-      const json = await res.json();
+    //   if (!res.ok) {
+    //     toast.error(json.error || "Submission failed");
+    //     return;
+    //   }
 
-      if (!res.ok) {
-        toast.error(json.error || "Submission failed");
-        return;
-      }
+    //   setShowConfirmation(true);
+    //   reset();
+    // } catch (err) {
+    //   console.error(err);
+    //   toast.error("Something went wrong");
+    // }
+    setShowConfirmation(true);
 
-      setShowConfirmation(true);
-      reset();
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong");
-    }
+    console.log("Submitted");
   };
-
+  if (!form) return <p>Loading preview...</p>;
   return (
     <>
       <div className="mx-auto max-w-5xl px-4 py-20">
@@ -218,12 +194,12 @@ export default function FormPageClient({ form }: { form: any }) {
             <h1 className="text-3xl font-semibold tracking-tight">
               {form.title}
             </h1>
-
+            {/* 
             {form.subtitle && (
               <p className="max-w-3xl text-muted-foreground text-base">
                 {form.subtitle}
               </p>
-            )}
+            )} */}
           </div>
 
           {/* INTRO / RULES */}

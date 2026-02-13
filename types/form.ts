@@ -29,7 +29,7 @@ export type FormDocument = {
   title: string;
   slug: string;
   status: "open" | "closed";
-
+  formType: string;
   banner?: {
     type: "gradient" | "image";
     value: string;
@@ -49,4 +49,35 @@ export type FormDocument = {
 
   createdAt: string;
   updatedAt: string;
+};
+
+export type IntroductionBlock2 =
+  | {
+      id: string;
+      type: "paragraph";
+      text: string;
+    }
+  | {
+      id: string;
+      type: "bullet_list";
+      bulletColor: string;
+      items: string[];
+    };
+
+export type CreateFormValues = {
+  title: string;
+  slug: string;
+  formType: string;
+  banner: {
+    type: "gradient";
+    value: string;
+  };
+  ctaText: string;
+  introductionBlocks: IntroductionBlock2[];
+  sections: FormSection[];
+  confirmationMessage: {
+    title: string;
+    body: string[];
+    contactEmail: string;
+  };
 };
