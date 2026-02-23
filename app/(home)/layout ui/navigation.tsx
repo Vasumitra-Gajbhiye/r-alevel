@@ -777,7 +777,7 @@ export default function Navigation() {
     { title: "Certificates", href: "/certificates" },
     { title: "Resources", href: "/resources" },
     { title: "Blogs", href: "/blogs" },
-    { title: "Team", href: "/team" },
+    { title: "Apply", href: "/forms" },
   ];
 
   const MobileOverlay = ({ onClose }: { onClose: () => void }) => {

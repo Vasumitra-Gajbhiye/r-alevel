@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPopover from "@/components/form/ErrorPopover";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,18 +14,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 type FormField = {
   id: string;
   label: string;
   type: "text" | "email" | "textarea" | "url" | "file";
   required?: boolean;
 };
-
 function IntroductionBlocks({ blocks }: { blocks: any[] }) {
   return (
     <div className="space-y-4">
@@ -90,13 +94,20 @@ function buildStructuredResponses(form: any, data: any) {
 
 export default function FormPageClient({ form }: { form: any }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
-
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+  const [errorElement, setErrorElement] = useState<HTMLElement | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     reset,
+    control,
+    setFocus,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({
+    shouldFocusError: true,
+    mode: "onBlur",
+  });
 
   const onSubmit = async (data: any) => {
     try {
@@ -148,14 +159,6 @@ export default function FormPageClient({ form }: { form: any }) {
           }
         }
 
-        // 🔍 DEBUG (remove later)
-        // for (const pair of formData.entries()) {
-        //   console.log(pair[0], pair[1]);
-        // }
-        // for (const pair of formData.entries()) {
-        //   console.log(pair[0], pair[1]);
-        // }
-
         res = await fetch("/api/resources/submit", {
           method: "POST",
           body: formData, // ❗ no headers
@@ -180,7 +183,12 @@ export default function FormPageClient({ form }: { form: any }) {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error || "Submission failed");
+        if (res.status === 409) {
+          setShowDuplicateModal(true);
+          return;
+        }
+
+        toast.error(json.message || "Submission failed");
         return;
       }
 
@@ -191,7 +199,41 @@ export default function FormPageClient({ form }: { form: any }) {
       toast.error("Something went wrong");
     }
   };
+  useEffect(() => {
+    const findFirstError = (errorsObj: any, parentKey = ""): string | null => {
+      for (const key in errorsObj) {
+        const value = errorsObj[key];
 
+        const fullKey = parentKey ? `${parentKey}.${key}` : key;
+
+        if (value?.message) return fullKey;
+
+        if (typeof value === "object") {
+          const nested = findFirstError(value, fullKey);
+          if (nested) return nested;
+        }
+      }
+      return null;
+    };
+
+    const firstErrorPath = findFirstError(errors);
+
+    if (!firstErrorPath) {
+      setErrorElement(null);
+      setErrorMessage(null);
+      return;
+    }
+
+    const el = document.querySelector(
+      `[name="${firstErrorPath}"]`
+    ) as HTMLElement | null;
+
+    if (el) {
+      el.focus();
+      setErrorElement(el);
+      setErrorMessage(firstErrorPath.split(".").slice(-1)[0] + " is required");
+    }
+  }, [errors]);
   return (
     <>
       <div className="mx-auto max-w-5xl px-4 py-20">
@@ -216,7 +258,7 @@ export default function FormPageClient({ form }: { form: any }) {
           {/* HEADER */}
           <div className="px-10 pt-8 pb-4 space-y-3">
             <h1 className="text-3xl font-semibold tracking-tight">
-              {form.title}
+              {form.title.replace(/\s+Intake\s+\d+$/i, "")}
             </h1>
 
             {form.subtitle && (
@@ -235,11 +277,11 @@ export default function FormPageClient({ form }: { form: any }) {
             </div>
           )}
           {/* FORM */}
-          <CardContent className="px-10 pb-10">
-            <form onSubmit={handleSubmit(onSubmit)}>
+          {/* <CardContent className="px-10 pb-10">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
               {form.sections?.map((section: any) => (
                 <div key={section.id} className="space-y-6 mt-12">
-                  {/* SECTION HEADER */}
+                
                   <div className="space-y-1">
                     <h2 className="text-lg font-semibold">{section.title}</h2>
 
@@ -250,7 +292,6 @@ export default function FormPageClient({ form }: { form: any }) {
                     )}
                   </div>
 
-                  {/* SECTION FIELDS */}
                   <div className="space-y-4">
                     {section.fields.map((field: any) => {
                       const inputName = `${section.id}.${field.id}`;
@@ -269,24 +310,372 @@ export default function FormPageClient({ form }: { form: any }) {
                               rows={5}
                               placeholder={field.placeholder}
                               {...register(inputName, {
-                                required: field.required,
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
                               })}
                             />
                           ) : field.type === "select" ? (
-                            <select
-                              id={inputName}
-                              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                              {...register(inputName, {
-                                required: field.required,
-                              })}
-                            >
-                              <option value="">Select an option</option>
-                              {field.options.map((opt: string) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
+                              render={({ field: controllerField }) => {
+                                const isMultiple = field.multiple;
+                                const rawValue = controllerField.value;
+
+                                const selectedValues = Array.isArray(rawValue)
+                                  ? rawValue
+                                  : rawValue
+                                  ? [rawValue]
+                                  : [];
+
+                                const customValue =
+                                  selectedValues.find((v) =>
+                                    v.startsWith("__OTHER__:")
+                                  ) || "";
+
+                                const isOtherSelected = !!customValue;
+
+                                const toggleOption = (option: string) => {
+                                  if (!isMultiple) {
+                                    controllerField.onChange(option);
+                                    return;
+                                  }
+
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange([option]);
+                                    return;
+                                  }
+
+                                  const current = selectedValues;
+
+                                  if (current.includes(option)) {
+                                    controllerField.onChange(
+                                      current.filter((v) => v !== option)
+                                    );
+                                  } else {
+                                    if (
+                                      field.maxSelections &&
+                                      current.length >= field.maxSelections
+                                    )
+                                      return;
+                                    controllerField.onChange([
+                                      ...current,
+                                      option,
+                                    ]);
+                                  }
+                                };
+                                const removeOption = (option: string) => {
+                                  controllerField.onChange(
+                                    selectedValues.filter((v) => v !== option)
+                                  );
+                                };
+                                const toggleOther = () => {
+                                  if (isOtherSelected) {
+                                    controllerField.onChange(
+                                      selectedValues.filter(
+                                        (v) => !v.startsWith("__OTHER__:")
+                                      )
+                                    );
+                                  } else {
+                                    if (field.maxSelections === 1) {
+                                      controllerField.onChange(["__OTHER__:"]);
+                                    } else {
+                                      controllerField.onChange([
+                                        ...selectedValues,
+                                        "__OTHER__:",
+                                      ]);
+                                    }
+                                  }
+                                };
+
+                                const updateOtherValue = (val: string) => {
+                                  const filtered = selectedValues.filter(
+                                    (v) => !v.startsWith("__OTHER__:")
+                                  );
+
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange([
+                                      `__OTHER__:${val}`,
+                                    ]);
+                                  } else {
+                                    controllerField.onChange([
+                                      ...filtered,
+                                      `__OTHER__:${val}`,
+                                    ]);
+                                  }
+                                };
+
+                                return (
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <div
+                                        role="button"
+                                        tabIndex={0}
+                                        className="w-full flex flex-wrap items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm min-h-[40px] cursor-pointer"
+                                      >
+                                        {selectedValues.length === 0 && (
+                                          <span className="text-muted-foreground">
+                                            Select option
+                                          </span>
+                                        )}
+
+                                        {selectedValues.map((opt: string) => {
+                                          const label = opt.startsWith(
+                                            "__OTHER__:"
+                                          )
+                                            ? opt.replace("__OTHER__:", "")
+                                            : opt;
+
+                                          return (
+                                            <Badge
+                                              key={opt}
+                                              variant="secondary"
+                                              className="flex items-center gap-1"
+                                            >
+                                              {label}
+                                              {isMultiple && (
+                                                <span
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeOption(opt);
+                                                  }}
+                                                  className="cursor-pointer"
+                                                >
+                                                  <X className="h-3 w-3" />
+                                                </span>
+                                              )}
+                                            </Badge>
+                                          );
+                                        })}
+
+                                        <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
+                                      </div>
+                                    </PopoverTrigger>
+
+                                    <PopoverContent
+                                      align="start"
+                                      className="w-[var(--radix-popover-trigger-width)] p-0"
+                                    >
+                                      <Command>
+                                        <CommandInput placeholder="Search..." />
+                                        <CommandEmpty>
+                                          No option found.
+                                        </CommandEmpty>
+
+                                        <CommandGroup>
+                                          {field.options.map((opt: string) => {
+                                            const isSelected =
+                                              selectedValues.includes(opt);
+
+                                            return (
+                                              <CommandItem
+                                                key={opt}
+                                                onSelect={() =>
+                                                  toggleOption(opt)
+                                                }
+                                              >
+                                                <div className="flex items-center justify-between w-full">
+                                                  <span>{opt}</span>
+                                                  {isSelected && (
+                                                    <Check className="h-4 w-4 text-primary" />
+                                                  )}
+                                                </div>
+                                              </CommandItem>
+                                            );
+                                          })}
+
+                                          {field.allowOther && (
+                                            <CommandItem onSelect={toggleOther}>
+                                              <div className="flex items-center justify-between w-full">
+                                                <span>
+                                                  Other (please specify)
+                                                </span>
+                                                {isOtherSelected && (
+                                                  <Check className="h-4 w-4 text-primary" />
+                                                )}
+                                              </div>
+                                            </CommandItem>
+                                          )}
+                                        </CommandGroup>
+                                      </Command>
+
+                                      {field.allowOther && isOtherSelected && (
+                                        <div className="p-3 border-t">
+                                          <Input
+                                            value={customValue.replace(
+                                              "__OTHER__:",
+                                              ""
+                                            )}
+                                            placeholder="Please specify"
+                                            onChange={(e) =>
+                                              updateOtherValue(e.target.value)
+                                            }
+                                          />
+                                        </div>
+                                      )}
+                                    </PopoverContent>
+                                  </Popover>
+                                );
+                              }}
+                            />
+                          ) : field.type === "checkbox" ? (
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
+                              render={({ field: controllerField }) => {
+                                const value: string[] =
+                                  controllerField.value || [];
+
+                                const toggle = (option: string) => {
+                                  if (value.includes(option)) {
+                                    controllerField.onChange(
+                                      value.filter((v) => v !== option)
+                                    );
+                                  } else {
+                                    if (
+                                      field.maxSelections &&
+                                      value.length >= field.maxSelections
+                                    ) {
+                                      return;
+                                    }
+                                    controllerField.onChange([
+                                      ...value,
+                                      option,
+                                    ]);
+                                  }
+                                };
+
+                                return (
+                                  <div className="space-y-5">
+                                    {field.options.map((opt: string) => {
+                                      const checked = value.includes(opt);
+
+                                      return (
+                                        <label
+                                          key={opt}
+                                          className="flex items-center gap-3 cursor-pointer mt-6"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            onChange={() => toggle(opt)}
+                                            className="h-4 w-4"
+                                          />
+                                          <span className="text-sm">{opt}</span>
+                                        </label>
+                                      );
+                                    })}
+
+                                    {field.allowOther && (
+                                      <label className="flex items-center gap-3">
+                                        <input
+                                          type="checkbox"
+                                          checked={value.includes("__OTHER__")}
+                                          onChange={() => toggle("__OTHER__")}
+                                          className="h-4 w-4"
+                                        />
+                                        <span className="text-sm">
+                                          Other (please specify)
+                                        </span>
+                                      </label>
+                                    )}
+
+                                    {value.includes("__OTHER__") && (
+                                      <Input
+                                        placeholder="Please specify"
+                                        onChange={(e) => {
+                                          const filtered = value.filter(
+                                            (v) => v !== "__OTHER__"
+                                          );
+                                          controllerField.onChange([
+                                            ...filtered,
+                                            e.target.value,
+                                          ]);
+                                        }}
+                                      />
+                                    )}
+                                  </div>
+                                );
+                              }}
+                            />
+                          ) : field.type === "radio" ? (
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
+                              render={({ field: controllerField }) => {
+                                const value = controllerField.value;
+
+                                return (
+                                  <div className="space-y-3">
+                                    {field.options.map((opt: string) => (
+                                      <label
+                                        key={opt}
+                                        className="flex items-center gap-3 cursor-pointer"
+                                      >
+                                        <input
+                                          type="radio"
+                                          value={opt}
+                                          checked={value === opt}
+                                          onChange={() =>
+                                            controllerField.onChange(opt)
+                                          }
+                                          className="h-4 w-4"
+                                        />
+                                        <span className="text-sm">{opt}</span>
+                                      </label>
+                                    ))}
+
+                                    {field.allowOther && (
+                                      <>
+                                        <label className="flex items-center gap-3">
+                                          <input
+                                            type="radio"
+                                            value="__OTHER__"
+                                            checked={value === "__OTHER__"}
+                                            onChange={() =>
+                                              controllerField.onChange(
+                                                "__OTHER__"
+                                              )
+                                            }
+                                            className="h-4 w-4"
+                                          />
+                                          <span className="text-sm">
+                                            Other (please specify)
+                                          </span>
+                                        </label>
+
+                                        {value === "__OTHER__" && (
+                                          <Input
+                                            placeholder="Please specify"
+                                            onChange={(e) =>
+                                              controllerField.onChange(
+                                                e.target.value
+                                              )
+                                            }
+                                          />
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                );
+                              }}
+                            />
                           ) : field.type === "file" ? (
                             <Input
                               id={inputName}
@@ -300,14 +689,16 @@ export default function FormPageClient({ form }: { form: any }) {
                               type={field.type}
                               placeholder={field.placeholder}
                               {...register(inputName, {
-                                required: field.required,
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
                               })}
                             />
                           )}
 
                           {errors[inputName] && (
                             <p className="text-sm text-red-500">
-                              This field is required
+                              {errors[inputName]?.message as string}
                             </p>
                           )}
                         </div>
@@ -315,14 +706,14 @@ export default function FormPageClient({ form }: { form: any }) {
                     })}
                   </div>
 
-                  {/* SECTION DIVIDER */}
+                
                   <div className="pt-6">
                     <div className="h-px bg-border" />
                   </div>
                 </div>
               ))}
 
-              {/* SUBMIT FOOTER */}
+           
               <div className="pt-12">
                 <div className="rounded-xl border bg-muted/40 px-6 py-6">
                   <div className="flex flex-col items-center gap-4">
@@ -347,6 +738,278 @@ export default function FormPageClient({ form }: { form: any }) {
                 </div>
               </div>
             </form>
+            {errorElement && errorMessage && (
+              <ErrorPopover reference={errorElement} message={errorMessage} />
+            )}
+          </CardContent> */}
+          <CardContent className="px-10 pb-10">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              {form.sections?.map((section: any) => (
+                <div key={section.id} className="space-y-6 mt-12">
+                  {/* SECTION HEADER */}
+                  <div className="space-y-1">
+                    <h2 className="text-lg font-semibold">{section.title}</h2>
+
+                    {section.subtitle && (
+                      <p className="text-sm text-muted-foreground">
+                        {section.subtitle}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* SECTION FIELDS */}
+                  <div className="space-y-4">
+                    {section.fields.map((field: any) => {
+                      const inputName = `${section.id}.${field.id}`;
+
+                      return (
+                        <div key={field.id} className="space-y-3">
+                          <Label htmlFor={inputName}>
+                            {field.label}
+                            {field.required && (
+                              <span className="ml-1 text-red-500">*</span>
+                            )}
+                          </Label>
+
+                          {/* TEXTAREA */}
+                          {field.type === "textarea" ? (
+                            <Textarea
+                              id={inputName}
+                              rows={5}
+                              placeholder={field.placeholder}
+                              {...register(inputName, {
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              })}
+                            />
+                          ) : /* TEXT / EMAIL / NUMBER ETC */
+                          field.type !== "select" &&
+                            field.type !== "checkbox" &&
+                            field.type !== "radio" &&
+                            field.type !== "file" ? (
+                            <Input
+                              id={inputName}
+                              type={field.type}
+                              placeholder={field.placeholder}
+                              {...register(inputName, {
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+
+                                ...(field.type === "email" && {
+                                  pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message:
+                                      "Please enter a valid email address",
+                                  },
+                                }),
+                              })}
+                            />
+                          ) : /* FILE */
+                          field.type === "file" ? (
+                            <Input
+                              id={inputName}
+                              type="file"
+                              multiple={field.multiple}
+                              {...register(inputName, {
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              })}
+                            />
+                          ) : /* SELECT (CUSTOM) */
+                          field.type === "select" ? (
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
+                              render={({ field: controllerField }) => {
+                                const rawValue = controllerField.value;
+                                const selectedValues = Array.isArray(rawValue)
+                                  ? rawValue
+                                  : rawValue
+                                  ? [rawValue]
+                                  : [];
+
+                                return (
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <div
+                                        ref={(el) => {
+                                          if (el)
+                                            el.setAttribute("name", inputName);
+                                        }}
+                                        className="w-full flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm min-h-[40px] cursor-pointer"
+                                      >
+                                        {selectedValues.length === 0 ? (
+                                          <span className="text-muted-foreground">
+                                            Select option
+                                          </span>
+                                        ) : (
+                                          selectedValues.join(", ")
+                                        )}
+                                      </div>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      align="start"
+                                      className="w-[var(--radix-popover-trigger-width)]"
+                                    >
+                                      {field.options.map((opt: string) => (
+                                        <div
+                                          key={opt}
+                                          className="cursor-pointer px-2 py-1 hover:bg-muted rounded"
+                                          onClick={() =>
+                                            controllerField.onChange(opt)
+                                          }
+                                        >
+                                          {opt}
+                                        </div>
+                                      ))}
+                                    </PopoverContent>
+                                  </Popover>
+                                );
+                              }}
+                            />
+                          ) : /* CHECKBOX */
+                          field.type === "checkbox" ? (
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{
+                                validate: (value) =>
+                                  field.required &&
+                                  (!value || value.length === 0)
+                                    ? `${field.label} is required`
+                                    : true,
+                              }}
+                              render={({ field: controllerField }) => {
+                                const value: string[] =
+                                  controllerField.value || [];
+
+                                return (
+                                  <div
+                                    ref={(el) => {
+                                      if (el)
+                                        el.setAttribute("name", inputName);
+                                    }}
+                                    className="space-y-3"
+                                  >
+                                    {field.options.map((opt: string) => (
+                                      <label
+                                        key={opt}
+                                        className="flex items-center gap-3 cursor-pointer"
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          checked={value.includes(opt)}
+                                          onChange={() => {
+                                            if (value.includes(opt)) {
+                                              controllerField.onChange(
+                                                value.filter((v) => v !== opt)
+                                              );
+                                            } else {
+                                              controllerField.onChange([
+                                                ...value,
+                                                opt,
+                                              ]);
+                                            }
+                                          }}
+                                        />
+                                        <span>{opt}</span>
+                                      </label>
+                                    ))}
+                                  </div>
+                                );
+                              }}
+                            />
+                          ) : (
+                            /* RADIO */
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
+                              render={({ field: controllerField }) => (
+                                <div
+                                  ref={(el) => {
+                                    if (el) el.setAttribute("name", inputName);
+                                  }}
+                                  className="space-y-3"
+                                >
+                                  {field.options.map((opt: string) => (
+                                    <label
+                                      key={opt}
+                                      className="flex items-center gap-3 cursor-pointer"
+                                    >
+                                      <input
+                                        type="radio"
+                                        checked={controllerField.value === opt}
+                                        onChange={() =>
+                                          controllerField.onChange(opt)
+                                        }
+                                      />
+                                      <span>{opt}</span>
+                                    </label>
+                                  ))}
+                                </div>
+                              )}
+                            />
+                          )}
+
+                          {/* FIELD ERROR MESSAGE */}
+                          {(errors as any)?.[section.id]?.[field.id] && (
+                            <p className="text-sm text-red-500">
+                              {
+                                (errors as any)[section.id][field.id]
+                                  ?.message as string
+                              }
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* SECTION DIVIDER */}
+                  <div className="pt-6">
+                    <div className="h-px bg-border" />
+                  </div>
+                </div>
+              ))}
+
+              {/* SUBMIT FOOTER */}
+              <div className="pt-12">
+                <div className="rounded-xl border bg-muted/40 px-6 py-6">
+                  <div className="flex flex-col items-center gap-4">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={isSubmitting}
+                      className="w-full max-w-md text-base font-medium bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 shadow-lg"
+                    >
+                      Submit Application
+                    </Button>
+
+                    <p className="text-center text-sm text-muted-foreground max-w-md">
+                      By submitting this application, you confirm that all
+                      information provided is accurate.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            {errorElement && errorMessage && (
+              <ErrorPopover reference={errorElement} message={errorMessage} />
+            )}
           </CardContent>
         </Card>
       </div>
@@ -395,6 +1058,62 @@ export default function FormPageClient({ form }: { form: any }) {
                 <div className="rounded-md bg-muted px-3 py-2 text-sm">
                   Please watch for emails from
                   <br />
+                  <span className="font-medium text-foreground">
+                    application@ralevel.com
+                  </span>
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogAction className="w-full">Close</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* DUPLICATE SUBMISSION MODAL */}
+      <AlertDialog
+        open={showDuplicateModal}
+        onOpenChange={setShowDuplicateModal}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader className="space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="text-yellow-600"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01"
+                />
+              </svg>
+            </div>
+
+            <AlertDialogTitle className="text-center text-lg font-semibold">
+              Already Submitted
+            </AlertDialogTitle>
+
+            <AlertDialogDescription asChild>
+              <div className="space-y-3 text-center text-sm text-muted-foreground">
+                <p>
+                  Our records show that this email has already submitted an
+                  application for this intake.
+                </p>
+
+                <p>
+                  If you believe this is a mistake, please contact the team at:
+                </p>
+
+                <div className="rounded-md bg-muted px-3 py-2 text-sm">
                   <span className="font-medium text-foreground">
                     application@ralevel.com
                   </span>

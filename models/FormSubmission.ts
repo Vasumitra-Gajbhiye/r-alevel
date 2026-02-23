@@ -90,9 +90,26 @@ const FormSubmissionSchema = new mongoose.Schema(
       type: [CommentSchema],
       default: [],
     },
+    submitterName: {
+      type: String,
+      index: true,
+    },
+
+    submitterEmail: {
+      type: String,
+      index: true,
+    },
   },
   { timestamps: true }
 );
-
+FormSubmissionSchema.index(
+  { formType: 1, cycleId: 1, submitterEmail: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      submitterEmail: { $exists: true, $type: "string" },
+    },
+  }
+);
 export default mongoose.models.FormSubmission ||
   mongoose.model("FormSubmission", FormSubmissionSchema);

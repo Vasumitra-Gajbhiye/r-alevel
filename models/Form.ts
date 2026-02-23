@@ -29,20 +29,54 @@ import mongoose from "mongoose";
 
 const FormFieldSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true }, // stable API key
+    id: { type: String, required: true },
     label: { type: String, required: true },
+
     type: {
       type: String,
-      enum: ["text", "textarea", "email", "select", "file", "url"],
+      enum: [
+        "text",
+        "textarea",
+        "email",
+        "select",
+        "file",
+        "url",
+        "checkbox",
+        "radio",
+      ],
       required: true,
     },
+
     required: { type: Boolean, default: false },
     placeholder: String,
-    options: [String], // for select
+
+    // For select
+    options: {
+      type: [String],
+      default: [],
+    },
+
+    // 🔥 NEW
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+
+    minSelections: {
+      type: Number,
+    },
+
+    maxSelections: {
+      type: Number,
+    },
+
+    allowOther: {
+      type: Boolean,
+      default: false,
+    },
   },
   { _id: false }
 );
-
 const FormSectionSchema = new mongoose.Schema(
   {
     id: { type: String, required: true }, // stable API key

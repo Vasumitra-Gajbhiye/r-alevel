@@ -13,8 +13,15 @@ type IntroBlock =
       items: string[];
     };
 
-type FieldType = "text" | "email" | "textarea" | "select";
-
+type FieldType =
+  | "text"
+  | "email"
+  | "textarea"
+  | "select"
+  | "file"
+  | "url"
+  | "checkbox"
+  | "radio";
 type FormField = {
   id: string;
   label: string;
@@ -22,6 +29,13 @@ type FormField = {
   required: boolean;
   placeholder?: string;
   options?: string[];
+
+  // 🔥 NEW
+  multiple?: boolean;
+  minSelections?: number;
+  maxSelections?: number;
+
+  allowOther?: boolean;
 };
 
 type FormSection = {
@@ -49,57 +63,6 @@ type Form = {
   };
 };
 
-// export async function POST(req: Request) {
-//   let body: Form;
-//   try {
-//     body = await req.json();
-//   } catch {
-//     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-//   }
-//   const prevForm = (
-//     await Form.find({ formType: body.formType })
-//       .sort({
-//         cycleId: -1,
-//       })
-//       .limit(1)
-//   )[0];
-//   const prevCycleId = prevForm.cycleId;
-
-//   console.log(prevForm);
-//   console.log("hit create form api");
-
-//   const newForm = await Form.create({
-//     banner: body.banner,
-//     title: body.title,
-//     slug: body.slug,
-//     status: "open",
-//     ctaText: body.ctaText,
-//     confirmationMessage: body.confirmationMessage,
-//     introductionBlocks: body.introductionBlocks,
-//     sections: body.sections,
-//     cycleId: prevCycleId + 1,
-//     formType: body.formType,
-//   });
-
-//   prevForm.status = "closed";
-//   prevForm.save();
-
-//   const updatedIndex = await FormIndex.updateOne(
-//     { slug: body.formType },
-//     { $inc: { activeCycleId: 1 } }
-//   );
-
-//   console.log(updatedIndex);
-
-//   //   console.log(body);
-//   return NextResponse.json(
-//     {
-//       success: true,
-//     },
-//     { status: 201 }
-//   );
-// }
-
 export async function POST(req: Request) {
   let body: Form;
 
@@ -120,13 +83,83 @@ export async function POST(req: Request) {
   if (existingSlug) {
     return NextResponse.json({ error: "Slug already exists" }, { status: 400 });
   }
-
+  console.log(body);
   const prevForm = await Form.findOne({ formType: body.formType }).sort({
     cycleId: -1,
   });
 
   const prevCycleId = prevForm ? prevForm.cycleId : 0;
+  // 🔥 Validate select fields
+  // 🔥 Validate select fields
+  for (const section of body.sections) {
+    for (const field of section.fields) {
+      if (["select", "checkbox", "radio"].includes(field.type)) {
+        // Radio cannot be multiple
+        if (field.type === "radio") {
+          field.multiple = false;
+          field.minSelections = undefined;
+          field.maxSelections = undefined;
+        }
+        // Must have options
+        if (!field.options || field.options.length === 0) {
+          return NextResponse.json(
+            { error: `Select field "${field.label}" must have options` },
+            { status: 400 }
+          );
+        }
 
+        // If NOT multiple, clear limits
+        if (!field.multiple) {
+          field.minSelections = undefined;
+          field.maxSelections = undefined;
+        }
+
+        // If multiple → validate limits
+        if (field.multiple) {
+          if (field.minSelections !== undefined && field.minSelections < 0) {
+            return NextResponse.json(
+              { error: `Invalid min selections in "${field.label}"` },
+              { status: 400 }
+            );
+          }
+
+          if (field.maxSelections !== undefined && field.maxSelections < 1) {
+            return NextResponse.json(
+              { error: `Invalid max selections in "${field.label}"` },
+              { status: 400 }
+            );
+          }
+
+          if (
+            field.minSelections !== undefined &&
+            field.maxSelections !== undefined &&
+            field.minSelections > field.maxSelections
+          ) {
+            return NextResponse.json(
+              { error: `Min selections cannot exceed max in "${field.label}"` },
+              { status: 400 }
+            );
+          }
+        }
+
+        // Normalize allowOther
+        field.allowOther = Boolean(field.allowOther);
+      }
+    }
+  }
+
+  // 🔥 Normalize select fields before saving
+  for (const section of body.sections) {
+    for (const field of section.fields) {
+      if (!["select", "checkbox", "radio"].includes(field.type)) {
+        field.options = [];
+        field.multiple = false;
+        field.minSelections = undefined;
+        field.maxSelections = undefined;
+        field.allowOther = false;
+      }
+    }
+  }
   const newForm = await Form.create({
     banner: body.banner,
     title: body.title,

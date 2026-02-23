@@ -9,15 +9,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { CreateFormValues } from "@/types/form";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+
+import { Check, ChevronDown } from "lucide-react";
 function IntroductionBlocks({ blocks }: { blocks: any[] }) {
   return (
     <div className="space-y-4">
@@ -70,99 +86,10 @@ export default function FormPageClient() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm();
-
   const onSubmit = async (data: any) => {
-    // try {
-    //   let res: Response;
-
-    //   // 🔹 RESOURCE FORM → multipart + Drive
-    //   if (form.slug === "resource") {
-    //     const formData = new FormData();
-
-    //     // 🔑 map form fields → API fields
-    //     const keyMap: Record<string, string> = {
-    //       "contributor.fullName": "fullName",
-    //       "contributor.email": "email",
-    //       "contributor.discordOrRedditId": "discordOrRedditId",
-
-    //       "academic.board": "board",
-    //       "academic.subject": "subject",
-    //       "academic.topic": "topic",
-
-    //       "resource.resourceTitle": "resourceTitle",
-    //       "resource.description": "description",
-    //       "resource.resourceType": "resourceType", // ✅ ADD THIS
-
-    //       "resourceContent.links": "links",
-    //     };
-
-    //     for (const section of form.sections) {
-    //       for (const field of section.fields) {
-    //         const value = data?.[section.id]?.[field.id];
-    //         if (value === undefined || value === null) continue;
-
-    //         // 📁 FILES (handle BEFORE keyMap)
-    //         if (field.type === "file") {
-    //           if (value instanceof FileList) {
-    //             Array.from(value).forEach((file) => {
-    //               formData.append("files", file);
-    //             });
-    //           }
-    //           continue; // ⬅️ important
-    //         }
-
-    //         const flatKey = keyMap[`${section.id}.${field.id}`];
-    //         if (!flatKey) continue;
-    //         else if (Array.isArray(value)) {
-    //           value.forEach((v) => formData.append(flatKey, String(v)));
-    //         } else {
-    //           formData.append(flatKey, String(value));
-    //         }
-    //       }
-    //     }
-
-    //     // 🔍 DEBUG (remove later)
-    //     // for (const pair of formData.entries()) {
-    //     //   console.log(pair[0], pair[1]);
-    //     // }
-    //     // for (const pair of formData.entries()) {
-    //     //   console.log(pair[0], pair[1]);
-    //     // }
-
-    //     res = await fetch("/api/resources/submit", {
-    //       method: "POST",
-    //       body: formData, // ❗ no headers
-    //     });
-    //   }
-
-    //   // 🔹 ALL OTHER FORMS → JSON
-    //   else {
-    //     res = await fetch(`/api/forms/${form.slug}/submit`, {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify({
-    //         cycleId: form.cycleId, // ✅ inject here
-    //         formType: form.slug, // ✅ inject here
-    //         responses: data,
-    //       }),
-    //     });
-    //   }
-
-    //   const json = await res.json();
-
-    //   if (!res.ok) {
-    //     toast.error(json.error || "Submission failed");
-    //     return;
-    //   }
-
-    //   setShowConfirmation(true);
-    //   reset();
-    // } catch (err) {
-    //   console.error(err);
-    //   toast.error("Something went wrong");
-    // }
     setShowConfirmation(true);
 
     console.log("Submitted");
@@ -227,7 +154,7 @@ export default function FormPageClient() {
                   </div>
 
                   {/* SECTION FIELDS */}
-                  <div className="space-y-4">
+                  <div className="flex flex-col gap-8">
                     {section.fields.map((field: any) => {
                       const inputName = `${section.id}.${field.id}`;
                       return (
@@ -249,20 +176,293 @@ export default function FormPageClient() {
                               })}
                             />
                           ) : field.type === "select" ? (
-                            <select
-                              id={inputName}
-                              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                              {...register(inputName, {
-                                required: field.required,
-                              })}
-                            >
-                              <option value="">Select an option</option>
-                              {field.options.map((opt: string) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{ required: field.required }}
+                              render={({ field: controllerField }) => {
+                                const isMultiple = field.multiple;
+
+                                const rawValue = controllerField.value;
+                                const selectedValues = Array.isArray(rawValue)
+                                  ? rawValue
+                                  : rawValue
+                                  ? [rawValue]
+                                  : [];
+
+                                const customValue =
+                                  selectedValues.find((v) =>
+                                    v.startsWith("__OTHER__:")
+                                  ) || "";
+
+                                const isOtherSelected = !!customValue;
+
+                                const toggleOption = (option: string) => {
+                                  if (!isMultiple) {
+                                    controllerField.onChange(option);
+                                    return;
+                                  }
+
+                                  const current = selectedValues;
+
+                                  // If max = 1 → replace instead of append
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange([option]);
+                                    return;
+                                  }
+
+                                  if (current.includes(option)) {
+                                    controllerField.onChange(
+                                      current.filter((v) => v !== option)
+                                    );
+                                  } else {
+                                    if (
+                                      field.maxSelections &&
+                                      current.length >= field.maxSelections
+                                    ) {
+                                      return;
+                                    }
+
+                                    controllerField.onChange([
+                                      ...current,
+                                      option,
+                                    ]);
+                                  }
+                                };
+
+                                const removeOption = (option: string) => {
+                                  controllerField.onChange(
+                                    selectedValues.filter((v) => v !== option)
+                                  );
+                                };
+
+                                const toggleOther = () => {
+                                  if (isOtherSelected) {
+                                    controllerField.onChange(
+                                      selectedValues.filter(
+                                        (v) => !v.startsWith("__OTHER__:")
+                                      )
+                                    );
+                                  } else {
+                                    if (field.maxSelections === 1) {
+                                      controllerField.onChange(["__OTHER__:"]);
+                                    } else {
+                                      controllerField.onChange([
+                                        ...selectedValues,
+                                        "__OTHER__:",
+                                      ]);
+                                    }
+                                  }
+                                };
+
+                                const updateOtherValue = (val: string) => {
+                                  const filtered = selectedValues.filter(
+                                    (v) => !v.startsWith("__OTHER__:")
+                                  );
+
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange([
+                                      `__OTHER__:${val}`,
+                                    ]);
+                                  } else {
+                                    controllerField.onChange([
+                                      ...filtered,
+                                      `__OTHER__:${val}`,
+                                    ]);
+                                  }
+                                };
+
+                                return (
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <div
+                                        role="button"
+                                        tabIndex={0}
+                                        className="w-full flex flex-wrap items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm min-h-[40px] cursor-pointer"
+                                      >
+                                        {selectedValues.length === 0 && (
+                                          <span className="text-muted-foreground">
+                                            Select option
+                                          </span>
+                                        )}
+
+                                        {selectedValues.map((opt: string) => {
+                                          const label = opt.startsWith(
+                                            "__OTHER__:"
+                                          )
+                                            ? opt.replace("__OTHER__:", "")
+                                            : opt;
+
+                                          return (
+                                            <Badge
+                                              key={opt}
+                                              variant="secondary"
+                                              className="flex items-center gap-1"
+                                            >
+                                              {label}
+                                              {isMultiple && (
+                                                <span
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeOption(opt);
+                                                  }}
+                                                  className="cursor-pointer"
+                                                >
+                                                  <X className="h-3 w-3" />
+                                                </span>
+                                              )}
+                                            </Badge>
+                                          );
+                                        })}
+
+                                        <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
+                                      </div>
+                                    </PopoverTrigger>
+
+                                    <PopoverContent
+                                      align="start"
+                                      className="w-[var(--radix-popover-trigger-width)] p-0"
+                                    >
+                                      <Command>
+                                        <CommandInput placeholder="Search..." />
+                                        <CommandEmpty>
+                                          No option found.
+                                        </CommandEmpty>
+
+                                        <CommandGroup>
+                                          {field.options.map((opt: string) => {
+                                            const isSelected =
+                                              selectedValues.includes(opt);
+
+                                            return (
+                                              <CommandItem
+                                                key={opt}
+                                                onSelect={() =>
+                                                  toggleOption(opt)
+                                                }
+                                              >
+                                                <div className="flex items-center justify-between w-full">
+                                                  <span>{opt}</span>
+                                                  {isSelected && (
+                                                    <Check className="h-4 w-4 text-primary" />
+                                                  )}
+                                                </div>
+                                              </CommandItem>
+                                            );
+                                          })}
+
+                                          {field.allowOther && (
+                                            <CommandItem onSelect={toggleOther}>
+                                              <div className="flex items-center justify-between w-full">
+                                                <span>
+                                                  Other (please specify)
+                                                </span>
+                                                {isOtherSelected && (
+                                                  <Check className="h-4 w-4 text-primary" />
+                                                )}
+                                              </div>
+                                            </CommandItem>
+                                          )}
+                                        </CommandGroup>
+                                      </Command>
+
+                                      {field.allowOther && isOtherSelected && (
+                                        <div className="p-3 border-t">
+                                          <Input
+                                            value={customValue.replace(
+                                              "__OTHER__:",
+                                              ""
+                                            )}
+                                            placeholder="Please specify"
+                                            onChange={(e) =>
+                                              updateOtherValue(e.target.value)
+                                            }
+                                          />
+                                        </div>
+                                      )}
+                                    </PopoverContent>
+                                  </Popover>
+                                );
+                              }}
+                            />
+                          ) : field.type === "checkbox" ? (
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{ required: field.required }}
+                              render={({ field: controllerField }) => {
+                                const value: string[] =
+                                  controllerField.value || [];
+
+                                const toggle = (option: string) => {
+                                  if (value.includes(option)) {
+                                    controllerField.onChange(
+                                      value.filter((v) => v !== option)
+                                    );
+                                  } else {
+                                    if (
+                                      field.maxSelections &&
+                                      value.length >= field.maxSelections
+                                    )
+                                      return;
+                                    controllerField.onChange([
+                                      ...value,
+                                      option,
+                                    ]);
+                                  }
+                                };
+
+                                return (
+                                  <div className="space-y-3">
+                                    {field.options.map((opt: string) => (
+                                      <label
+                                        key={opt}
+                                        className="flex items-center gap-3 cursor-pointer"
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          checked={value.includes(opt)}
+                                          onChange={() => toggle(opt)}
+                                          className="h-4 w-4"
+                                        />
+                                        <span className="text-sm">{opt}</span>
+                                      </label>
+                                    ))}
+                                  </div>
+                                );
+                              }}
+                            />
+                          ) : field.type === "radio" ? (
+                            <Controller
+                              control={control}
+                              name={inputName}
+                              rules={{ required: field.required }}
+                              render={({ field: controllerField }) => {
+                                const value = controllerField.value;
+
+                                return (
+                                  <div className="space-y-3">
+                                    {field.options.map((opt: string) => (
+                                      <label
+                                        key={opt}
+                                        className="flex items-center gap-3 cursor-pointer"
+                                      >
+                                        <input
+                                          type="radio"
+                                          value={opt}
+                                          checked={value === opt}
+                                          onChange={() =>
+                                            controllerField.onChange(opt)
+                                          }
+                                          className="h-4 w-4"
+                                        />
+                                        <span className="text-sm">{opt}</span>
+                                      </label>
+                                    ))}
+                                  </div>
+                                );
+                              }}
+                            />
                           ) : field.type === "file" ? (
                             <Input
                               id={inputName}
