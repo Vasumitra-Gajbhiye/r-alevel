@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 type FormField = {
@@ -199,41 +199,44 @@ export default function FormPageClient({ form }: { form: any }) {
       toast.error("Something went wrong");
     }
   };
-  useEffect(() => {
-    const findFirstError = (errorsObj: any, parentKey = ""): string | null => {
-      for (const key in errorsObj) {
-        const value = errorsObj[key];
+  // useEffect(() => {
+  //   const findFirstError = (errorsObj: any, parentKey = ""): string | null => {
+  //     for (const key in errorsObj) {
+  //       const value = errorsObj[key];
 
-        const fullKey = parentKey ? `${parentKey}.${key}` : key;
+  //       const fullKey = parentKey ? `${parentKey}.${key}` : key;
 
-        if (value?.message) return fullKey;
+  //       if (value?.message) return fullKey;
 
-        if (typeof value === "object") {
-          const nested = findFirstError(value, fullKey);
-          if (nested) return nested;
-        }
-      }
-      return null;
-    };
+  //       if (typeof value === "object") {
+  //         const nested = findFirstError(value, fullKey);
+  //         if (nested) return nested;
+  //       }
+  //     }
+  //     return null;
+  //   };
 
-    const firstErrorPath = findFirstError(errors);
+  //   const firstErrorPath = findFirstError(errors);
 
-    if (!firstErrorPath) {
-      setErrorElement(null);
-      setErrorMessage(null);
-      return;
-    }
+  //   if (!firstErrorPath) {
+  //     setErrorElement(null);
+  //     setErrorMessage(null);
+  //     return;
+  //   }
 
-    const el = document.querySelector(
-      `[name="${firstErrorPath}"]`
-    ) as HTMLElement | null;
+  //   const el = document.querySelector(
+  //     `[name="${firstErrorPath}"]`
+  //   ) as HTMLElement | null;
 
-    if (el) {
-      el.focus();
-      setErrorElement(el);
-      setErrorMessage(firstErrorPath.split(".").slice(-1)[0] + " is required");
-    }
-  }, [errors]);
+  //   if (el) {
+  //     el.focus();
+  //     setErrorElement(el);
+  //     const errorObj = firstErrorPath
+  //       .split(".")
+  //       .reduce<any>((acc, key) => acc?.[key], errors);
+  //     setErrorMessage(errorObj?.message || "Invalid field");
+  //   }
+  // }, [errors]);
   return (
     <>
       <div className="mx-auto max-w-5xl px-4 py-20">
