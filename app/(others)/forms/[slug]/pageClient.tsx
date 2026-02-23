@@ -10,8 +10,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { X } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,6 +30,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
+import { Check, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -280,11 +291,10 @@ export default function FormPageClient({ form }: { form: any }) {
             </div>
           )}
           {/* FORM */}
-          {/* <CardContent className="px-10 pb-10">
+          <CardContent className="px-10 pb-10">
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               {form.sections?.map((section: any) => (
                 <div key={section.id} className="space-y-6 mt-12">
-                
                   <div className="space-y-1">
                     <h2 className="text-lg font-semibold">{section.title}</h2>
 
@@ -316,6 +326,28 @@ export default function FormPageClient({ form }: { form: any }) {
                                 required: field.required
                                   ? `${field.label} is required`
                                   : false,
+                              })}
+                            />
+                          ) : field.type !== "select" &&
+                            field.type !== "checkbox" &&
+                            field.type !== "radio" &&
+                            field.type !== "file" ? (
+                            <Input
+                              id={inputName}
+                              type={field.type}
+                              placeholder={field.placeholder}
+                              {...register(inputName, {
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+
+                                ...(field.type === "email" && {
+                                  pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message:
+                                      "Please enter a valid email address",
+                                  },
+                                }),
                               })}
                             />
                           ) : field.type === "select" ? (
@@ -699,9 +731,12 @@ export default function FormPageClient({ form }: { form: any }) {
                             />
                           )}
 
-                          {errors[inputName] && (
+                          {(errors as any)?.[section.id]?.[field.id] && (
                             <p className="text-sm text-red-500">
-                              {errors[inputName]?.message as string}
+                              {
+                                (errors as any)[section.id][field.id]
+                                  ?.message as string
+                              }
                             </p>
                           )}
                         </div>
@@ -709,14 +744,12 @@ export default function FormPageClient({ form }: { form: any }) {
                     })}
                   </div>
 
-                
                   <div className="pt-6">
                     <div className="h-px bg-border" />
                   </div>
                 </div>
               ))}
 
-           
               <div className="pt-12">
                 <div className="rounded-xl border bg-muted/40 px-6 py-6">
                   <div className="flex flex-col items-center gap-4">
@@ -744,12 +777,12 @@ export default function FormPageClient({ form }: { form: any }) {
             {errorElement && errorMessage && (
               <ErrorPopover reference={errorElement} message={errorMessage} />
             )}
-          </CardContent> */}
-          <CardContent className="px-10 pb-10">
+          </CardContent>
+          {/* <CardContent className="px-10 pb-10">
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               {form.sections?.map((section: any) => (
                 <div key={section.id} className="space-y-6 mt-12">
-                  {/* SECTION HEADER */}
+             
                   <div className="space-y-1">
                     <h2 className="text-lg font-semibold">{section.title}</h2>
 
@@ -760,7 +793,7 @@ export default function FormPageClient({ form }: { form: any }) {
                     )}
                   </div>
 
-                  {/* SECTION FIELDS */}
+          
                   <div className="space-y-4">
                     {section.fields.map((field: any) => {
                       const inputName = `${section.id}.${field.id}`;
@@ -774,7 +807,7 @@ export default function FormPageClient({ form }: { form: any }) {
                             )}
                           </Label>
 
-                          {/* TEXTAREA */}
+                        
                           {field.type === "textarea" ? (
                             <Textarea
                               id={inputName}
@@ -786,7 +819,7 @@ export default function FormPageClient({ form }: { form: any }) {
                                   : false,
                               })}
                             />
-                          ) : /* TEXT / EMAIL / NUMBER ETC */
+                          ) : 
                           field.type !== "select" &&
                             field.type !== "checkbox" &&
                             field.type !== "radio" &&
@@ -809,7 +842,7 @@ export default function FormPageClient({ form }: { form: any }) {
                                 }),
                               })}
                             />
-                          ) : /* FILE */
+                          ) 
                           field.type === "file" ? (
                             <Input
                               id={inputName}
@@ -821,7 +854,7 @@ export default function FormPageClient({ form }: { form: any }) {
                                   : false,
                               })}
                             />
-                          ) : /* SELECT (CUSTOM) */
+                          ) :
                           field.type === "select" ? (
                             <Controller
                               control={control}
@@ -878,7 +911,7 @@ export default function FormPageClient({ form }: { form: any }) {
                                 );
                               }}
                             />
-                          ) : /* CHECKBOX */
+                          ) : 
                           field.type === "checkbox" ? (
                             <Controller
                               control={control}
@@ -931,7 +964,7 @@ export default function FormPageClient({ form }: { form: any }) {
                               }}
                             />
                           ) : (
-                            /* RADIO */
+                      
                             <Controller
                               control={control}
                               name={inputName}
@@ -967,7 +1000,7 @@ export default function FormPageClient({ form }: { form: any }) {
                             />
                           )}
 
-                          {/* FIELD ERROR MESSAGE */}
+                         
                           {(errors as any)?.[section.id]?.[field.id] && (
                             <p className="text-sm text-red-500">
                               {
@@ -981,14 +1014,14 @@ export default function FormPageClient({ form }: { form: any }) {
                     })}
                   </div>
 
-                  {/* SECTION DIVIDER */}
+             
                   <div className="pt-6">
                     <div className="h-px bg-border" />
                   </div>
                 </div>
               ))}
 
-              {/* SUBMIT FOOTER */}
+          
               <div className="pt-12">
                 <div className="rounded-xl border bg-muted/40 px-6 py-6">
                   <div className="flex flex-col items-center gap-4">
@@ -1013,7 +1046,7 @@ export default function FormPageClient({ form }: { form: any }) {
             {errorElement && errorMessage && (
               <ErrorPopover reference={errorElement} message={errorMessage} />
             )}
-          </CardContent>
+          </CardContent> */}
         </Card>
       </div>
 
