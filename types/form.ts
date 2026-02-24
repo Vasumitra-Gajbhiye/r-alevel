@@ -66,6 +66,8 @@ export type IntroductionBlock2 =
 
 export type CreateFormValues = {
   title: string;
+  subtitle: string;
+  cycleId: number;
   slug: string;
   formType: string;
   banner: {

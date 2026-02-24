@@ -236,7 +236,11 @@ export default async function FormsPage() {
         {forms.map((form: any) => {
           const Icon = (Icons[form.icon as keyof typeof Icons] ??
             Icons.FileText) as LucideIcon;
-
+          let herf;
+          herf =
+            form.slug === "resource"
+              ? `/forms/resource`
+              : `/forms/${form.slug}-intake-${form.activeCycleId}`;
           return (
             <div
               key={form.slug}
@@ -293,7 +297,7 @@ export default async function FormsPage() {
               </div>
 
               {/* CTA */}
-              <a href={`/forms/${form.slug}-intake-${form.activeCycleId}`}>
+              <a href={herf}>
                 <button
                   disabled={form.status !== "open"}
                   className={`rounded-lg px-6 py-2.5 text-sm transition

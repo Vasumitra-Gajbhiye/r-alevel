@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPopover from "@/components/form/ErrorPopover";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +25,7 @@ import { CreateFormValues } from "@/types/form";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
   Command,
@@ -34,6 +36,33 @@ import {
 } from "@/components/ui/command";
 
 import { Check, ChevronDown } from "lucide-react";
+
+function buildStructuredResponses(form: any, data: any) {
+  const structured: Record<string, Record<string, any>> = {};
+
+  for (const section of form.sections || []) {
+    const sectionData = data?.[section.id];
+    if (!sectionData) continue;
+
+    structured[section.id] = {};
+
+    for (const field of section.fields || []) {
+      const value = sectionData?.[field.id];
+
+      if (value !== undefined && value !== null && value !== "") {
+        structured[section.id][field.id] = value;
+      }
+    }
+
+    // Remove empty sections
+    if (Object.keys(structured[section.id]).length === 0) {
+      delete structured[section.id];
+    }
+  }
+
+  return structured;
+}
+
 function IntroductionBlocks({ blocks }: { blocks: any[] }) {
   return (
     <div className="space-y-4">
@@ -73,7 +102,11 @@ function IntroductionBlocks({ blocks }: { blocks: any[] }) {
 
 export default function FormPageClient() {
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+
   const [form, setForm] = useState<CreateFormValues | null>(null);
+  const [errorElement, setErrorElement] = useState<HTMLElement | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("form-preview");
@@ -81,20 +114,112 @@ export default function FormPageClient() {
       setForm(JSON.parse(stored));
     }
   }, []);
-
   const {
     register,
     handleSubmit,
     reset,
     control,
+    setFocus,
     formState: { errors, isSubmitting },
-  } = useForm();
-  const onSubmit = async (data: any) => {
-    setShowConfirmation(true);
+  } = useForm({
+    shouldFocusError: true,
+    mode: "onBlur",
+  });
 
-    console.log("Submitted");
+  const onSubmit = async (data: any) => {
+    if (!form) return;
+    try {
+      let res: Response;
+
+      // 🔹 RESOURCE FORM → multipart + Drive
+      if (form.slug === "resource") {
+        const formData = new FormData();
+
+        // 🔑 map form fields → API fields
+        const keyMap: Record<string, string> = {
+          "contributor.fullName": "fullName",
+          "contributor.email": "email",
+          "contributor.discordOrRedditId": "discordOrRedditId",
+
+          "academic.board": "board",
+          "academic.subject": "subject",
+          "academic.topic": "topic",
+
+          "resource.resourceTitle": "resourceTitle",
+          "resource.description": "description",
+          "resource.resourceType": "resourceType", // ✅ ADD THIS
+
+          "resourceContent.links": "links",
+        };
+
+        for (const section of form.sections) {
+          for (const field of section.fields) {
+            const value = data?.[section.id]?.[field.id];
+            if (value === undefined || value === null) continue;
+
+            // 📁 FILES (handle BEFORE keyMap)
+            if (field.type === "file") {
+              if (value instanceof FileList) {
+                Array.from(value).forEach((file) => {
+                  formData.append("files", file);
+                });
+              }
+              continue; // ⬅️ important
+            }
+
+            const flatKey = keyMap[`${section.id}.${field.id}`];
+            if (!flatKey) continue;
+            else if (Array.isArray(value)) {
+              value.forEach((v) => formData.append(flatKey, String(v)));
+            } else {
+              formData.append(flatKey, String(value));
+            }
+          }
+        }
+
+        res = await fetch("/api/resources/submit", {
+          method: "POST",
+          body: formData, // ❗ no headers
+        });
+      }
+
+      // 🔹 ALL OTHER FORMS → JSON
+      else {
+        const enrichedResponses = buildStructuredResponses(form, data);
+
+        res = await fetch(`/api/forms/${form.slug}/submit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cycleId: form.cycleId, // ✅ inject here
+            formType: form.slug, // ✅ inject here
+            responses: enrichedResponses,
+          }),
+        });
+      }
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 409) {
+          setShowDuplicateModal(true);
+          return;
+        }
+
+        toast.error(json.message || "Submission failed");
+        return;
+      }
+
+      setShowConfirmation(true);
+      reset();
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong");
+    }
   };
-  if (!form) return <p>Loading preview...</p>;
+
+  if (!form) return;
+
   return (
     <>
       <div className="mx-auto max-w-5xl px-4 py-20">
@@ -119,14 +244,14 @@ export default function FormPageClient() {
           {/* HEADER */}
           <div className="px-10 pt-8 pb-4 space-y-3">
             <h1 className="text-3xl font-semibold tracking-tight">
-              {form.title}
+              {form.title.replace(/\s+Intake\s+\d+$/i, "")}
             </h1>
-            {/* 
+
             {form.subtitle && (
               <p className="max-w-3xl text-muted-foreground text-base">
                 {form.subtitle}
               </p>
-            )} */}
+            )}
           </div>
 
           {/* INTRO / RULES */}
@@ -139,10 +264,9 @@ export default function FormPageClient() {
           )}
           {/* FORM */}
           <CardContent className="px-10 pb-10">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
               {form.sections?.map((section: any) => (
                 <div key={section.id} className="space-y-6 mt-12">
-                  {/* SECTION HEADER */}
                   <div className="space-y-1">
                     <h2 className="text-lg font-semibold">{section.title}</h2>
 
@@ -153,8 +277,7 @@ export default function FormPageClient() {
                     )}
                   </div>
 
-                  {/* SECTION FIELDS */}
-                  <div className="flex flex-col gap-8">
+                  <div className="space-y-4">
                     {section.fields.map((field: any) => {
                       const inputName = `${section.id}.${field.id}`;
                       return (
@@ -172,18 +295,46 @@ export default function FormPageClient() {
                               rows={5}
                               placeholder={field.placeholder}
                               {...register(inputName, {
-                                required: field.required,
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              })}
+                            />
+                          ) : field.type !== "select" &&
+                            field.type !== "checkbox" &&
+                            field.type !== "radio" &&
+                            field.type !== "file" ? (
+                            <Input
+                              id={inputName}
+                              type={field.type}
+                              placeholder={field.placeholder}
+                              {...register(inputName, {
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+
+                                ...(field.type === "email" && {
+                                  pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message:
+                                      "Please enter a valid email address",
+                                  },
+                                }),
                               })}
                             />
                           ) : field.type === "select" ? (
                             <Controller
                               control={control}
                               name={inputName}
-                              rules={{ required: field.required }}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
                               render={({ field: controllerField }) => {
                                 const isMultiple = field.multiple;
-
                                 const rawValue = controllerField.value;
+
                                 const selectedValues = Array.isArray(rawValue)
                                   ? rawValue
                                   : rawValue
@@ -203,13 +354,12 @@ export default function FormPageClient() {
                                     return;
                                   }
 
-                                  const current = selectedValues;
-
-                                  // If max = 1 → replace instead of append
                                   if (field.maxSelections === 1) {
                                     controllerField.onChange([option]);
                                     return;
                                   }
+
+                                  const current = selectedValues;
 
                                   if (current.includes(option)) {
                                     controllerField.onChange(
@@ -219,43 +369,57 @@ export default function FormPageClient() {
                                     if (
                                       field.maxSelections &&
                                       current.length >= field.maxSelections
-                                    ) {
+                                    )
                                       return;
-                                    }
-
                                     controllerField.onChange([
                                       ...current,
                                       option,
                                     ]);
                                   }
                                 };
-
                                 const removeOption = (option: string) => {
                                   controllerField.onChange(
                                     selectedValues.filter((v) => v !== option)
                                   );
                                 };
-
                                 const toggleOther = () => {
+                                  // Single select mode → replace
+                                  if (!isMultiple) {
+                                    controllerField.onChange("__OTHER__:");
+                                    return;
+                                  }
+
+                                  // If already selected → remove
                                   if (isOtherSelected) {
                                     controllerField.onChange(
                                       selectedValues.filter(
                                         (v) => !v.startsWith("__OTHER__:")
                                       )
                                     );
-                                  } else {
-                                    if (field.maxSelections === 1) {
-                                      controllerField.onChange(["__OTHER__:"]);
-                                    } else {
-                                      controllerField.onChange([
-                                        ...selectedValues,
-                                        "__OTHER__:",
-                                      ]);
-                                    }
+                                    return;
                                   }
+
+                                  // If maxSelections === 1 → replace
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange(["__OTHER__:"]);
+                                    return;
+                                  }
+
+                                  // Normal multi-select behavior
+                                  controllerField.onChange([
+                                    ...selectedValues,
+                                    "__OTHER__:",
+                                  ]);
                                 };
 
                                 const updateOtherValue = (val: string) => {
+                                  if (!isMultiple) {
+                                    controllerField.onChange(
+                                      `__OTHER__:${val}`
+                                    );
+                                    return;
+                                  }
+
                                   const filtered = selectedValues.filter(
                                     (v) => !v.startsWith("__OTHER__:")
                                   );
@@ -264,12 +428,13 @@ export default function FormPageClient() {
                                     controllerField.onChange([
                                       `__OTHER__:${val}`,
                                     ]);
-                                  } else {
-                                    controllerField.onChange([
-                                      ...filtered,
-                                      `__OTHER__:${val}`,
-                                    ]);
+                                    return;
                                   }
+
+                                  controllerField.onChange([
+                                    ...filtered,
+                                    `__OTHER__:${val}`,
+                                  ]);
                                 };
 
                                 return (
@@ -389,45 +554,96 @@ export default function FormPageClient() {
                             <Controller
                               control={control}
                               name={inputName}
-                              rules={{ required: field.required }}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
                               render={({ field: controllerField }) => {
                                 const value: string[] =
                                   controllerField.value || [];
 
                                 const toggle = (option: string) => {
+                                  // If already selected → remove
                                   if (value.includes(option)) {
                                     controllerField.onChange(
                                       value.filter((v) => v !== option)
                                     );
-                                  } else {
-                                    if (
-                                      field.maxSelections &&
-                                      value.length >= field.maxSelections
-                                    )
-                                      return;
-                                    controllerField.onChange([
-                                      ...value,
-                                      option,
-                                    ]);
+                                    return;
                                   }
-                                };
 
+                                  // If multiple is false → always replace
+                                  if (field.multiple === false) {
+                                    controllerField.onChange([option]);
+                                    return;
+                                  }
+
+                                  // If maxSelections === 1 → replace
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange([option]);
+                                    return;
+                                  }
+
+                                  // Respect maxSelections > 1
+                                  if (
+                                    field.maxSelections &&
+                                    value.length >= field.maxSelections
+                                  ) {
+                                    return;
+                                  }
+
+                                  // Normal multi-select
+                                  controllerField.onChange([...value, option]);
+                                };
                                 return (
-                                  <div className="space-y-3">
-                                    {field.options.map((opt: string) => (
-                                      <label
-                                        key={opt}
-                                        className="flex items-center gap-3 cursor-pointer"
-                                      >
+                                  <div className="space-y-5">
+                                    {field.options.map((opt: string) => {
+                                      const checked = value.includes(opt);
+
+                                      return (
+                                        <label
+                                          key={opt}
+                                          className="flex items-center gap-3 cursor-pointer mt-6"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            onChange={() => toggle(opt)}
+                                            className="h-4 w-4"
+                                          />
+                                          <span className="text-sm">{opt}</span>
+                                        </label>
+                                      );
+                                    })}
+
+                                    {field.allowOther && (
+                                      <label className="flex items-center gap-3">
                                         <input
                                           type="checkbox"
-                                          checked={value.includes(opt)}
-                                          onChange={() => toggle(opt)}
+                                          checked={value.includes("__OTHER__")}
+                                          onChange={() => toggle("__OTHER__")}
                                           className="h-4 w-4"
                                         />
-                                        <span className="text-sm">{opt}</span>
+                                        <span className="text-sm">
+                                          Other (please specify)
+                                        </span>
                                       </label>
-                                    ))}
+                                    )}
+
+                                    {value.includes("__OTHER__") && (
+                                      <Input
+                                        placeholder="Please specify"
+                                        onChange={(e) => {
+                                          const filtered = value.filter(
+                                            (v) => v !== "__OTHER__"
+                                          );
+                                          controllerField.onChange([
+                                            ...filtered,
+                                            e.target.value,
+                                          ]);
+                                        }}
+                                      />
+                                    )}
                                   </div>
                                 );
                               }}
@@ -436,7 +652,11 @@ export default function FormPageClient() {
                             <Controller
                               control={control}
                               name={inputName}
-                              rules={{ required: field.required }}
+                              rules={{
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
+                              }}
                               render={({ field: controllerField }) => {
                                 const value = controllerField.value;
 
@@ -459,6 +679,38 @@ export default function FormPageClient() {
                                         <span className="text-sm">{opt}</span>
                                       </label>
                                     ))}
+
+                                    {field.allowOther && (
+                                      <>
+                                        <label className="flex items-center gap-3">
+                                          <input
+                                            type="radio"
+                                            value="__OTHER__"
+                                            checked={value === "__OTHER__"}
+                                            onChange={() =>
+                                              controllerField.onChange(
+                                                "__OTHER__"
+                                              )
+                                            }
+                                            className="h-4 w-4"
+                                          />
+                                          <span className="text-sm">
+                                            Other (please specify)
+                                          </span>
+                                        </label>
+
+                                        {value === "__OTHER__" && (
+                                          <Input
+                                            placeholder="Please specify"
+                                            onChange={(e) =>
+                                              controllerField.onChange(
+                                                e.target.value
+                                              )
+                                            }
+                                          />
+                                        )}
+                                      </>
+                                    )}
                                   </div>
                                 );
                               }}
@@ -476,14 +728,19 @@ export default function FormPageClient() {
                               type={field.type}
                               placeholder={field.placeholder}
                               {...register(inputName, {
-                                required: field.required,
+                                required: field.required
+                                  ? `${field.label} is required`
+                                  : false,
                               })}
                             />
                           )}
 
-                          {errors[inputName] && (
+                          {(errors as any)?.[section.id]?.[field.id] && (
                             <p className="text-sm text-red-500">
-                              This field is required
+                              {
+                                (errors as any)[section.id][field.id]
+                                  ?.message as string
+                              }
                             </p>
                           )}
                         </div>
@@ -491,14 +748,12 @@ export default function FormPageClient() {
                     })}
                   </div>
 
-                  {/* SECTION DIVIDER */}
                   <div className="pt-6">
                     <div className="h-px bg-border" />
                   </div>
                 </div>
               ))}
 
-              {/* SUBMIT FOOTER */}
               <div className="pt-12">
                 <div className="rounded-xl border bg-muted/40 px-6 py-6">
                   <div className="flex flex-col items-center gap-4">
@@ -523,6 +778,9 @@ export default function FormPageClient() {
                 </div>
               </div>
             </form>
+            {errorElement && errorMessage && (
+              <ErrorPopover reference={errorElement} message={errorMessage} />
+            )}
           </CardContent>
         </Card>
       </div>
@@ -571,6 +829,62 @@ export default function FormPageClient() {
                 <div className="rounded-md bg-muted px-3 py-2 text-sm">
                   Please watch for emails from
                   <br />
+                  <span className="font-medium text-foreground">
+                    application@ralevel.com
+                  </span>
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogAction className="w-full">Close</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* DUPLICATE SUBMISSION MODAL */}
+      <AlertDialog
+        open={showDuplicateModal}
+        onOpenChange={setShowDuplicateModal}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader className="space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="text-yellow-600"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01"
+                />
+              </svg>
+            </div>
+
+            <AlertDialogTitle className="text-center text-lg font-semibold">
+              Already Submitted
+            </AlertDialogTitle>
+
+            <AlertDialogDescription asChild>
+              <div className="space-y-3 text-center text-sm text-muted-foreground">
+                <p>
+                  Our records show that this email has already submitted an
+                  application for this intake.
+                </p>
+
+                <p>
+                  If you believe this is a mistake, please contact the team at:
+                </p>
+
+                <div className="rounded-md bg-muted px-3 py-2 text-sm">
                   <span className="font-medium text-foreground">
                     application@ralevel.com
                   </span>

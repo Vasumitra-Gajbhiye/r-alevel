@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 type Resource = {
   id: string;
@@ -36,73 +36,106 @@ export default function ResourceFormPageClient() {
       files: [],
     },
   ]);
-
+  useEffect(() => {
+    console.log("TABLE RESOURCES:", resources);
+  }, [resources]);
   const onSubmit = async () => {
-    console.log("submit called");
     try {
       if (!resources.length) {
-        toast.error("Please add a resource");
+        toast.error("Please add at least one resource");
         return;
       }
 
-      const res0 = resources[0]; // 🚨 single-resource backend
-
-      if (!res0.title) {
-        toast.error("Resource title is required");
+      if (!fullName || !email || !discordOrRedditId) {
+        toast.error("Please fill contributor information");
         return;
       }
+
+      setIsSubmitting(true);
 
       const formData = new FormData();
 
+      // =============================
       // Contributor
+      // =============================
       formData.append("fullName", fullName);
       formData.append("email", email);
-      if (discordOrRedditId)
-        formData.append("discordOrRedditId", discordOrRedditId);
+      formData.append("discordOrRedditId", discordOrRedditId);
 
-      // Academic (derive from resource)
-      formData.append("board", res0.boards.join(", "));
-      formData.append("subject", ""); // optional for now
-      formData.append("topic", "");
+      // =============================
+      // Resources (MULTI SUPPORT)
+      // =============================
+      console.log("RESOURCES STATE:", resources);
+      let validIndex = 0;
 
-      // Resource
-      formData.append("resourceTitle", res0.title);
-      formData.append("description", res0.description || "");
-      formData.append(
-        "resourceType",
-        res0.files.length && res0.links.length
-          ? "Files + Links"
-          : res0.files.length
-          ? "Files"
-          : "Links"
-      );
+      for (const resource of resources) {
+        if (!resource.title) continue;
 
-      // Links
-      res0.links.forEach((link) => {
-        formData.append("links", link);
-      });
+        formData.append(`resources[${validIndex}][title]`, resource.title);
 
-      // Files
-      res0.files.forEach((file) => {
-        formData.append("files", file);
-      });
+        formData.append(
+          `resources[${validIndex}][description]`,
+          resource.description || ""
+        );
+
+        const resourceType =
+          resource.files.length && resource.links.length
+            ? "Files + Links"
+            : resource.files.length
+            ? "Files"
+            : "Links";
+
+        formData.append(`resources[${validIndex}][resourceType]`, resourceType);
+
+        resource.links.forEach((link) => {
+          if (link) {
+            formData.append(`resources[${validIndex}][links][]`, link);
+          }
+        });
+
+        for (const file of resource.files) {
+          formData.append(`resources[${validIndex}][files][]`, file);
+        }
+
+        validIndex++;
+      }
+
+      console.log(Array.from(formData.entries()));
 
       const res = await fetch("/api/resources/submit", {
         method: "POST",
-        body: formData, // ❗ no headers
+        body: formData,
       });
 
       const json = await res.json();
 
       if (!res.ok) {
         toast.error(json.error || "Submission failed");
+        setIsSubmitting(false);
         return;
       }
 
-      toast.success("Resource submitted successfully");
+      toast.success("Resources submitted successfully");
+
+      // Optional reset
+      setResources([
+        {
+          id: crypto.randomUUID(),
+          title: "",
+          description: "",
+          levels: [],
+          boards: [],
+          madeByMe: false,
+          links: [],
+          files: [],
+        },
+      ]);
+
+      setIsSubmitting(false);
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong");
+      setIsSubmitting(false);
     }
   };
 
@@ -148,21 +181,34 @@ export default function ResourceFormPageClient() {
                 <Label>
                   Full Name <span className="text-red-500">*</span>
                 </Label>
-                <Input placeholder="First and last name" />
+                <Input
+                  placeholder="First and last name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">
                 <Label>
                   Email Address <span className="text-red-500">*</span>
                 </Label>
-                <Input type="email" placeholder="you@example.com" />
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">
                 <Label>
                   Discord / Reddit ID <span className="text-red-500">*</span>
                 </Label>
-                <Input placeholder="Discord preferred" />
+                <Input
+                  placeholder="Discord preferred"
+                  value={discordOrRedditId}
+                  onChange={(e) => setDiscordOrRedditId(e.target.value)}
+                />
               </div>
             </div>
           </section>

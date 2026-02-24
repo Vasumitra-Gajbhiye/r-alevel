@@ -40,15 +40,15 @@
 import { Buffer } from "buffer";
 import { google } from "googleapis";
 import { Readable } from "stream";
+const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON!);
 
-// Initialize OAuth2 client using credentials from environment variables
-const auth = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET
-);
+// Fix newline formatting
+serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
 
-// Set the refresh token to allow the app to act on your behalf indefinitely
-auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+const auth = new google.auth.GoogleAuth({
+  credentials: serviceAccount,
+  scopes: ["https://www.googleapis.com/auth/drive"],
+});
 
 const drive = google.drive({ version: "v3", auth });
 
@@ -59,6 +59,8 @@ export async function createDriveFolder(name: string, parentId: string) {
       mimeType: "application/vnd.google-apps.folder",
       parents: [parentId],
     },
+    supportsAllDrives: true,
+
     fields: "id",
   });
 
@@ -82,6 +84,8 @@ export async function uploadFileToDrive(
       mimeType,
       body: stream,
     },
+    supportsAllDrives: true,
+
     fields: "id, webViewLink",
   });
 

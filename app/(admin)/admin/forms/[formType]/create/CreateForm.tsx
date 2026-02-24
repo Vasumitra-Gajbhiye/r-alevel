@@ -219,137 +219,6 @@ function SortableSection({
 //   );
 // }
 
-function SelectOptionsEditor({
-  form,
-  sectionIndex,
-  fieldIndex,
-  preview,
-}: {
-  form: any;
-  sectionIndex: number;
-  fieldIndex: number;
-  preview: boolean;
-}) {
-  const fieldType = form.watch(
-    `sections.${sectionIndex}.fields.${fieldIndex}.type`
-  );
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: `sections.${sectionIndex}.fields.${fieldIndex}.options`,
-  });
-
-  const isRadio = fieldType === "radio";
-  const isCheckbox = fieldType === "checkbox";
-  const isSelect = fieldType === "select";
-
-  return (
-    <div className="space-y-4 border rounded-md p-4 bg-muted/30">
-      <div className="text-xs text-muted-foreground font-medium">Options</div>
-
-      {/* OPTIONS */}
-      {fields.map((field, k) => (
-        <div key={field.id} className="flex items-center gap-2">
-          <Input
-            disabled={preview}
-            placeholder={`Option ${k + 1}`}
-            {...form.register(
-              `sections.${sectionIndex}.fields.${fieldIndex}.options.${k}`
-            )}
-          />
-
-          {!preview && (
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              onClick={() => remove(k)}
-            >
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
-          )}
-        </div>
-      ))}
-
-      {!preview && (
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={() => append("")}
-        >
-          + Add Option
-        </Button>
-      )}
-
-      {/* MULTIPLE TOGGLE (NOT FOR RADIO) */}
-      {!isRadio && (
-        <div className="flex items-center gap-3 pt-2">
-          <span className="text-xs text-muted-foreground">
-            Allow multiple selections
-          </span>
-
-          <Switch
-            checked={form.watch(
-              `sections.${sectionIndex}.fields.${fieldIndex}.multiple`
-            )}
-            onCheckedChange={(val) =>
-              form.setValue(
-                `sections.${sectionIndex}.fields.${fieldIndex}.multiple`,
-                val
-              )
-            }
-          />
-        </div>
-      )}
-
-      {/* OTHER OPTION */}
-      <div className="flex items-center gap-3 pt-2">
-        <span className="text-xs text-muted-foreground">
-          Include "Other (please specify)"
-        </span>
-
-        <Switch
-          checked={form.watch(
-            `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`
-          )}
-          onCheckedChange={(val) =>
-            form.setValue(
-              `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`,
-              val
-            )
-          }
-        />
-      </div>
-
-      {/* LIMITS (ONLY FOR MULTIPLE TYPES) */}
-      {!isRadio &&
-        form.watch(
-          `sections.${sectionIndex}.fields.${fieldIndex}.multiple`
-        ) && (
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              type="number"
-              placeholder="Min selections"
-              {...form.register(
-                `sections.${sectionIndex}.fields.${fieldIndex}.minSelections`,
-                { valueAsNumber: true }
-              )}
-            />
-
-            <Input
-              type="number"
-              placeholder="Max selections"
-              {...form.register(
-                `sections.${sectionIndex}.fields.${fieldIndex}.maxSelections`,
-                { valueAsNumber: true }
-              )}
-            />
-          </div>
-        )}
-    </div>
-  );
-}
 function SectionEditor({
   index,
   form,
@@ -604,7 +473,137 @@ function SectionEditor({
     </Card>
   );
 }
+function SelectOptionsEditor({
+  form,
+  sectionIndex,
+  fieldIndex,
+  preview,
+}: {
+  form: any;
+  sectionIndex: number;
+  fieldIndex: number;
+  preview: boolean;
+}) {
+  const fieldType = form.watch(
+    `sections.${sectionIndex}.fields.${fieldIndex}.type`
+  );
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: `sections.${sectionIndex}.fields.${fieldIndex}.options`,
+  });
+
+  const isRadio = fieldType === "radio";
+  const isCheckbox = fieldType === "checkbox";
+  const isSelect = fieldType === "select";
+
+  return (
+    <div className="space-y-4 border rounded-md p-4 bg-muted/30">
+      <div className="text-xs text-muted-foreground font-medium">Options</div>
+
+      {/* OPTIONS */}
+      {fields.map((field, k) => (
+        <div key={field.id} className="flex items-center gap-2">
+          <Input
+            disabled={preview}
+            placeholder={`Option ${k + 1}`}
+            {...form.register(
+              `sections.${sectionIndex}.fields.${fieldIndex}.options.${k}`
+            )}
+          />
+
+          {!preview && (
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => remove(k)}
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          )}
+        </div>
+      ))}
+
+      {!preview && (
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => append("")}
+        >
+          + Add Option
+        </Button>
+      )}
+
+      {/* MULTIPLE TOGGLE (NOT FOR RADIO) */}
+      {!isRadio && (
+        <div className="flex items-center gap-3 pt-2">
+          <span className="text-xs text-muted-foreground">
+            Allow multiple selections
+          </span>
+
+          <Switch
+            checked={form.watch(
+              `sections.${sectionIndex}.fields.${fieldIndex}.multiple`
+            )}
+            onCheckedChange={(val) =>
+              form.setValue(
+                `sections.${sectionIndex}.fields.${fieldIndex}.multiple`,
+                val
+              )
+            }
+          />
+        </div>
+      )}
+
+      {/* OTHER OPTION */}
+      <div className="flex items-center gap-3 pt-2">
+        <span className="text-xs text-muted-foreground">
+          Include "Other (please specify)"
+        </span>
+
+        <Switch
+          checked={form.watch(
+            `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`
+          )}
+          onCheckedChange={(val) =>
+            form.setValue(
+              `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`,
+              val
+            )
+          }
+        />
+      </div>
+
+      {/* LIMITS (ONLY FOR MULTIPLE TYPES) */}
+      {!isRadio &&
+        form.watch(
+          `sections.${sectionIndex}.fields.${fieldIndex}.multiple`
+        ) && (
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              type="number"
+              placeholder="Min selections"
+              {...form.register(
+                `sections.${sectionIndex}.fields.${fieldIndex}.minSelections`,
+                { valueAsNumber: true }
+              )}
+            />
+
+            <Input
+              type="number"
+              placeholder="Max selections"
+              {...form.register(
+                `sections.${sectionIndex}.fields.${fieldIndex}.maxSelections`,
+                { valueAsNumber: true }
+              )}
+            />
+          </div>
+        )}
+    </div>
+  );
+}
 const onSubmit = async (data: CreateFormValues) => {
   try {
     const res = await fetch("/api/forms/create", {

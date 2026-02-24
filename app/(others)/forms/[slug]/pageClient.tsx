@@ -119,64 +119,105 @@ export default function FormPageClient({ form }: { form: any }) {
     shouldFocusError: true,
     mode: "onBlur",
   });
-
   const onSubmit = async (data: any) => {
+    console.log("FORM DATA:", data);
+
     try {
       let res: Response;
 
-      // 🔹 RESOURCE FORM → multipart + Drive
+      // 🔹 RESOURCE FORM → multipart (multi-resource support)
       if (form.slug === "resource") {
         const formData = new FormData();
 
-        // 🔑 map form fields → API fields
-        const keyMap: Record<string, string> = {
-          "contributor.fullName": "fullName",
-          "contributor.email": "email",
-          "contributor.discordOrRedditId": "discordOrRedditId",
+        // =============================
+        // 1️⃣ Contributor
+        // =============================
+        formData.append("fullName", data?.contributor?.fullName || "");
+        formData.append("email", data?.contributor?.email || "");
+        formData.append(
+          "discordOrRedditId",
+          data?.contributor?.discordOrRedditId || ""
+        );
 
-          "academic.board": "board",
-          "academic.subject": "subject",
-          "academic.topic": "topic",
+        // =============================
+        // 2️⃣ Detect resource blocks dynamically
+        // =============================
 
-          "resource.resourceTitle": "resourceTitle",
-          "resource.description": "description",
-          "resource.resourceType": "resourceType", // ✅ ADD THIS
+        let resourceIndex = 0;
 
-          "resourceContent.links": "links",
-        };
+        // Your UI creates numbered resource sections
+        // e.g. resource_1, resource_2, resource_3
 
-        for (const section of form.sections) {
-          for (const field of section.fields) {
-            const value = data?.[section.id]?.[field.id];
-            if (value === undefined || value === null) continue;
+        Object.keys(data).forEach((sectionKey) => {
+          if (!sectionKey.startsWith("resource_")) return;
 
-            // 📁 FILES (handle BEFORE keyMap)
-            if (field.type === "file") {
-              if (value instanceof FileList) {
-                Array.from(value).forEach((file) => {
-                  formData.append("files", file);
-                });
+          const resource = data[sectionKey];
+          if (!resource?.resourceTitle) return;
+
+          // Title
+          formData.append(
+            `resources[${resourceIndex}][title]`,
+            resource.resourceTitle
+          );
+
+          // Description
+          formData.append(
+            `resources[${resourceIndex}][description]`,
+            resource.description || ""
+          );
+
+          // Resource Type
+          formData.append(
+            `resources[${resourceIndex}][resourceType]`,
+            resource.resourceType || "Files"
+          );
+
+          // Links
+          if (Array.isArray(resource.links)) {
+            resource.links.forEach((link: string) => {
+              if (link) {
+                formData.append(`resources[${resourceIndex}][links][]`, link);
               }
-              continue; // ⬅️ important
+            });
+          }
+
+          // Files
+          // Files (TS-safe version)
+          const filesValue = resource?.files as any;
+
+          if (filesValue) {
+            // Case 1: FileList
+            if (
+              typeof FileList !== "undefined" &&
+              filesValue instanceof FileList
+            ) {
+              for (let i = 0; i < filesValue.length; i++) {
+                const file = filesValue.item(i);
+                if (file) {
+                  formData.append(`resources[${resourceIndex}][files][]`, file);
+                }
+              }
             }
 
-            const flatKey = keyMap[`${section.id}.${field.id}`];
-            if (!flatKey) continue;
-            else if (Array.isArray(value)) {
-              value.forEach((v) => formData.append(flatKey, String(v)));
-            } else {
-              formData.append(flatKey, String(value));
+            // Case 2: Array
+            else if (Array.isArray(filesValue)) {
+              for (const file of filesValue) {
+                if (file) {
+                  formData.append(`resources[${resourceIndex}][files][]`, file);
+                }
+              }
             }
           }
-        }
 
+          resourceIndex++;
+        });
+        console.log("sdfsdfsdfd");
         res = await fetch("/api/resources/submit", {
           method: "POST",
-          body: formData, // ❗ no headers
+          body: formData,
         });
       }
-
-      // 🔹 ALL OTHER FORMS → JSON
+      // 🔹 ALL OTHER FORMS → JSON (UNCHANGED)
       else {
         const enrichedResponses = buildStructuredResponses(form, data);
 
@@ -184,8 +225,8 @@ export default function FormPageClient({ form }: { form: any }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            cycleId: form.cycleId, // ✅ inject here
-            formType: form.slug, // ✅ inject here
+            cycleId: form.cycleId,
+            formType: form.slug,
             responses: enrichedResponses,
           }),
         });
@@ -210,6 +251,97 @@ export default function FormPageClient({ form }: { form: any }) {
       toast.error("Something went wrong");
     }
   };
+  // const onSubmit = async (data: any) => {
+  //   console.log("FORM DATA:", data);
+  //   try {
+  //     let res: Response;
+
+  //     // 🔹 RESOURCE FORM → multipart + Drive
+  //     if (form.slug === "resource") {
+  //       const formData = new FormData();
+
+  //       // 🔑 map form fields → API fields
+  //       const keyMap: Record<string, string> = {
+  //         "contributor.fullName": "fullName",
+  //         "contributor.email": "email",
+  //         "contributor.discordOrRedditId": "discordOrRedditId",
+
+  //         "academic.board": "board",
+  //         "academic.subject": "subject",
+  //         "academic.topic": "topic",
+
+  //         "resource.resourceTitle": "resourceTitle",
+  //         "resource.description": "description",
+  //         "resource.resourceType": "resourceType", // ✅ ADD THIS
+
+  //         "resourceContent.links": "links",
+  //       };
+
+  //       for (const section of form.sections) {
+  //         for (const field of section.fields) {
+  //           const value = data?.[section.id]?.[field.id];
+  //           if (value === undefined || value === null) continue;
+
+  //           // 📁 FILES (handle BEFORE keyMap)
+  //           if (field.type === "file") {
+  //             if (value instanceof FileList) {
+  //               Array.from(value).forEach((file) => {
+  //                 formData.append("files", file);
+  //               });
+  //             }
+  //             continue; // ⬅️ important
+  //           }
+
+  //           const flatKey = keyMap[`${section.id}.${field.id}`];
+  //           if (!flatKey) continue;
+  //           else if (Array.isArray(value)) {
+  //             value.forEach((v) => formData.append(flatKey, String(v)));
+  //           } else {
+  //             formData.append(flatKey, String(value));
+  //           }
+  //         }
+  //       }
+
+  //       res = await fetch("/api/resources/submit", {
+  //         method: "POST",
+  //         body: formData, // ❗ no headers
+  //       });
+  //     }
+
+  //     // 🔹 ALL OTHER FORMS → JSON
+  //     else {
+  //       const enrichedResponses = buildStructuredResponses(form, data);
+
+  //       res = await fetch(`/api/forms/${form.slug}/submit`, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           cycleId: form.cycleId, // ✅ inject here
+  //           formType: form.slug, // ✅ inject here
+  //           responses: enrichedResponses,
+  //         }),
+  //       });
+  //     }
+
+  //     const json = await res.json();
+
+  //     if (!res.ok) {
+  //       if (res.status === 409) {
+  //         setShowDuplicateModal(true);
+  //         return;
+  //       }
+
+  //       toast.error(json.message || "Submission failed");
+  //       return;
+  //     }
+
+  //     setShowConfirmation(true);
+  //     reset();
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Something went wrong");
+  //   }
+  // };
   // useEffect(() => {
   //   const findFirstError = (errorsObj: any, parentKey = ""): string | null => {
   //     for (const key in errorsObj) {
@@ -411,22 +543,33 @@ export default function FormPageClient({ form }: { form: any }) {
                                   );
                                 };
                                 const toggleOther = () => {
+                                  // Single select mode → replace
+                                  if (!isMultiple) {
+                                    controllerField.onChange("__OTHER__:");
+                                    return;
+                                  }
+
+                                  // If already selected → remove
                                   if (isOtherSelected) {
                                     controllerField.onChange(
                                       selectedValues.filter(
                                         (v) => !v.startsWith("__OTHER__:")
                                       )
                                     );
-                                  } else {
-                                    if (field.maxSelections === 1) {
-                                      controllerField.onChange(["__OTHER__:"]);
-                                    } else {
-                                      controllerField.onChange([
-                                        ...selectedValues,
-                                        "__OTHER__:",
-                                      ]);
-                                    }
+                                    return;
                                   }
+
+                                  // If maxSelections === 1 → replace
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange(["__OTHER__:"]);
+                                    return;
+                                  }
+
+                                  // Normal multi-select behavior
+                                  controllerField.onChange([
+                                    ...selectedValues,
+                                    "__OTHER__:",
+                                  ]);
                                 };
 
                                 const updateOtherValue = (val: string) => {
@@ -573,22 +716,36 @@ export default function FormPageClient({ form }: { form: any }) {
                                   controllerField.value || [];
 
                                 const toggle = (option: string) => {
+                                  // If already selected → remove
                                   if (value.includes(option)) {
                                     controllerField.onChange(
                                       value.filter((v) => v !== option)
                                     );
-                                  } else {
-                                    if (
-                                      field.maxSelections &&
-                                      value.length >= field.maxSelections
-                                    ) {
-                                      return;
-                                    }
-                                    controllerField.onChange([
-                                      ...value,
-                                      option,
-                                    ]);
+                                    return;
                                   }
+
+                                  // If multiple is false → always replace
+                                  if (field.multiple === false) {
+                                    controllerField.onChange([option]);
+                                    return;
+                                  }
+
+                                  // If maxSelections === 1 → replace
+                                  if (field.maxSelections === 1) {
+                                    controllerField.onChange([option]);
+                                    return;
+                                  }
+
+                                  // Respect maxSelections > 1
+                                  if (
+                                    field.maxSelections &&
+                                    value.length >= field.maxSelections
+                                  ) {
+                                    return;
+                                  }
+
+                                  // Normal multi-select
+                                  controllerField.onChange([...value, option]);
                                 };
 
                                 return (
@@ -778,275 +935,6 @@ export default function FormPageClient({ form }: { form: any }) {
               <ErrorPopover reference={errorElement} message={errorMessage} />
             )}
           </CardContent>
-          {/* <CardContent className="px-10 pb-10">
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              {form.sections?.map((section: any) => (
-                <div key={section.id} className="space-y-6 mt-12">
-             
-                  <div className="space-y-1">
-                    <h2 className="text-lg font-semibold">{section.title}</h2>
-
-                    {section.subtitle && (
-                      <p className="text-sm text-muted-foreground">
-                        {section.subtitle}
-                      </p>
-                    )}
-                  </div>
-
-          
-                  <div className="space-y-4">
-                    {section.fields.map((field: any) => {
-                      const inputName = `${section.id}.${field.id}`;
-
-                      return (
-                        <div key={field.id} className="space-y-3">
-                          <Label htmlFor={inputName}>
-                            {field.label}
-                            {field.required && (
-                              <span className="ml-1 text-red-500">*</span>
-                            )}
-                          </Label>
-
-                        
-                          {field.type === "textarea" ? (
-                            <Textarea
-                              id={inputName}
-                              rows={5}
-                              placeholder={field.placeholder}
-                              {...register(inputName, {
-                                required: field.required
-                                  ? `${field.label} is required`
-                                  : false,
-                              })}
-                            />
-                          ) : 
-                          field.type !== "select" &&
-                            field.type !== "checkbox" &&
-                            field.type !== "radio" &&
-                            field.type !== "file" ? (
-                            <Input
-                              id={inputName}
-                              type={field.type}
-                              placeholder={field.placeholder}
-                              {...register(inputName, {
-                                required: field.required
-                                  ? `${field.label} is required`
-                                  : false,
-
-                                ...(field.type === "email" && {
-                                  pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message:
-                                      "Please enter a valid email address",
-                                  },
-                                }),
-                              })}
-                            />
-                          ) 
-                          field.type === "file" ? (
-                            <Input
-                              id={inputName}
-                              type="file"
-                              multiple={field.multiple}
-                              {...register(inputName, {
-                                required: field.required
-                                  ? `${field.label} is required`
-                                  : false,
-                              })}
-                            />
-                          ) :
-                          field.type === "select" ? (
-                            <Controller
-                              control={control}
-                              name={inputName}
-                              rules={{
-                                required: field.required
-                                  ? `${field.label} is required`
-                                  : false,
-                              }}
-                              render={({ field: controllerField }) => {
-                                const rawValue = controllerField.value;
-                                const selectedValues = Array.isArray(rawValue)
-                                  ? rawValue
-                                  : rawValue
-                                  ? [rawValue]
-                                  : [];
-
-                                return (
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <div
-                                        ref={(el) => {
-                                          if (el)
-                                            el.setAttribute("name", inputName);
-                                        }}
-                                        className="w-full flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm min-h-[40px] cursor-pointer"
-                                      >
-                                        {selectedValues.length === 0 ? (
-                                          <span className="text-muted-foreground">
-                                            Select option
-                                          </span>
-                                        ) : (
-                                          selectedValues.join(", ")
-                                        )}
-                                      </div>
-                                    </PopoverTrigger>
-                                    <PopoverContent
-                                      align="start"
-                                      className="w-[var(--radix-popover-trigger-width)]"
-                                    >
-                                      {field.options.map((opt: string) => (
-                                        <div
-                                          key={opt}
-                                          className="cursor-pointer px-2 py-1 hover:bg-muted rounded"
-                                          onClick={() =>
-                                            controllerField.onChange(opt)
-                                          }
-                                        >
-                                          {opt}
-                                        </div>
-                                      ))}
-                                    </PopoverContent>
-                                  </Popover>
-                                );
-                              }}
-                            />
-                          ) : 
-                          field.type === "checkbox" ? (
-                            <Controller
-                              control={control}
-                              name={inputName}
-                              rules={{
-                                validate: (value) =>
-                                  field.required &&
-                                  (!value || value.length === 0)
-                                    ? `${field.label} is required`
-                                    : true,
-                              }}
-                              render={({ field: controllerField }) => {
-                                const value: string[] =
-                                  controllerField.value || [];
-
-                                return (
-                                  <div
-                                    ref={(el) => {
-                                      if (el)
-                                        el.setAttribute("name", inputName);
-                                    }}
-                                    className="space-y-3"
-                                  >
-                                    {field.options.map((opt: string) => (
-                                      <label
-                                        key={opt}
-                                        className="flex items-center gap-3 cursor-pointer"
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          checked={value.includes(opt)}
-                                          onChange={() => {
-                                            if (value.includes(opt)) {
-                                              controllerField.onChange(
-                                                value.filter((v) => v !== opt)
-                                              );
-                                            } else {
-                                              controllerField.onChange([
-                                                ...value,
-                                                opt,
-                                              ]);
-                                            }
-                                          }}
-                                        />
-                                        <span>{opt}</span>
-                                      </label>
-                                    ))}
-                                  </div>
-                                );
-                              }}
-                            />
-                          ) : (
-                      
-                            <Controller
-                              control={control}
-                              name={inputName}
-                              rules={{
-                                required: field.required
-                                  ? `${field.label} is required`
-                                  : false,
-                              }}
-                              render={({ field: controllerField }) => (
-                                <div
-                                  ref={(el) => {
-                                    if (el) el.setAttribute("name", inputName);
-                                  }}
-                                  className="space-y-3"
-                                >
-                                  {field.options.map((opt: string) => (
-                                    <label
-                                      key={opt}
-                                      className="flex items-center gap-3 cursor-pointer"
-                                    >
-                                      <input
-                                        type="radio"
-                                        checked={controllerField.value === opt}
-                                        onChange={() =>
-                                          controllerField.onChange(opt)
-                                        }
-                                      />
-                                      <span>{opt}</span>
-                                    </label>
-                                  ))}
-                                </div>
-                              )}
-                            />
-                          )}
-
-                         
-                          {(errors as any)?.[section.id]?.[field.id] && (
-                            <p className="text-sm text-red-500">
-                              {
-                                (errors as any)[section.id][field.id]
-                                  ?.message as string
-                              }
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-             
-                  <div className="pt-6">
-                    <div className="h-px bg-border" />
-                  </div>
-                </div>
-              ))}
-
-          
-              <div className="pt-12">
-                <div className="rounded-xl border bg-muted/40 px-6 py-6">
-                  <div className="flex flex-col items-center gap-4">
-                    <Button
-                      type="submit"
-                      size="lg"
-                      disabled={isSubmitting}
-                      className="w-full max-w-md text-base font-medium bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 shadow-lg"
-                    >
-                      Submit Application
-                    </Button>
-
-                    <p className="text-center text-sm text-muted-foreground max-w-md">
-                      By submitting this application, you confirm that all
-                      information provided is accurate.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </form>
-
-            {errorElement && errorMessage && (
-              <ErrorPopover reference={errorElement} message={errorMessage} />
-            )}
-          </CardContent> */}
         </Card>
       </div>
 
