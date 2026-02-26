@@ -1,38 +1,104 @@
-import { MongoClient } from "mongodb";
+// import { MongoClient } from "mongodb";
+// import { notFound } from "next/navigation";
+// import ResourceClient from "./ResourceClient"; // client component in same folder
+// import connectDB from "@/libs/mongodb";
+// import resources2Data from "@/models/resources2Data";
+
+// export const revalidate = 60; // ISR: revalidate every 60s (adjust as needed)
+
+// export async function generateStaticParams() {
+//   const db = await connectDB();
+//   const docs =resources2Data.find({}, { projection: { slug: 1 } }).toArray();
+//   return docs.map((d: any) => ({ slug: d.slug }));
+// }
+
+// export async function generateMetadata(props: {
+//   params: Promise<{ slug: string }>;
+// }) {
+//   const { params } = props;
+//   const { slug } = await params;
+//   const db = await connectDB();
+
+//   const doc = await db
+//     .collection("resources2datas")
+//     .findOne({ slug: slug }, { projection: { subject: 1 } });
+//   if (!doc) {
+//     return { title: "Resource not found" };
+//   }
+//   return {
+//     title: `${doc.subject} Resources | r/alevel Repository`,
+//     description: `A curated collection of ${doc.subject} notes, syllabus, past papers, videos and tools for A-Level.`,
+//     openGraph: {
+//       title: `${doc.subject} Resources | r/alevel`,
+//       description: `Curated ${doc.subject} resources for A-Level students.`,
+//     },
+//   };
+// }
+
+// export default async function Page({
+//   params,
+// }: {
+//   params: Promise<{ slug: string }>;
+// }) {
+//   const { slug } = await params; // 👈 MUST AWAIT
+//   const db = await connectDB();
+//   const resource = await db
+//     .collection("resources2datas")
+//     .findOne({ slug: slug });
+//   if (!resource) {
+//     console.log("resources not found");
+//     notFound();
+//   }
+
+//   (resource as any)._id = resource._id.toString();
+
+//   // CLEAN THE OBJECT (strip prototypes, ensure it’s serializable)
+//   const serializable = JSON.parse(JSON.stringify(resource));
+
+//   return <ResourceClient resource={serializable} />;
+// }
+
+import connectDB from "@/libs/mongodb";
+import resources2Data from "@/models/resources2Data";
 import { notFound } from "next/navigation";
-import ResourceClient from "./ResourceClient"; // client component in same folder
+import ResourceClient from "./ResourceClient";
 
-export const revalidate = 60; // ISR: revalidate every 60s (adjust as needed)
+export const revalidate = 60;
 
-async function getDb() {
-  const client = new MongoClient(process.env.MONGODB_URI!);
-  if (!client) throw new Error("Missing MONGODB_URI");
-  await client.connect();
-  return client.db(process.env.MONGODB_DB || "r_alevel");
-}
-
+/* -----------------------------
+   Static params (SSG paths)
+------------------------------ */
 export async function generateStaticParams() {
-  const db = await getDb();
-  const docs = await db
-    .collection("resources2datas")
-    .find({}, { projection: { slug: 1 } })
-    .toArray();
-  return docs.map((d: any) => ({ slug: d.slug }));
-}
+  await connectDB();
 
-export async function generateMetadata(props: {
+  const docs = await resources2Data.find({}, { slug: 1, _id: 0 }).lean();
+
+  return docs.map((d: any) => ({
+    slug: d.slug,
+  }));
+}
+type ResourceMeta = {
+  subject: string;
+};
+/* -----------------------------
+   Metadata (SEO)
+------------------------------ */
+export async function generateMetadata({
+  params,
+}: {
   params: Promise<{ slug: string }>;
 }) {
-  const { params } = props;
-  const { slug } = await params;
-  const db = await getDb();
+  const { slug } = await params; // ✅ REQUIRED in Next 15
+  await connectDB();
 
-  const doc = await db
-    .collection("resources2datas")
-    .findOne({ slug: slug }, { projection: { subject: 1 } });
+  const doc = await resources2Data
+    .findOne({ slug: slug }, { subject: 1, _id: 0 })
+    .lean<ResourceMeta>();
+
   if (!doc) {
     return { title: "Resource not found" };
   }
+
   return {
     title: `${doc.subject} Resources | r/alevel Repository`,
     description: `A curated collection of ${doc.subject} notes, syllabus, past papers, videos and tools for A-Level.`,
@@ -43,25 +109,23 @@ export async function generateMetadata(props: {
   };
 }
 
+/* -----------------------------
+   Page
+------------------------------ */
 export default async function Page({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params; // 👈 MUST AWAIT
-  const db = await getDb();
-  const resource = await db
-    .collection("resources2datas")
-    .findOne({ slug: slug });
+  const { slug } = await params; // ✅ REQUIRED in Next 15
+
+  await connectDB();
+
+  const resource = await resources2Data.findOne({ slug }).lean();
+
   if (!resource) {
-    console.log("resources not found");
     notFound();
   }
 
-  (resource as any)._id = resource._id.toString();
-
-  // CLEAN THE OBJECT (strip prototypes, ensure it’s serializable)
-  const serializable = JSON.parse(JSON.stringify(resource));
-
-  return <ResourceClient resource={serializable} />;
+  return <ResourceClient resource={JSON.parse(JSON.stringify(resource))} />;
 }

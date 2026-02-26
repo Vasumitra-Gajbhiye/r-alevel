@@ -726,7 +726,7 @@ export default function ResourceClient({ resource }: Props) {
             )}
 
             {/* PAST PAPERS */}
-            <motion.section
+            {/* <motion.section
               {...fade}
               id="papers"
               className="bg-white p-6 rounded-2xl shadow-sm border border-[var(--border-lightest]"
@@ -766,7 +766,6 @@ export default function ResourceClient({ resource }: Props) {
                 </div>
               </div>
 
-              {/* Scroll Container */}
               <div
                 className={`mt-4 overflow-x-auto ${
                   showPaperScrollbar ? "max-h-[25rem] overflow-y-auto" : ""
@@ -810,7 +809,7 @@ export default function ResourceClient({ resource }: Props) {
                   </tbody>
                 </table>
               </div>
-            </motion.section>
+            </motion.section> */}
 
             {/* FREE PDF TEXTBOOKS */}
             {(resource.pdfBooks?.length || 0) > 0 && (
