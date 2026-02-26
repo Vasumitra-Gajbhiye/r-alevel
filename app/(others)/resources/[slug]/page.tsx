@@ -63,7 +63,7 @@ import resources2Data from "@/models/resources2Data";
 import { notFound } from "next/navigation";
 import ResourceClient from "./ResourceClient";
 
-export const revalidate = 60;
+export const revalidate = 60 * 60 * 24 * 10;
 
 /* -----------------------------
    Static params (SSG paths)
