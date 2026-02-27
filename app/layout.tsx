@@ -39,6 +39,41 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Ezoic Privacy Scripts - MUST BE FIRST */}
+        <Script
+          id="ezoic-privacy-1"
+          strategy="beforeInteractive"
+          data-cfasync="false"
+          src="https://cmp.gatekeeperconsent.com/min.js"
+        />
+
+        <Script
+          id="ezoic-privacy-2"
+          strategy="beforeInteractive"
+          data-cfasync="false"
+          src="https://the.gatekeeperconsent.com/cmp.min.js"
+        />
+
+        {/* Ezoic Header Script */}
+        <Script
+          id="ezoic-header"
+          strategy="beforeInteractive"
+          async
+          src="//www.ezojs.com/ezoic/sa.min.js"
+        />
+
+        <Script id="ezoic-init" strategy="beforeInteractive">
+          {`
+            window.ezstandalone = window.ezstandalone || {};
+            ezstandalone.cmd = ezstandalone.cmd || [];
+          `}
+        </Script>
+
+        <Script
+          id="ezoic-analytics"
+          strategy="beforeInteractive"
+          src="//ezoicanalytics.com/analytics.js"
+        />
         {/* Google Analytics */}
         <Script
           strategy="afterInteractive"
