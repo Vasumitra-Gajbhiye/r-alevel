@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { Role } from "@/lib/roles";
 import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
@@ -10,7 +11,10 @@ import { NextResponse } from "next/server";
 function requireTeamAdmin(session: any): Role[] {
   const roles = session?.userData?.roles as Role[] | undefined;
 
-  if (!roles || !roles.some((r) => ["owner", "admin"].includes(r))) {
+  if (
+    !roles ||
+    !roles.some((r) => ["owner", "admin", "mod_dep_head"].includes(r))
+  ) {
     throw new Error("FORBIDDEN");
   }
 
@@ -27,6 +31,9 @@ export async function PATCH(
 
   try {
     const actorRoles = requireTeamAdmin(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     // ✅ FIX: await params
     const { id } = await context.params;

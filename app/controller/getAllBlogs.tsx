@@ -1,9 +1,9 @@
-export default async function getAllSubjects() {
+export default async function getAllBlogs() {
   try {
     const apiLink = process.env.NEXT_PUBLIC_GETALLBLOGS;
     // const res = await fetch(`https://r-alevel.netlify.app/api/blogs`, {
-      // const res = await fetch(`http://localhost:3000/api/blogs`, {
-      const res = await fetch(`${apiLink}`, {
+    // const res = await fetch(`http://localhost:3000/api/blogs`, {
+    const res = await fetch(`${apiLink}`, {
       // mode: "no-cors",
     });
     const sub = await res.json();

@@ -24,55 +24,76 @@ function Sidebar({ roles }: { roles: string[] }) {
 
         {/* Admin-only */}
         {hasAnyRole(roles as any, ["owner", "admin"]) && (
-          <>
-            <a
-              href="/admin/access"
-              className="block px-3 py-2 rounded hover:bg-gray-100"
-            >
-              Access
-            </a>
-            <a
-              href="/admin/team"
-              className="block px-3 py-2 rounded hover:bg-gray-100"
-            >
-              Mod. Staff
-            </a>
-            <a
-              href="/admin/helper"
-              className="block px-3 py-2 rounded hover:bg-gray-100"
-            >
-              Helper
-            </a>
-            <a
-              href="/admin/graphic"
-              className="block px-3 py-2 rounded hover:bg-gray-100"
-            >
-              Graphic Dept.
-            </a>
-
-            <a
-              href="/admin/info"
-              className="block px-3 py-2 rounded hover:bg-gray-100"
-            >
-              Informative Dept.
-            </a>
-            <a
-              href="/admin/forms"
-              className="block px-3 py-2 rounded hover:bg-gray-100"
-            >
-              Form submission
-            </a>
-            <a
-              href="/admin/certificates"
-              className="block px-3 py-2 rounded hover:bg-gray-100"
-            >
-              Certificates
-            </a>
-          </>
+          <a
+            href="/admin/access"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+          >
+            Access
+          </a>
+        )}
+        {hasAnyRole(roles as any, ["owner", "admin", "mod_dep_head"]) && (
+          <a
+            href="/admin/team"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+          >
+            Mod. Staff
+          </a>
+        )}
+        {hasAnyRole(roles as any, ["owner", "admin", "helper_dep_head"]) && (
+          <a
+            href="/admin/helper"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+          >
+            Helper
+          </a>
+        )}
+        {hasAnyRole(roles as any, ["owner", "admin", "graphic_dep_head"]) && (
+          <a
+            href="/admin/graphic"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+          >
+            Graphic Dept.
+          </a>
+        )}
+        {hasAnyRole(roles as any, ["owner", "admin", "info_dep_head"]) && (
+          <a
+            href="/admin/info"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+          >
+            Informative Dept.
+          </a>
+        )}
+        {hasAnyRole(roles as any, [
+          "owner",
+          "admin",
+          "mod_dep_head",
+          "info_dep_head",
+          "graphic_dep_head",
+          "helper_dep_head",
+        ]) && (
+          <a
+            href="/admin/forms"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+          >
+            Form submission
+          </a>
+        )}
+        {hasAnyRole(roles as any, ["owner", "admin"]) && (
+          <a
+            href="/admin/certificates"
+            className="block px-3 py-2 rounded hover:bg-gray-100"
+          >
+            Certificates
+          </a>
         )}
 
         {/* Informative team + admin */}
-        {hasAnyRole(roles as any, ["owner", "admin", "informative_team"]) && (
+        {hasAnyRole(roles as any, [
+          "owner",
+          "admin",
+          "informative_team",
+          "info_dep_head",
+        ]) && (
           <>
             <a
               href="/admin/scheduling"
@@ -100,6 +121,10 @@ export default async function AdminLayout({
       "owner",
       "admin",
       "writer",
+      "mod_dep_head",
+      "helper_dep_head",
+      "graphic_dep_head",
+      "info_dep_head",
       "informative_team",
     ])
   ) {

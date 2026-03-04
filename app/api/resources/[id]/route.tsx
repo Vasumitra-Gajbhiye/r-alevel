@@ -1,10 +1,22 @@
+import { enforceSameOrigin } from "@/lib/csrf";
+import { enforceRateLimit } from "@/lib/rateLimit";
+import { requireRoles } from "@/lib/requireRoles";
+import { authOptions } from "@/libs/auth";
 import mongoDBConnect from "@/libs/mongodb";
 import ResourcesData from "@/models/resourcesData";
+import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
 
-
 // GET ALL SUBJECTS
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const rlError = await enforceRateLimit(req, "public-resources-detail", {
+    limit: 100,
+    windowSec: 60,
+  });
+  if (rlError) return rlError;
   const { id } = await params;
   console.log(id);
   try {
@@ -39,7 +51,20 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions);
+  try {
+    requireRoles(session, ["owner", "admin"]);
+  } catch {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
+  const csrfError = enforceSameOrigin(req);
+  if (csrfError) return csrfError;
+
   const { id } = await params;
 
   console.log(id);

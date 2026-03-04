@@ -41,6 +41,10 @@ export const ROLE_LABELS: Record<Role, string> = {
   former_staff: "Former Staff",
   informative_team: "Informative Team",
   helper: "Helper",
+  mod_dep_head: "MOD Dep. Head",
+  helper_dep_head: "HLP Dep. Head",
+  graphic_dep_head: "GFX Dep. Head",
+  info_dep_head: "INFO Dep. Head",
 };
 
 export const ROLE_META: Record<
@@ -53,6 +57,22 @@ export const ROLE_META: Record<
   },
   admin: {
     color: "bg-red-100 text-red-800 border-red-200",
+    icon: Shield,
+  },
+  mod_dep_head: {
+    color: "bg-blue-100 text-blue-800 border-blue-200",
+    icon: Shield,
+  },
+  helper_dep_head: {
+    color: "bg-green-100 text-green-800 border-green-200",
+    icon: Shield,
+  },
+  graphic_dep_head: {
+    color: "bg-purple-100 text-purple-800 border-purple-200",
+    icon: Shield,
+  },
+  info_dep_head: {
+    color: "bg-neutral-100 text-neutral-800 border-neutral-200",
     icon: Shield,
   },
   senior_mod: {
@@ -226,10 +246,14 @@ export default function AccessPage() {
 
   /* ---------------- LOAD ACCESS LIST ---------------- */
   async function load() {
-    const res = await fetch("/api/admin/access");
-    const data = await res.json();
-    setUsers(data);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/admin/access");
+      const data = await res.json();
+      setUsers(data);
+      setLoading(false);
+    } catch (e) {
+      console.log("Error ", e);
+    }
   }
 
   useEffect(() => {
@@ -283,14 +307,18 @@ export default function AccessPage() {
     setSaving(false);
   }
   async function updateRoles(email: string, roles: Role[]) {
-    await fetch("/api/admin/access", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        roles, // ✅ USE THE PARAMETER
-      }),
-    });
+    try {
+      await fetch("/api/admin/access", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          roles, // ✅ USE THE PARAMETER
+        }),
+      });
+    } catch (e) {
+      console.log(e);
+    }
 
     await load();
   }

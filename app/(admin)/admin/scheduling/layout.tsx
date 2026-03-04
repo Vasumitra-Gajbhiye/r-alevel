@@ -20,7 +20,12 @@ export default async function SchedulingLayout({
   const roles = session.userData?.roles;
 
   // Role-based access
-  const allowedRoles = ["owner", "admin", "informative_team"] as const;
+  const allowedRoles = [
+    "owner",
+    "admin",
+    "informative_team",
+    "info_dep_head",
+  ] as const;
 
   if (!hasRequiredRole(roles, allowedRoles)) {
     return (

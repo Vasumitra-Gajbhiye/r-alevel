@@ -6,6 +6,10 @@ export async function GET() {
     await connectDB();
     return Response.json({ status: "connected" });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 });
+    console.error("Healthcheck DB connection failed:", err);
+    return Response.json(
+      { error: "Service unavailable" },
+      { status: 503 }
+    );
   }
 }

@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { requireRoles } from "@/lib/requireRoles";
 import { Role, highestAuthorityRole, roleRank } from "@/lib/roles";
 import { authOptions } from "@/libs/auth";
@@ -41,6 +42,9 @@ export async function POST(req: Request) {
 
   try {
     requireRoles(session, ["owner", "admin"]);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const actorRoles = session!.userData!.roles;
     const actorHighest = highestAuthorityRole(actorRoles);
@@ -97,6 +101,9 @@ export async function DELETE(req: Request) {
 
   try {
     requireRoles(session, ["owner", "admin"]);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { email } = (await req.json()) as { email?: string };
 

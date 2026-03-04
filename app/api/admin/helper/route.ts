@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { Role } from "@/lib/roles";
 import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
@@ -10,7 +11,10 @@ import { NextResponse } from "next/server";
 function requireHelperAdmin(session: any): Role[] {
   const roles = session?.userData?.roles as Role[] | undefined;
 
-  if (!roles || !roles.some((r) => ["owner", "admin"].includes(r))) {
+  if (
+    !roles ||
+    !roles.some((r) => ["owner", "admin", "helper_dep_head"].includes(r))
+  ) {
     throw new Error("FORBIDDEN");
   }
 
@@ -37,12 +41,15 @@ export async function GET() {
 }
 
 /* ================= POST ================= */
-export async function POST() {
+export async function POST(req: Request) {
   await connectDB();
   const session = await getServerSession(authOptions);
 
   try {
     requireHelperAdmin(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const helper = await HelperMember.create({});
     return NextResponse.json(helper, { status: 201 });
@@ -58,6 +65,9 @@ export async function PATCH(req: Request) {
 
   try {
     requireHelperAdmin(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { id, patch } = await req.json();
     if (!id || !patch) {
@@ -98,6 +108,9 @@ export async function DELETE(req: Request) {
 
   try {
     requireHelperAdmin(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { id } = await req.json();
     if (!id) return new Response("Invalid payload", { status: 400 });

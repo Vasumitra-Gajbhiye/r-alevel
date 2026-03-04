@@ -54,7 +54,11 @@ export type Rank =
   | "senior_mod"
   | "junior_mod"
   | "trial_mod"
-  | "former_staff";
+  | "former_staff"
+  | "mod_dep_head"
+  | "helper_dep_head"
+  | "graphic_dep_head"
+  | "info_dep_head";
 
 export type Activity =
   | "no_concern"
@@ -80,6 +84,10 @@ export type State = "active" | "loa";
 const RANKS: { value: Rank; label: string }[] = [
   { value: "community_lead", label: "Community Lead" },
   { value: "admin", label: "Admin" },
+  { value: "mod_dep_head", label: "MOD Dep. Head" },
+  { value: "helper_dep_head", label: "HLP Dep. Head" },
+  { value: "graphic_dep_head", label: "GFX Dep. Head" },
+  { value: "info_dep_head", label: "INFO Dep. Head" },
   { value: "senior_mod", label: "Senior Moderator" },
   { value: "junior_mod", label: "Junior Moderator" },
   { value: "trial_mod", label: "Trial Moderator" },

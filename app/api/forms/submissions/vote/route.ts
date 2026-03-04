@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
 import FormSubmission from "@/models/FormSubmission";
@@ -15,6 +16,9 @@ export async function PATCH(req: Request) {
   if (!session || !session.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const csrfError = enforceSameOrigin(req);
+  if (csrfError) return csrfError;
 
   const { submissionId, vote } = await req.json();
 

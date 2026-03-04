@@ -32,17 +32,55 @@
 
 // app/api/user/update/route.js
 // app/api/user/update/route.js
+import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
 import UserData from "@/models/userData";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
+    // 1) Ensure user is authenticated and derive identity from the session
+    const session = await getServerSession(authOptions);
+    const email = session?.user?.email;
+
+    if (!email || typeof email !== "string") {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // 2) Strict same-origin check to reduce CSRF risk for cookie-based auth
+    const origin = req.headers.get("origin");
+    const host = req.headers.get("host");
+
+    if (!origin || !host) {
+      return NextResponse.json(
+        { success: false, error: "Forbidden" },
+        { status: 403 }
+      );
+    }
+
+    try {
+      const originUrl = new URL(origin);
+      if (originUrl.host !== host) {
+        return NextResponse.json(
+          { success: false, error: "Forbidden" },
+          { status: 403 }
+        );
+      }
+    } catch {
+      return NextResponse.json(
+        { success: false, error: "Forbidden" },
+        { status: 403 }
+      );
+    }
+
     await connectDB();
 
     const body = await req.json();
     const {
-      email,
       name,
       redditUsername,
       discordUsername,
@@ -52,13 +90,6 @@ export async function POST(req) {
       examSession,
       receiveEmails,
     } = body || {};
-
-    if (!email || typeof email !== "string") {
-      return NextResponse.json(
-        { success: false, error: "Missing or invalid email" },
-        { status: 400 }
-      );
-    }
 
     // Build update object carefully (only keep fields we expect)
     const update = {};
@@ -76,7 +107,7 @@ export async function POST(req) {
     if (typeof receiveEmails === "boolean")
       update.receiveEmails = receiveEmails;
 
-    // findOneAndUpdate and return the new document
+    // 3) findOneAndUpdate and return the new document
     const updated = await UserData.findOneAndUpdate(
       { email },
       { $set: update },

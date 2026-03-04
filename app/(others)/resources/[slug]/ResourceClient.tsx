@@ -185,8 +185,6 @@ export default function ResourceClient({ resource }: Props) {
     gradientEnd: "#ffffff",
   };
 
-  console.log(resource);
-
   return (
     <main
       className="min-h-screen bg-white text-slate-800"

@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { Role } from "@/lib/roles";
 import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
@@ -29,6 +30,9 @@ export async function PATCH(
 
   try {
     requireResourceAdminAccess(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { id } = await context.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {

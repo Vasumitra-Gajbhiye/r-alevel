@@ -1,10 +1,20 @@
+import { enforceRateLimit } from "@/lib/rateLimit";
+import { requireRoles } from "@/lib/requireRoles";
+import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
 import BlogsData from "@/models/blogsData";
+import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
 
 // GET ALL blogs
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const rlError = await enforceRateLimit(req, "public-blogs-list", {
+      limit: 100, // 100 requests per minute per IP
+      windowSec: 60,
+    });
+    if (rlError) return rlError;
+
     await connectDB();
 
     const blogs = await BlogsData.find(
@@ -36,6 +46,13 @@ export async function GET() {
 
 // CREATE A SUBJECT
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  try {
+    requireRoles(session, ["owner", "admin", "writer"]);
+  } catch {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
   try {
     // const { mainTitle, date, author, introSection, sections, id } =
     const { mainTitle, description, date, timeToRead, tag, author, slug } =
@@ -81,6 +98,13 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  try {
+    requireRoles(session, ["owner", "admin", "writer"]);
+  } catch {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
   try {
     const id = req.nextUrl.searchParams.get("id");
 

@@ -1,5 +1,8 @@
+import { authOptions } from "@/libs/auth";
+import connectDB from "@/libs/mongodb";
 import Form from "@/models/Form";
 import FormIndex from "@/models/FormIndex";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 type IntroBlock =
@@ -64,6 +67,23 @@ type Form = {
 };
 
 export async function POST(req: Request) {
+  // 1) Auth: only admins/owners can create forms
+  const session = await getServerSession(authOptions);
+  const roles = session?.userData?.roles as string[] | undefined;
+
+  if (!roles || !roles.some((r) => ["owner", "admin"].includes(r))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // 2) Basic origin check to reduce CSRF risk
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host");
+  if (origin && host && !origin.includes(host)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  await connectDB();
+
   let body: Form;
 
   try {
@@ -83,7 +103,6 @@ export async function POST(req: Request) {
   if (existingSlug) {
     return NextResponse.json({ error: "Slug already exists" }, { status: 400 });
   }
-  console.log(body);
   const prevForm = await Form.findOne({ formType: body.formType }).sort({
     cycleId: -1,
   });

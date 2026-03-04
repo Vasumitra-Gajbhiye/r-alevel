@@ -217,19 +217,57 @@ export default function FormPageClient({ form }: { form: any }) {
           body: formData,
         });
       }
-      // 🔹 ALL OTHER FORMS → JSON (UNCHANGED)
+      // 🔹 ALL OTHER FORMS → multipart-aware (handles file fields)
       else {
         const enrichedResponses = buildStructuredResponses(form, data);
 
-        res = await fetch(`/api/forms/${form.slug}/submit`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            cycleId: form.cycleId,
-            formType: form.slug,
-            responses: enrichedResponses,
-          }),
-        });
+        // Detect if the form contains file fields
+        let hasFiles = false;
+        const formData = new FormData();
+
+        formData.append("responses", JSON.stringify(enrichedResponses));
+
+        for (const section of form.sections || []) {
+          const sectionData = data?.[section.id];
+          if (!sectionData) continue;
+
+          for (const field of section.fields || []) {
+            if (field.type !== "file") continue;
+
+            const value = sectionData?.[field.id];
+            if (!value) continue;
+
+            hasFiles = true;
+
+            if (typeof FileList !== "undefined" && value instanceof FileList) {
+              for (let i = 0; i < value.length; i++) {
+                const file = value.item(i);
+                if (file) formData.append("files", file);
+              }
+            } else if (Array.isArray(value)) {
+              for (const file of value) {
+                if (file) formData.append("files", file);
+              }
+            }
+          }
+        }
+
+        if (hasFiles) {
+          res = await fetch(`/api/forms/${form.slug}/submit`, {
+            method: "POST",
+            body: formData,
+          });
+        } else {
+          res = await fetch(`/api/forms/${form.slug}/submit`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              cycleId: form.cycleId,
+              formType: form.slug,
+              responses: enrichedResponses,
+            }),
+          });
+        }
       }
 
       const json = await res.json();
@@ -251,135 +289,7 @@ export default function FormPageClient({ form }: { form: any }) {
       toast.error("Something went wrong");
     }
   };
-  // const onSubmit = async (data: any) => {
-  //   console.log("FORM DATA:", data);
-  //   try {
-  //     let res: Response;
 
-  //     // 🔹 RESOURCE FORM → multipart + Drive
-  //     if (form.slug === "resource") {
-  //       const formData = new FormData();
-
-  //       // 🔑 map form fields → API fields
-  //       const keyMap: Record<string, string> = {
-  //         "contributor.fullName": "fullName",
-  //         "contributor.email": "email",
-  //         "contributor.discordOrRedditId": "discordOrRedditId",
-
-  //         "academic.board": "board",
-  //         "academic.subject": "subject",
-  //         "academic.topic": "topic",
-
-  //         "resource.resourceTitle": "resourceTitle",
-  //         "resource.description": "description",
-  //         "resource.resourceType": "resourceType", // ✅ ADD THIS
-
-  //         "resourceContent.links": "links",
-  //       };
-
-  //       for (const section of form.sections) {
-  //         for (const field of section.fields) {
-  //           const value = data?.[section.id]?.[field.id];
-  //           if (value === undefined || value === null) continue;
-
-  //           // 📁 FILES (handle BEFORE keyMap)
-  //           if (field.type === "file") {
-  //             if (value instanceof FileList) {
-  //               Array.from(value).forEach((file) => {
-  //                 formData.append("files", file);
-  //               });
-  //             }
-  //             continue; // ⬅️ important
-  //           }
-
-  //           const flatKey = keyMap[`${section.id}.${field.id}`];
-  //           if (!flatKey) continue;
-  //           else if (Array.isArray(value)) {
-  //             value.forEach((v) => formData.append(flatKey, String(v)));
-  //           } else {
-  //             formData.append(flatKey, String(value));
-  //           }
-  //         }
-  //       }
-
-  //       res = await fetch("/api/resources/submit", {
-  //         method: "POST",
-  //         body: formData, // ❗ no headers
-  //       });
-  //     }
-
-  //     // 🔹 ALL OTHER FORMS → JSON
-  //     else {
-  //       const enrichedResponses = buildStructuredResponses(form, data);
-
-  //       res = await fetch(`/api/forms/${form.slug}/submit`, {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           cycleId: form.cycleId, // ✅ inject here
-  //           formType: form.slug, // ✅ inject here
-  //           responses: enrichedResponses,
-  //         }),
-  //       });
-  //     }
-
-  //     const json = await res.json();
-
-  //     if (!res.ok) {
-  //       if (res.status === 409) {
-  //         setShowDuplicateModal(true);
-  //         return;
-  //       }
-
-  //       toast.error(json.message || "Submission failed");
-  //       return;
-  //     }
-
-  //     setShowConfirmation(true);
-  //     reset();
-  //   } catch (err) {
-  //     console.error(err);
-  //     toast.error("Something went wrong");
-  //   }
-  // };
-  // useEffect(() => {
-  //   const findFirstError = (errorsObj: any, parentKey = ""): string | null => {
-  //     for (const key in errorsObj) {
-  //       const value = errorsObj[key];
-
-  //       const fullKey = parentKey ? `${parentKey}.${key}` : key;
-
-  //       if (value?.message) return fullKey;
-
-  //       if (typeof value === "object") {
-  //         const nested = findFirstError(value, fullKey);
-  //         if (nested) return nested;
-  //       }
-  //     }
-  //     return null;
-  //   };
-
-  //   const firstErrorPath = findFirstError(errors);
-
-  //   if (!firstErrorPath) {
-  //     setErrorElement(null);
-  //     setErrorMessage(null);
-  //     return;
-  //   }
-
-  //   const el = document.querySelector(
-  //     `[name="${firstErrorPath}"]`
-  //   ) as HTMLElement | null;
-
-  //   if (el) {
-  //     el.focus();
-  //     setErrorElement(el);
-  //     const errorObj = firstErrorPath
-  //       .split(".")
-  //       .reduce<any>((acc, key) => acc?.[key], errors);
-  //     setErrorMessage(errorObj?.message || "Invalid field");
-  //   }
-  // }, [errors]);
   return (
     <>
       <div className="mx-auto max-w-5xl px-4 py-20">

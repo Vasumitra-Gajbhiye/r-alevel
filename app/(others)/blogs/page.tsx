@@ -1,10 +1,21 @@
-import getAllBlogs from "@/app/controller/getAllBlogs";
+// import getAllBlogs from "@/app/controller/getAllBlogs";
+// import BlogsClient from "./BlogsClient";
+
+// export const revalidate = 60; // optional caching
+
+// export default async function BlogsPage() {
+//   const data = await getAllBlogs(); // ✅ FETCH ON SERVER
+
+//   return <BlogsClient data={data} />; // ✅ PASS TO CLIENT
+// }
+
+import getBlogs from "@/lib/db/getBlogs";
 import BlogsClient from "./BlogsClient";
 
-export const revalidate = 60; // optional caching
+export const revalidate = 60;
 
 export default async function BlogsPage() {
-  const data = await getAllBlogs(); // ✅ FETCH ON SERVER
+  const blogs = await getBlogs();
 
-  return <BlogsClient data={data} />; // ✅ PASS TO CLIENT
+  return <BlogsClient data={blogs} />;
 }

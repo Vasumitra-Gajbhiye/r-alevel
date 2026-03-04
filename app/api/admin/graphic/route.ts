@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { Role } from "@/lib/roles";
 import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
@@ -12,7 +13,9 @@ function requireGraphicAccess(session: any): Role[] {
 
   if (
     !roles ||
-    !roles.some((r) => ["owner", "admin", "graphic_designer"].includes(r))
+    !roles.some((r) =>
+      ["owner", "admin", "graphic_designer", "graphic_dep_head"].includes(r)
+    )
   ) {
     throw new Error("FORBIDDEN");
   }
@@ -39,12 +42,15 @@ export async function GET() {
 }
 
 /* ================= POST ================= */
-export async function POST() {
+export async function POST(req: Request) {
   await connectDB();
   const session = await getServerSession(authOptions);
 
   try {
     requireGraphicAccess(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const created = await GraphicMember.create({});
     return NextResponse.json(created);
@@ -60,6 +66,9 @@ export async function PATCH(req: Request) {
 
   try {
     requireGraphicAccess(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { id, patch } = await req.json();
 
@@ -84,6 +93,9 @@ export async function DELETE(req: Request) {
 
   try {
     requireGraphicAccess(session);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { id } = await req.json();
     if (!id) {

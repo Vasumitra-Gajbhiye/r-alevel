@@ -61,20 +61,40 @@
 
 // app/api/user/route.js
 // app/api/user/route.js
+import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
 import UserData from "@/models/userData";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { email } = body || {};
+    // 1) Ensure user is authenticated and derive identity from the session
+    const session = await getServerSession(authOptions);
+    const email = session?.user?.email;
 
     if (!email || typeof email !== "string") {
       return NextResponse.json(
-        { error: "Missing or invalid 'email' in request body" },
-        { status: 400 }
+        { error: "Unauthorized" },
+        { status: 401 }
       );
+    }
+
+    // 2) Strict same-origin check to reduce CSRF risk for cookie-based auth
+    const origin = req.headers.get("origin");
+    const host = req.headers.get("host");
+
+    if (!origin || !host) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    try {
+      const originUrl = new URL(origin);
+      if (originUrl.host !== host) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    } catch {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     await connectDB();

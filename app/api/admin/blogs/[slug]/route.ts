@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { requireRoles } from "@/lib/requireRoles";
 import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
@@ -48,6 +49,9 @@ export async function PATCH(
 
   requireRoles(session, ["owner", "admin", "writer"]);
 
+  const csrfError = enforceSameOrigin(req);
+  if (csrfError) return csrfError;
+
   const { slug } = await context.params; // ✅ FIX
 
   const isAdminLike = session!.userData!.roles.some(
@@ -84,6 +88,9 @@ export async function DELETE(
   const session = await getServerSession(authOptions);
 
   requireRoles(session, ["owner", "admin"]);
+
+  const csrfError = enforceSameOrigin(req);
+  if (csrfError) return csrfError;
   const { slug } = await context.params; // ✅ FIX
 
   const isAdmin =

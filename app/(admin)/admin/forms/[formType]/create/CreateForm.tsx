@@ -102,122 +102,6 @@ function SortableSection({
     </div>
   );
 }
-// function SelectOptionsEditor({
-//   form,
-//   sectionIndex,
-//   fieldIndex,
-//   preview,
-// }: {
-//   form: any;
-//   sectionIndex: number;
-//   fieldIndex: number;
-//   preview: boolean;
-// }) {
-//   const { fields, append, remove } = useFieldArray({
-//     control: form.control,
-//     name: `sections.${sectionIndex}.fields.${fieldIndex}.options`,
-//   });
-
-//   return (
-//     <div className="space-y-4 border rounded-md p-4 bg-muted/30">
-//       <div className="text-xs text-muted-foreground font-medium">Options</div>
-
-//       {fields.map((field, k) => (
-//         <div key={field.id} className="flex items-center gap-2">
-//           <Input
-//             disabled={preview}
-//             placeholder={`Option ${k + 1}`}
-//             {...form.register(
-//               `sections.${sectionIndex}.fields.${fieldIndex}.options.${k}`
-//             )}
-//           />
-
-//           {!preview && (
-//             <Button
-//               type="button"
-//               size="icon"
-//               variant="ghost"
-//               onClick={() => remove(k)}
-//             >
-//               <Trash2 className="h-4 w-4 text-destructive" />
-//             </Button>
-//           )}
-//         </div>
-//       ))}
-
-//       {!preview && (
-//         <Button
-//           type="button"
-//           size="sm"
-//           variant="outline"
-//           onClick={() => append("")}
-//         >
-//           + Add Option
-//         </Button>
-//       )}
-
-//       {/* MULTIPLE TOGGLE */}
-//       <div className="flex items-center gap-3 pt-2">
-//         <span className="text-xs text-muted-foreground">
-//           Allow multiple selections
-//         </span>
-
-//         <Switch
-//           checked={form.watch(
-//             `sections.${sectionIndex}.fields.${fieldIndex}.multiple`
-//           )}
-//           onCheckedChange={(val) =>
-//             form.setValue(
-//               `sections.${sectionIndex}.fields.${fieldIndex}.multiple`,
-//               val
-//             )
-//           }
-//         />
-//       </div>
-
-//       <div className="flex items-center gap-3 pt-2">
-//         <span className="text-xs text-muted-foreground">
-//           Include "Other (please specify)"
-//         </span>
-
-//         <Switch
-//           checked={form.watch(
-//             `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`
-//           )}
-//           onCheckedChange={(val) =>
-//             form.setValue(
-//               `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`,
-//               val
-//             )
-//           }
-//         />
-//       </div>
-
-//       {/* LIMITS */}
-//       {form.watch(`sections.${sectionIndex}.fields.${fieldIndex}.multiple`) && (
-//         <div className="grid grid-cols-2 gap-3">
-//           <Input
-//             type="number"
-//             placeholder="Min selections"
-//             {...form.register(
-//               `sections.${sectionIndex}.fields.${fieldIndex}.minSelections`,
-//               { valueAsNumber: true }
-//             )}
-//           />
-
-//           <Input
-//             type="number"
-//             placeholder="Max selections"
-//             {...form.register(
-//               `sections.${sectionIndex}.fields.${fieldIndex}.maxSelections`,
-//               { valueAsNumber: true }
-//             )}
-//           />
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
 
 function SectionEditor({
   index,
@@ -336,12 +220,12 @@ function SectionEditor({
                                 </span>
                                 <Switch
                                   checked={form.watch(
-                                    `sections.${index}.fields.${j}.required`
+                                    `sections.${index}.fields.${j}.required`,
                                   )}
                                   onCheckedChange={(val) =>
                                     form.setValue(
                                       `sections.${index}.fields.${j}.required`,
-                                      val
+                                      val,
                                     )
                                   }
                                 />
@@ -364,7 +248,7 @@ function SectionEditor({
                           disabled={preview}
                           placeholder="Field label"
                           {...form.register(
-                            `sections.${index}.fields.${j}.label`
+                            `sections.${index}.fields.${j}.label`,
                           )}
                         />
 
@@ -373,47 +257,47 @@ function SectionEditor({
                           <select
                             className="border rounded-md px-3 py-2 text-sm bg-background"
                             value={form.watch(
-                              `sections.${index}.fields.${j}.type`
+                              `sections.${index}.fields.${j}.type`,
                             )}
                             onChange={(e) => {
                               const newType = e.target.value;
 
                               form.setValue(
                                 `sections.${index}.fields.${j}.type`,
-                                newType
+                                newType,
                               );
 
                               if (
                                 !["select", "checkbox", "radio"].includes(
-                                  newType
+                                  newType,
                                 )
                               ) {
                                 form.setValue(
                                   `sections.${index}.fields.${j}.options`,
-                                  []
+                                  [],
                                 );
                                 form.setValue(
                                   `sections.${index}.fields.${j}.multiple`,
-                                  false
+                                  false,
                                 );
                                 form.setValue(
                                   `sections.${index}.fields.${j}.minSelections`,
-                                  undefined
+                                  undefined,
                                 );
                                 form.setValue(
                                   `sections.${index}.fields.${j}.maxSelections`,
-                                  undefined
+                                  undefined,
                                 );
                                 form.setValue(
                                   `sections.${index}.fields.${j}.allowOther`,
-                                  false
+                                  false,
                                 );
                               }
 
                               if (newType === "radio") {
                                 form.setValue(
                                   `sections.${index}.fields.${j}.multiple`,
-                                  false
+                                  false,
                                 );
                               }
                             }}
@@ -421,6 +305,7 @@ function SectionEditor({
                             <option value="text">Text</option>
                             <option value="email">Email</option>
                             <option value="textarea">Textarea</option>
+                            <option value="file">File Upload</option>
                             <option value="select">Dropdown</option>
                             <option value="checkbox">Checkbox Group</option>
                             <option value="radio">Radio Group</option>
@@ -428,7 +313,7 @@ function SectionEditor({
                         </div>
 
                         {["select", "checkbox", "radio"].includes(
-                          form.watch(`sections.${index}.fields.${j}.type`)
+                          form.watch(`sections.${index}.fields.${j}.type`),
                         ) && (
                           <SelectOptionsEditor
                             form={form}
@@ -436,6 +321,26 @@ function SectionEditor({
                             fieldIndex={j}
                             preview={preview}
                           />
+                        )}
+                        {form.watch(`sections.${index}.fields.${j}.type`) ===
+                          "file" && (
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs text-muted-foreground">
+                              Allow multiple file uploads
+                            </span>
+
+                            <Switch
+                              checked={form.watch(
+                                `sections.${index}.fields.${j}.multiple`,
+                              )}
+                              onCheckedChange={(val) =>
+                                form.setValue(
+                                  `sections.${index}.fields.${j}.multiple`,
+                                  val,
+                                )
+                              }
+                            />
+                          </div>
                         )}
                       </div>
                     </SortableField>
@@ -485,7 +390,7 @@ function SelectOptionsEditor({
   preview: boolean;
 }) {
   const fieldType = form.watch(
-    `sections.${sectionIndex}.fields.${fieldIndex}.type`
+    `sections.${sectionIndex}.fields.${fieldIndex}.type`,
   );
 
   const { fields, append, remove } = useFieldArray({
@@ -508,7 +413,7 @@ function SelectOptionsEditor({
             disabled={preview}
             placeholder={`Option ${k + 1}`}
             {...form.register(
-              `sections.${sectionIndex}.fields.${fieldIndex}.options.${k}`
+              `sections.${sectionIndex}.fields.${fieldIndex}.options.${k}`,
             )}
           />
 
@@ -545,12 +450,12 @@ function SelectOptionsEditor({
 
           <Switch
             checked={form.watch(
-              `sections.${sectionIndex}.fields.${fieldIndex}.multiple`
+              `sections.${sectionIndex}.fields.${fieldIndex}.multiple`,
             )}
             onCheckedChange={(val) =>
               form.setValue(
                 `sections.${sectionIndex}.fields.${fieldIndex}.multiple`,
-                val
+                val,
               )
             }
           />
@@ -565,12 +470,12 @@ function SelectOptionsEditor({
 
         <Switch
           checked={form.watch(
-            `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`
+            `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`,
           )}
           onCheckedChange={(val) =>
             form.setValue(
               `sections.${sectionIndex}.fields.${fieldIndex}.allowOther`,
-              val
+              val,
             )
           }
         />
@@ -579,7 +484,7 @@ function SelectOptionsEditor({
       {/* LIMITS (ONLY FOR MULTIPLE TYPES) */}
       {!isRadio &&
         form.watch(
-          `sections.${sectionIndex}.fields.${fieldIndex}.multiple`
+          `sections.${sectionIndex}.fields.${fieldIndex}.multiple`,
         ) && (
           <div className="grid grid-cols-2 gap-3">
             <Input
@@ -587,7 +492,7 @@ function SelectOptionsEditor({
               placeholder="Min selections"
               {...form.register(
                 `sections.${sectionIndex}.fields.${fieldIndex}.minSelections`,
-                { valueAsNumber: true }
+                { valueAsNumber: true },
               )}
             />
 
@@ -596,7 +501,7 @@ function SelectOptionsEditor({
               placeholder="Max selections"
               {...form.register(
                 `sections.${sectionIndex}.fields.${fieldIndex}.maxSelections`,
-                { valueAsNumber: true }
+                { valueAsNumber: true },
               )}
             />
           </div>
@@ -724,13 +629,13 @@ function SortableIntroBlock({
                         [];
 
                       const updated = items.filter(
-                        (_: any, index: number) => index !== j
+                        (_: any, index: number) => index !== j,
                       );
 
                       form.setValue(
                         `introductionBlocks.${index}.items`,
                         updated,
-                        { shouldDirty: true }
+                        { shouldDirty: true },
                       );
                     }}
                   >
@@ -738,7 +643,7 @@ function SortableIntroBlock({
                   </Button>
                 )}
               </div>
-            )
+            ),
           )}
 
           {!preview && (
@@ -968,7 +873,7 @@ export default function CreateForm({ formType }: Props) {
 
               form.setValue(
                 "sections",
-                arrayMove(form.getValues("sections"), oldIndex, newIndex)
+                arrayMove(form.getValues("sections"), oldIndex, newIndex),
               );
             }}
           >

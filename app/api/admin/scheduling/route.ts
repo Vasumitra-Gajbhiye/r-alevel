@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { requireRoles } from "@/lib/requireRoles";
 import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
@@ -11,7 +12,12 @@ export async function GET() {
   const session = await getServerSession(authOptions);
 
   try {
-    requireRoles(session, ["owner", "admin", "informative_team"]);
+    requireRoles(session, [
+      "owner",
+      "admin",
+      "informative_team",
+      "info_dep_head",
+    ]);
 
     const items = await ScheduleItem.find().sort({
       date: 1,
@@ -25,12 +31,15 @@ export async function GET() {
 }
 
 /* ================= POST ================= */
-export async function POST() {
+export async function POST(req: Request) {
   await connectDB();
   const session = await getServerSession(authOptions);
 
   try {
     requireRoles(session, ["owner", "admin", "informative_team"]);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const created = await ScheduleItem.create({});
     return NextResponse.json(created);
@@ -46,6 +55,9 @@ export async function PATCH(req: Request) {
 
   try {
     requireRoles(session, ["owner", "admin", "informative_team"]);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { id, patch } = await req.json();
     await ScheduleItem.findByIdAndUpdate(id, patch);
@@ -63,6 +75,9 @@ export async function DELETE(req: Request) {
 
   try {
     requireRoles(session, ["owner", "admin", "informative_team"]);
+
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
     const { id } = await req.json();
     await ScheduleItem.findByIdAndDelete(id);

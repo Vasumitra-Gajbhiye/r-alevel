@@ -1,3 +1,4 @@
+import { enforceSameOrigin } from "@/lib/csrf";
 import { requireRoles } from "@/lib/requireRoles";
 import { slugify } from "@/lib/slugify";
 import { authOptions } from "@/libs/auth";
@@ -51,11 +52,14 @@ export async function GET() {
 }
 
 /* ================= CREATE BLOG ================= */
-export async function POST() {
+export async function POST(req: Request) {
   await connectDB();
   const session = await getServerSession(authOptions);
 
   requireRoles(session, ["owner", "admin", "writer"]);
+
+  const csrfError = enforceSameOrigin(req);
+  if (csrfError) return csrfError;
 
   const blog = await EditorBlog.create({
     ownerId: new mongoose.Types.ObjectId(session!.userData!.id),

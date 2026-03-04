@@ -429,6 +429,7 @@
 //   }
 // }
 
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { uploadFileToR2 } from "@/lib/r2Upload";
 import connectDB from "@/libs/mongodb";
 import Contributor from "@/models/Contributor";
@@ -437,13 +438,28 @@ import crypto from "crypto";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
+const MAX_FILES_PER_RESOURCE = 10;
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
+const ALLOWED_FILE_MIME_TYPES = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+  "application/pdf",
+]);
+
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
+    const rlError = await enforceRateLimit(req, "resources-submit", {
+      limit: 3, // 3 submissions per 10 minutes per IP
+      windowSec: 10 * 60,
+    });
+    if (rlError) return rlError;
+
     await connectDB();
     const formData = await req.formData();
-    // console.log(formData);
     // =============================
     // 1️⃣ Contributor info
     // =============================
@@ -557,13 +573,43 @@ export async function POST(req: Request) {
     await contributor.save();
 
     // =============================
-    // 6️⃣ Upload files per resource
+    // 6️⃣ Upload files per resource (bounded)
     // =============================
     for (let i = 0; i < resources.length; i++) {
       const res = resources[i];
+
+      if (res.files.length > MAX_FILES_PER_RESOURCE) {
+        return NextResponse.json(
+          {
+            error: `Too many files for resource ${i + 1}. Maximum is ${MAX_FILES_PER_RESOURCE}.`,
+          },
+          { status: 400 }
+        );
+      }
+
       const uploadedFiles = [];
 
       for (const file of res.files) {
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          return NextResponse.json(
+            {
+              error: `File "${file.name}" is too large. Maximum size is ${Math.floor(
+                MAX_FILE_SIZE_BYTES / (1024 * 1024)
+              )}MB.`,
+            },
+            { status: 400 }
+          );
+        }
+
+        if (!ALLOWED_FILE_MIME_TYPES.has(file.type)) {
+          return NextResponse.json(
+            {
+              error: `File type not allowed for "${file.name}".`,
+            },
+            { status: 400 }
+          );
+        }
+
         const buffer = Buffer.from(await file.arrayBuffer());
 
         const ext = file.name.split(".").pop();

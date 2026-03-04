@@ -3,6 +3,10 @@
 export const ROLES = [
   "owner",
   "admin",
+  "mod_dep_head",
+  "helper_dep_head",
+  "graphic_dep_head",
+  "info_dep_head",
   "senior_mod",
   "junior_mod",
   "trial_mod",
