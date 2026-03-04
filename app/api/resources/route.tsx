@@ -5,13 +5,13 @@ import { authOptions } from "@/libs/auth";
 import connectDB from "@/libs/mongodb";
 import ResourcesData from "@/models/resourcesData";
 import { getServerSession } from "next-auth";
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // GET ALL SUBJECTS
 export async function GET(req: NextRequest) {
   try {
     const rlError = await enforceRateLimit(req, "public-resources-list", {
-      limit: 100,
+      limit: 50,
       windowSec: 60,
     });
     if (rlError) return rlError;

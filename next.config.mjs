@@ -38,6 +38,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
     ],
   },
 
@@ -76,7 +80,7 @@ const nextConfig = {
           },
           {
             key: "Strict-Transport-Security",
-            value: "max-age=63072000; includeSubDomains; preload",
+            value: "max-age=31536000; includeSubDomains; preload",
           },
           {
             key: "X-Frame-Options",
@@ -96,6 +100,15 @@ const nextConfig = {
           },
           {
             key: "Cross-Origin-Opener-Policy",
+            value: "same-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=(), usb=(), gyroscope=(), accelerometer=()",
+          },
+          {
+            key: "Cross-Origin-Resource-Policy",
             value: "same-origin",
           },
         ],

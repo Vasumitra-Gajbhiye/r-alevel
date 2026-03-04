@@ -1,95 +1,198 @@
+// import mongoDBConnect from "@/libs/mongodb";
+// import TeamData from "@/models/teamData";
+// import { NextResponse, NextRequest } from "next/server";
+
+// // GET ALL SUBJECTS
+// export async function GET(req: NextRequest) {
+//   try {
+//     await mongoDBConnect();
+
+//     const members = await TeamData.find();
+
+//     return NextResponse.json(
+//       {
+//         message: "Successfully fetched all members",
+//         data: members,
+//       },
+//       {
+//         status: 200,
+//       }
+//     );
+//   } catch (error) {
+//     return NextResponse.json(
+//       {
+//         message: "Failed to fetch all members",
+//         error: error,
+//       },
+//       {
+//         status: 500,
+//       }
+//     );
+//   }
+// }
+
+// // CREATE A SUBJECT
+// export async function POST(req: NextRequest) {
+//   try {
+//     const { name, title, discordId } = await req.json();
+
+//     const newTeamData = {
+//       name: name,
+//       title: title,
+//       discordId: discordId,
+//     };
+
+//     await mongoDBConnect();
+
+//     await TeamData.create(newTeamData);
+
+//     return NextResponse.json(
+//       {
+//         message: "Successfully created a new member",
+//         data: newTeamData,
+//       },
+//       {
+//         status: 201,
+//       }
+//     );
+//   } catch (error) {
+//     return NextResponse.json({
+//       message: "Cannot create a new member",
+//       error: error,
+//     });
+//   }
+// }
+
+// export async function DELETE(req: NextRequest) {
+//   try {
+//     const id = req.nextUrl.searchParams.get("id");
+
+//     console.log(id);
+
+//     await mongoDBConnect();
+
+//     await TeamData.findByIdAndDelete(id);
+
+//     return NextResponse.json(
+//       {
+//         message: "Member deleted successfully",
+//       },
+//       {
+//         status: 200,
+//       }
+//     );
+//   } catch (error) {
+//     return NextResponse.json(
+//       {
+//         message: "Failed to delete member",
+//         error: error,
+//       },
+//       {
+//         status: 500,
+//       }
+//     );
+//   }
+// }
+
+import { requireRoles } from "@/lib/requireRoles";
+import { authOptions } from "@/libs/auth";
 import mongoDBConnect from "@/libs/mongodb";
 import TeamData from "@/models/teamData";
-import { NextResponse, NextRequest } from "next/server";
+import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 
-// GET ALL SUBJECTS
-export async function GET(req: NextRequest) {
+/* ================= GET TEAM ================= */
+export async function GET() {
   try {
     await mongoDBConnect();
 
-    const members = await TeamData.find();
+    const members = await TeamData.find().select("name title discordId");
 
     return NextResponse.json(
       {
         message: "Successfully fetched all members",
         data: members,
       },
-      {
-        status: 200,
-      }
+      { status: 200 }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      {
-        message: "Failed to fetch all members",
-        error: error,
-      },
-      {
-        status: 500,
-      }
+      { message: "Failed to fetch members" },
+      { status: 500 }
     );
   }
 }
 
-// CREATE A SUBJECT
+/* ================= CREATE MEMBER ================= */
 export async function POST(req: NextRequest) {
-  try {
-    const { name, title, discordId } = await req.json();
+  const session = await getServerSession(authOptions);
 
-    const newTeamData = {
-      name: name,
-      title: title,
-      discordId: discordId,
-    };
+  try {
+    requireRoles(session, ["owner", "admin"]);
+
+    const body = await req.json();
+    const { name, title, discordId } = body;
+
+    if (
+      typeof name !== "string" ||
+      typeof title !== "string" ||
+      typeof discordId !== "string"
+    ) {
+      return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+    }
 
     await mongoDBConnect();
 
-    await TeamData.create(newTeamData);
+    const newMember = await TeamData.create({
+      name,
+      title,
+      discordId,
+    });
 
     return NextResponse.json(
       {
-        message: "Successfully created a new member",
-        data: newTeamData,
+        message: "Successfully created member",
+        data: {
+          id: newMember._id,
+          name: newMember.name,
+          title: newMember.title,
+          discordId: newMember.discordId,
+        },
       },
-      {
-        status: 201,
-      }
+      { status: 201 }
     );
-  } catch (error) {
-    return NextResponse.json({
-      message: "Cannot create a new member",
-      error: error,
-    });
+  } catch {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 }
 
+/* ================= DELETE MEMBER ================= */
 export async function DELETE(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
   try {
+    requireRoles(session, ["owner", "admin"]);
+
     const id = req.nextUrl.searchParams.get("id");
 
-    console.log(id);
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
 
     await mongoDBConnect();
 
-    await TeamData.findByIdAndDelete(id);
+    const deleted = await TeamData.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return NextResponse.json({ error: "Member not found" }, { status: 404 });
+    }
 
     return NextResponse.json(
-      {
-        message: "Member deleted successfully",
-      },
-      {
-        status: 200,
-      }
+      { message: "Member deleted successfully" },
+      { status: 200 }
     );
-  } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Failed to delete member",
-        error: error,
-      },
-      {
-        status: 500,
-      }
-    );
+  } catch {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 }

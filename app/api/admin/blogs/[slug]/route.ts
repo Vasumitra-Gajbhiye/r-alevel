@@ -14,29 +14,32 @@ export async function GET(
 ) {
   await connectDB();
   const session = await getServerSession(authOptions);
+  try {
+    requireRoles(session, ["owner", "admin", "writer"]);
 
-  requireRoles(session, ["owner", "admin", "writer"]);
+    const { slug } = await context.params; // ✅ REQUIRED
 
-  const { slug } = await context.params; // ✅ REQUIRED
+    const isAdminLike = session!.userData!.roles.some(
+      (r) => r === "admin" || r === "owner"
+    );
 
-  const isAdminLike = session!.userData!.roles.some(
-    (r) => r === "admin" || r === "owner"
-  );
+    const query = isAdminLike
+      ? { slug }
+      : {
+          slug,
+          ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
+        };
 
-  const query = isAdminLike
-    ? { slug }
-    : {
-        slug,
-        ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
-      };
+    const blog = await EditorBlog.findOne(query);
 
-  const blog = await EditorBlog.findOne(query);
+    if (!blog) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
 
-  if (!blog) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json(blog);
+  } catch {
+    return new Response("Forbidden", { status: 403 });
   }
-
-  return NextResponse.json(blog);
 }
 
 /* ================= UPDATE BLOG ================= */
@@ -46,37 +49,40 @@ export async function PATCH(
 ) {
   await connectDB();
   const session = await getServerSession(authOptions);
+  try {
+    requireRoles(session, ["owner", "admin", "writer"]);
 
-  requireRoles(session, ["owner", "admin", "writer"]);
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
-  const csrfError = enforceSameOrigin(req);
-  if (csrfError) return csrfError;
+    const { slug } = await context.params; // ✅ FIX
 
-  const { slug } = await context.params; // ✅ FIX
+    const isAdminLike = session!.userData!.roles.some(
+      (r) => r === "admin" || r === "owner"
+    );
+    const query = isAdminLike
+      ? { slug }
+      : {
+          slug,
+          ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
+        };
 
-  const isAdminLike = session!.userData!.roles.some(
-    (r) => r === "admin" || r === "owner"
-  );
-  const query = isAdminLike
-    ? { slug }
-    : {
-        slug,
-        ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
-      };
+    const blog = await EditorBlog.findOne(query);
+    if (!blog) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
 
-  const blog = await EditorBlog.findOne(query);
-  if (!blog) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const body = await req.json();
+
+    if (typeof body.title === "string") blog.title = body.title;
+    if (body.metadata) blog.metadata = body.metadata;
+    if (Array.isArray(body.blocks)) blog.blocks = body.blocks;
+
+    await blog.save();
+    return NextResponse.json({ success: true });
+  } catch {
+    return new Response("Forbidden", { status: 403 });
   }
-
-  const body = await req.json();
-
-  if (typeof body.title === "string") blog.title = body.title;
-  if (body.metadata) blog.metadata = body.metadata;
-  if (Array.isArray(body.blocks)) blog.blocks = body.blocks;
-
-  await blog.save();
-  return NextResponse.json({ success: true });
 }
 
 /* ================= DELETE BLOG ================= */
@@ -87,24 +93,28 @@ export async function DELETE(
   await connectDB();
   const session = await getServerSession(authOptions);
 
-  requireRoles(session, ["owner", "admin"]);
+  try {
+    requireRoles(session, ["owner", "admin"]);
 
-  const csrfError = enforceSameOrigin(req);
-  if (csrfError) return csrfError;
-  const { slug } = await context.params; // ✅ FIX
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
+    const { slug } = await context.params; // ✅ FIX
 
-  const isAdmin =
-    session!.userData!.roles.includes("admin") ||
-    session!.userData!.roles.includes("owner");
+    const isAdmin =
+      session!.userData!.roles.includes("admin") ||
+      session!.userData!.roles.includes("owner");
 
-  const query = isAdmin
-    ? { slug }
-    : {
-        slug,
-        ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
-      };
+    const query = isAdmin
+      ? { slug }
+      : {
+          slug,
+          ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
+        };
 
-  await EditorBlog.findOneAndDelete(query);
+    await EditorBlog.findOneAndDelete(query);
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch {
+    return new Response("Forbidden", { status: 403 });
+  }
 }

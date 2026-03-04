@@ -17,5 +17,5 @@ export const revalidate = 60;
 export default async function BlogsPage() {
   const blogs = await getBlogs();
 
-  return <BlogsClient data={blogs} />;
+  return <BlogsClient data={JSON.parse(JSON.stringify(blogs))} />;
 }

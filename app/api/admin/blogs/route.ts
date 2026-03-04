@@ -13,64 +13,71 @@ export async function GET() {
   await connectDB();
   const session = await getServerSession(authOptions);
 
-  // writers see own, admins see all
-  requireRoles(session, ["owner", "admin", "writer"]);
+  try {
+    // writers see own, admins see all
+    requireRoles(session, ["owner", "admin", "writer"]);
 
-  const isAdminLike = session!.userData!.roles.some(
-    (r) => r === "admin" || r === "owner"
-  );
+    const isAdminLike = session!.userData!.roles.some(
+      (r) => r === "admin" || r === "owner"
+    );
 
-  const match = isAdminLike
-    ? {}
-    : { ownerId: new mongoose.Types.ObjectId(session!.userData!.id) };
+    const match = isAdminLike
+      ? {}
+      : { ownerId: new mongoose.Types.ObjectId(session!.userData!.id) };
 
-  const blogs = await EditorBlog.aggregate([
-    { $match: match },
-    {
-      $lookup: {
-        from: "userdatas",
-        localField: "ownerId",
-        foreignField: "_id",
-        as: "owner",
+    const blogs = await EditorBlog.aggregate([
+      { $match: match },
+      {
+        $lookup: {
+          from: "userdatas",
+          localField: "ownerId",
+          foreignField: "_id",
+          as: "owner",
+        },
       },
-    },
-    { $unwind: "$owner" },
-    {
-      $project: {
-        title: 1,
-        slug: 1,
-        updatedAt: 1,
-        ownerId: 1,
-        ownerName: "$owner.name",
-        ownerEmail: "$owner.email",
+      { $unwind: "$owner" },
+      {
+        $project: {
+          title: 1,
+          slug: 1,
+          updatedAt: 1,
+          ownerId: 1,
+          ownerName: "$owner.name",
+          ownerEmail: "$owner.email",
+        },
       },
-    },
-    { $sort: { updatedAt: -1 } },
-  ]);
+      { $sort: { updatedAt: -1 } },
+    ]);
 
-  return NextResponse.json(blogs);
+    return NextResponse.json(blogs);
+  } catch {
+    return new Response("Forbidden", { status: 403 });
+  }
 }
 
 /* ================= CREATE BLOG ================= */
 export async function POST(req: Request) {
   await connectDB();
   const session = await getServerSession(authOptions);
+  try {
+    requireRoles(session, ["owner", "admin", "writer"]);
 
-  requireRoles(session, ["owner", "admin", "writer"]);
+    const csrfError = enforceSameOrigin(req);
+    if (csrfError) return csrfError;
 
-  const csrfError = enforceSameOrigin(req);
-  if (csrfError) return csrfError;
+    const blog = await EditorBlog.create({
+      ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
+      title: "Untitled document",
+      slug: slugify(`Untitled-${Date.now()}`),
+      metadata: {
+        title: "New Blog",
+        author: session?.user?.name || "",
+      },
+      blocks: [],
+    });
 
-  const blog = await EditorBlog.create({
-    ownerId: new mongoose.Types.ObjectId(session!.userData!.id),
-    title: "Untitled document",
-    slug: slugify(`Untitled-${Date.now()}`),
-    metadata: {
-      title: "New Blog",
-      author: session?.user?.name || "",
-    },
-    blocks: [],
-  });
-
-  return NextResponse.json(blog, { status: 201 });
+    return NextResponse.json(blog, { status: 201 });
+  } catch {
+    return new Response("Forbidden", { status: 403 });
+  }
 }
