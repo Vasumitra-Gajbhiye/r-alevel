@@ -488,48 +488,94 @@ export default function FormPageClient() {
                                       align="start"
                                       className="w-[var(--radix-popover-trigger-width)] p-0"
                                     >
-                                      <Command>
-                                        <CommandInput placeholder="Search..." />
-                                        <CommandEmpty>
-                                          No option found.
-                                        </CommandEmpty>
+                                      {field.options.length > 10 ? (
+                                        <div className="p-3">
+                                          <div className="flex flex-wrap gap-2">
+                                            {field.options.map(
+                                              (opt: string) => {
+                                                const isSelected =
+                                                  selectedValues.includes(opt);
+                                                return (
+                                                  <button
+                                                    key={opt}
+                                                    type="button"
+                                                    onClick={() =>
+                                                      toggleOption(opt)
+                                                    }
+                                                    className={`text-xs px-2.5 py-1 rounded-full border transition whitespace-nowrap
+                                                    ${
+                                                      isSelected
+                                                        ? "bg-black text-white border-black"
+                                                        : "bg-background text-foreground border-border hover:bg-muted"
+                                                    }`}
+                                                  >
+                                                    {opt}
+                                                  </button>
+                                                );
+                                              }
+                                            )}
 
-                                        <CommandGroup>
-                                          {field.options.map((opt: string) => {
-                                            const isSelected =
-                                              selectedValues.includes(opt);
-
-                                            return (
+                                            {field.allowOther && (
+                                              <button
+                                                type="button"
+                                                onClick={toggleOther}
+                                                className={`text-xs px-2.5 py-1 rounded-full border transition whitespace-nowrap
+                                                  ${
+                                                    isOtherSelected
+                                                      ? "bg-black text-white border-black"
+                                                      : "bg-background text-foreground border-border hover:bg-muted"
+                                                  }`}
+                                              >
+                                                Other
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <Command>
+                                          <CommandInput placeholder="Search..." />
+                                          <CommandEmpty>
+                                            No option found.
+                                          </CommandEmpty>
+                                          <CommandGroup>
+                                            {field.options.map(
+                                              (opt: string) => {
+                                                const isSelected =
+                                                  selectedValues.includes(opt);
+                                                return (
+                                                  <CommandItem
+                                                    key={opt}
+                                                    onSelect={() =>
+                                                      toggleOption(opt)
+                                                    }
+                                                  >
+                                                    <div className="flex items-center justify-between w-full">
+                                                      <span>{opt}</span>
+                                                      {isSelected && (
+                                                        <Check className="h-4 w-4 text-primary" />
+                                                      )}
+                                                    </div>
+                                                  </CommandItem>
+                                                );
+                                              }
+                                            )}
+                                            {field.allowOther && (
                                               <CommandItem
-                                                key={opt}
-                                                onSelect={() =>
-                                                  toggleOption(opt)
-                                                }
+                                                onSelect={toggleOther}
                                               >
                                                 <div className="flex items-center justify-between w-full">
-                                                  <span>{opt}</span>
-                                                  {isSelected && (
+                                                  <span>
+                                                    Other (please specify)
+                                                  </span>
+                                                  {isOtherSelected && (
                                                     <Check className="h-4 w-4 text-primary" />
                                                   )}
                                                 </div>
                                               </CommandItem>
-                                            );
-                                          })}
-
-                                          {field.allowOther && (
-                                            <CommandItem onSelect={toggleOther}>
-                                              <div className="flex items-center justify-between w-full">
-                                                <span>
-                                                  Other (please specify)
-                                                </span>
-                                                {isOtherSelected && (
-                                                  <Check className="h-4 w-4 text-primary" />
-                                                )}
-                                              </div>
-                                            </CommandItem>
-                                          )}
-                                        </CommandGroup>
-                                      </Command>
+                                            )}
+                                          </CommandGroup>
+                                        </Command>
+                                      )}
 
                                       {field.allowOther && isOtherSelected && (
                                         <div className="p-3 border-t">

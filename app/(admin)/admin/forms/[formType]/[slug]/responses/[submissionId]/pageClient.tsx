@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowLeft, ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  ArrowLeft,
+  FileText,
+  Image as ImageIcon,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -112,8 +118,7 @@ export default function SubmissionPageClient({ submission, form }: Props) {
       {/* CONTENT */}
       <div className="space-y-10">
         {form.sections.map((section: any) => {
-          const sectionResponses = submission.responses?.[section.id];
-          if (!sectionResponses) return null;
+          const sectionResponses = submission.responses?.[section.id] || {};
 
           return (
             <section key={section.id} className="space-y-4">
@@ -133,11 +138,14 @@ export default function SubmissionPageClient({ submission, form }: Props) {
                 {section.fields.map((field: any) => {
                   const value = sectionResponses[field.id];
                   const fieldFiles = submission.files?.filter(
-                    (f) => f.fieldId === field.id
+                    (f) => String(f.fieldId) === String(field.id)
                   );
                   if (
                     (value === undefined || value === null) &&
-                    field.type !== "file"
+                    field.type !== "file" &&
+                    !submission.files?.some(
+                      (f) => String(f.fieldId) === String(field.id)
+                    )
                   )
                     return null;
 
@@ -148,22 +156,49 @@ export default function SubmissionPageClient({ submission, form }: Props) {
                       {field.type === "file" ? (
                         <div className="space-y-2">
                           {fieldFiles?.length ? (
-                            fieldFiles.map((file, i) => (
-                              <a
-                                key={i}
-                                href={file.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-between rounded-lg border px-4 py-3 text-sm hover:bg-muted/50"
-                              >
-                                <span className="truncate">
-                                  {file.originalName}
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                  Open
-                                </span>
-                              </a>
-                            ))
+                            fieldFiles.map((file, i) => {
+                              const isImage =
+                                file.mimeType?.startsWith("image/");
+                              const isPdf = file.mimeType === "application/pdf";
+
+                              return (
+                                <a
+                                  key={i}
+                                  href={file.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-3 rounded-lg border px-4 py-3 text-sm hover:bg-muted/50"
+                                >
+                                  {isImage ? (
+                                    <img
+                                      src={file.url}
+                                      alt={file.originalName}
+                                      className="h-12 w-12 rounded-md object-cover border"
+                                    />
+                                  ) : (
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-md border bg-muted">
+                                      {isPdf ? (
+                                        <FileText className="h-5 w-5 text-muted-foreground" />
+                                      ) : (
+                                        <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                                      )}
+                                    </div>
+                                  )}
+
+                                  <div className="flex flex-col overflow-hidden">
+                                    <span className="truncate font-medium">
+                                      {file.originalName}
+                                    </span>
+
+                                    {file.size && (
+                                      <span className="text-xs text-muted-foreground">
+                                        {(file.size / 1024).toFixed(1)} KB
+                                      </span>
+                                    )}
+                                  </div>
+                                </a>
+                              );
+                            })
                           ) : (
                             <p className="text-sm text-muted-foreground">
                               No files uploaded
