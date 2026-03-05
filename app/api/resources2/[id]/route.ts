@@ -1,10 +1,13 @@
-import { NextResponse } from "next/server";
-import dbConnect from "@/libs/mongodb";
+import dbConnect from "@/lib/mongodb";
 import Resources2Data from "@/models/resources2Data";
+import { NextResponse } from "next/server";
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   await dbConnect();
-   const { id } = await params;
+  const { id } = await params;
   const resData = await Resources2Data.findById(id);
 
   if (!resData) {

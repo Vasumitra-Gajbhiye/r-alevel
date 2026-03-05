@@ -47,6 +47,36 @@ const CommentSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const FileSchema = new mongoose.Schema(
+  {
+    fieldId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    originalName: {
+      type: String,
+      required: true,
+    },
+    mimeType: {
+      type: String,
+      required: true,
+    },
+    size: {
+      type: Number,
+    },
+    key: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
 const FormSubmissionSchema = new mongoose.Schema(
   {
     formSlug: {
@@ -88,6 +118,10 @@ const FormSubmissionSchema = new mongoose.Schema(
 
     comments: {
       type: [CommentSchema],
+      default: [],
+    },
+    files: {
+      type: [FileSchema],
       default: [],
     },
     submitterName: {

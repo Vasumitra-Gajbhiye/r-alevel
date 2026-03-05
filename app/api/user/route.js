@@ -61,8 +61,8 @@
 
 // app/api/user/route.js
 // app/api/user/route.js
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
+import { authOptions } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
 import UserData from "@/models/userData";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -74,10 +74,7 @@ export async function POST(req) {
     const email = session?.user?.email;
 
     if (!email || typeof email !== "string") {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // 2) Strict same-origin check to reduce CSRF risk for cookie-based auth

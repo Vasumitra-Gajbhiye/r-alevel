@@ -1,6 +1,6 @@
+import { authOptions } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
 import { Role } from "@/lib/roles";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
 import Contributor from "@/models/Contributor";
 import ResourceSubmission from "@/models/ResourceSubmission";
 import mongoose from "mongoose";

@@ -32,8 +32,8 @@
 
 // app/api/user/update/route.js
 // app/api/user/update/route.js
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
+import { authOptions } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
 import UserData from "@/models/userData";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";

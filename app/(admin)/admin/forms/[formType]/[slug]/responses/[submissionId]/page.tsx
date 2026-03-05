@@ -31,7 +31,7 @@
 //   return <SubmissionPageClient submission={plainSubmission} form={plainForm} />;
 // }
 
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import Form from "@/models/Form";
 import FormSubmission from "@/models/FormSubmission";
 import { FormDocument } from "@/types/form";

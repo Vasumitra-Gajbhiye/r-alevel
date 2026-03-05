@@ -207,7 +207,7 @@
 // }
 
 // app/forms/page.tsx
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import FormIndex from "@/models/FormIndex";
 import type { LucideIcon } from "lucide-react";
 import * as Icons from "lucide-react";

@@ -1,7 +1,7 @@
+import { authOptions } from "@/lib/auth";
 import { enforceSameOrigin } from "@/lib/csrf";
+import connectDB from "@/lib/mongodb";
 import { Role } from "@/lib/roles";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
 import GraphicMember from "@/models/graphicMember";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";

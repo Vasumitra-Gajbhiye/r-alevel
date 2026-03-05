@@ -30,8 +30,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import {
+  Check,
+  ChevronDown,
+  FileArchive,
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  Paperclip,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 type FormField = {
@@ -40,6 +48,9 @@ type FormField = {
   type: "text" | "email" | "textarea" | "url" | "file";
   required?: boolean;
 };
+
+const MAX_FILES_PER_SUBMISSION = 10;
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB per file
 function IntroductionBlocks({ blocks }: { blocks: any[] }) {
   return (
     <div className="space-y-4">
@@ -106,14 +117,49 @@ function buildStructuredResponses(form: any, data: any) {
 export default function FormPageClient({ form }: { form: any }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+  const [showFileErrorModal, setShowFileErrorModal] = useState(false);
+  const [fileErrorMessage, setFileErrorMessage] = useState<string | null>(null);
   const [errorElement, setErrorElement] = useState<HTMLElement | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [filePreviews, setFilePreviews] = useState<
+    Record<string, { file: File; url: string }[]>
+  >({});
+  useEffect(() => {
+    return () => {
+      Object.values(filePreviews).forEach((files) => {
+        files.forEach((f) => {
+          if (f.url) URL.revokeObjectURL(f.url);
+        });
+      });
+    };
+  }, [filePreviews]);
+  const removeFile = (inputName: string, index: number) => {
+    setFilePreviews((prev) => {
+      const updated = { ...prev };
+      const arr = [...(updated[inputName] || [])];
+
+      const removed = arr[index];
+      if (removed?.url) URL.revokeObjectURL(removed.url);
+
+      arr.splice(index, 1);
+      updated[inputName] = arr;
+
+      // keep react-hook-form value in sync
+      setValue(
+        inputName as any,
+        arr.map((f) => f.file)
+      );
+
+      return updated;
+    });
+  };
   const {
     register,
     handleSubmit,
     reset,
     control,
     setFocus,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     shouldFocusError: true,
@@ -238,15 +284,14 @@ export default function FormPageClient({ form }: { form: any }) {
             if (!value) continue;
 
             hasFiles = true;
-
             if (typeof FileList !== "undefined" && value instanceof FileList) {
               for (let i = 0; i < value.length; i++) {
                 const file = value.item(i);
-                if (file) formData.append("files", file);
+                if (file) formData.append(`files:${field.id}`, file);
               }
             } else if (Array.isArray(value)) {
               for (const file of value) {
-                if (file) formData.append("files", file);
+                if (file) formData.append(`files:${field.id}`, file);
               }
             }
           }
@@ -335,6 +380,14 @@ export default function FormPageClient({ form }: { form: any }) {
           {/* FORM */}
           <CardContent className="px-10 pb-10">
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              {/* Honeypot anti‑spam field (hidden from users) */}
+              <input
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                {...register("website")}
+              />
               {form.sections?.map((section: any) => (
                 <div key={section.id} className="space-y-6 mt-12">
                   <div className="space-y-1">
@@ -779,12 +832,131 @@ export default function FormPageClient({ form }: { form: any }) {
                               }}
                             />
                           ) : field.type === "file" ? (
-                            <Input
-                              id={inputName}
-                              type="file"
-                              multiple={field.multiple}
-                              {...register(inputName)}
-                            />
+                            <div className="relative">
+                              <label
+                                htmlFor={inputName}
+                                className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/30 px-6 py-8 text-center cursor-pointer hover:bg-muted/40 transition"
+                              >
+                                <span className="text-sm font-medium">
+                                  Drag & drop files here or click to upload
+                                </span>
+
+                                <span className="text-xs text-muted-foreground">
+                                  {field.multiple
+                                    ? "You can upload multiple files"
+                                    : "Single file upload"}
+                                </span>
+
+                                <Input
+                                  id={inputName}
+                                  type="file"
+                                  multiple={field.multiple}
+                                  className="absolute inset-0 opacity-0 cursor-pointer"
+                                  {...register(inputName, {
+                                    onChange: (e: any) => {
+                                      const files = Array.from(
+                                        e.target.files || []
+                                      ) as File[];
+
+                                      // ---- Client-side validation ----
+                                      if (
+                                        files.length > MAX_FILES_PER_SUBMISSION
+                                      ) {
+                                        setFileErrorMessage(
+                                          `You can upload a maximum of ${MAX_FILES_PER_SUBMISSION} files.`
+                                        );
+                                        setShowFileErrorModal(true);
+                                        e.target.value = "";
+                                        return;
+                                      }
+
+                                      for (const file of files) {
+                                        if (file.size > MAX_FILE_SIZE_BYTES) {
+                                          setFileErrorMessage(
+                                            `File "${file.name}" exceeds the 10MB size limit.`
+                                          );
+                                          setShowFileErrorModal(true);
+                                          e.target.value = "";
+                                          return;
+                                        }
+                                      }
+
+                                      setFilePreviews((prev: any) => {
+                                        const previous = prev[inputName] || [];
+
+                                        // cleanup old URLs
+                                        previous.forEach((p: any) => {
+                                          if (p.url) URL.revokeObjectURL(p.url);
+                                        });
+
+                                        const next = files.map((file: any) => ({
+                                          file,
+                                          url: URL.createObjectURL(file),
+                                        }));
+
+                                        return {
+                                          ...prev,
+                                          [inputName]: next,
+                                        };
+                                      });
+                                    },
+                                  })}
+                                />
+                              </label>
+                              {filePreviews[inputName]?.length > 0 && (
+                                <div className="mt-3 space-y-2">
+                                  {filePreviews[inputName].map((item, i) => {
+                                    const file = item.file;
+                                    const previewUrl = item.url;
+
+                                    return (
+                                      <div
+                                        key={i}
+                                        className="flex items-center justify-between rounded-md border bg-muted/40 px-3 py-2 text-sm"
+                                      >
+                                        <div className="flex items-center gap-3 min-w-0">
+                                          <span className="flex items-center">
+                                            {file.type.startsWith("image/") ? (
+                                              <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                                            ) : file.type.includes("pdf") ||
+                                              file.type.includes("word") ||
+                                              file.name.endsWith(".docx") ? (
+                                              <FileText className="h-5 w-5 text-muted-foreground" />
+                                            ) : file.type.includes("zip") ? (
+                                              <FileArchive className="h-5 w-5 text-muted-foreground" />
+                                            ) : (
+                                              <Paperclip className="h-5 w-5 text-muted-foreground" />
+                                            )}
+                                          </span>
+                                          <a
+                                            href={previewUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="truncate underline hover:text-primary"
+                                          >
+                                            {file.name}
+                                          </a>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                          <span className="text-xs text-muted-foreground">
+                                            {(file.size / 1024).toFixed(1)} KB
+                                          </span>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              removeFile(inputName, i)
+                                            }
+                                            className="text-red-500 hover:text-red-700 text-xs"
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
                           ) : (
                             <Input
                               id={inputName}
@@ -829,7 +1001,7 @@ export default function FormPageClient({ form }: { form: any }) {
                    hover:from-slate-800 hover:to-slate-700
                    shadow-lg"
                     >
-                      {"Submit Application"}
+                      {isSubmitting ? "Submitting..." : "Submit Application"}
                     </Button>
 
                     <p className="text-center text-sm text-muted-foreground max-w-md">
@@ -847,6 +1019,52 @@ export default function FormPageClient({ form }: { form: any }) {
           </CardContent>
         </Card>
       </div>
+
+      {/* FILE VALIDATION ERROR MODAL */}
+      <AlertDialog
+        open={showFileErrorModal}
+        onOpenChange={setShowFileErrorModal}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader className="space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+              <X className="h-6 w-6 text-red-600" />
+            </div>
+
+            <AlertDialogTitle className="text-center text-lg font-semibold">
+              File upload error
+            </AlertDialogTitle>
+
+            <AlertDialogDescription className="text-center text-sm text-muted-foreground">
+              {fileErrorMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogAction className="w-full">Close</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* SUBMITTING MODAL */}
+      <AlertDialog open={isSubmitting}>
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader className="space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+
+            <AlertDialogTitle className="text-center text-lg font-semibold">
+              Submitting your application
+            </AlertDialogTitle>
+
+            <AlertDialogDescription className="text-center text-sm text-muted-foreground">
+              Please wait while we securely upload your files and process your
+              submission.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* CONFIRMATION MODAL */}
       <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>

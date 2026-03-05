@@ -1,6 +1,6 @@
+import { authOptions } from "@/lib/auth";
 import { enforceSameOrigin } from "@/lib/csrf";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import Form from "@/models/Form";
 import FormIndex from "@/models/FormIndex";
 import { getServerSession } from "next-auth";
@@ -28,7 +28,10 @@ export async function PATCH(req: Request) {
   }
 
   if (!body?.id || typeof body.id !== "string") {
-    return NextResponse.json({ error: "Missing or invalid form id" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing or invalid form id" },
+      { status: 400 }
+    );
   }
 
   const form = await Form.findById(body.id);

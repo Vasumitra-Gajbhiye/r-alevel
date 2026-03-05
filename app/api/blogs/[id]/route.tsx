@@ -1,11 +1,10 @@
+import { authOptions } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
 import { enforceRateLimit } from "@/lib/rateLimit";
 import { requireRoles } from "@/lib/requireRoles";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
 import BlogsData from "@/models/blogsData";
-import { AnyCnameRecord } from "dns";
 import { getServerSession } from "next-auth";
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 // import { useSearchParams } from "next/navigation";
 
 // GET ALL SUBJECTS

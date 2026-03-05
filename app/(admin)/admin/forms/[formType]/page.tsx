@@ -1,4 +1,4 @@
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import Form from "@/models/Form";
 import FormClient from "./formClient";
 

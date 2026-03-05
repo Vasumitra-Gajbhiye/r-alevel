@@ -1,12 +1,10 @@
-import { enforceSameOrigin } from "@/lib/csrf";
+import { authOptions } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
 import { enforceRateLimit } from "@/lib/rateLimit";
 import { requireRoles } from "@/lib/requireRoles";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
 import CertData from "@/models/certsData";
 import { getServerSession } from "next-auth";
-import { NextResponse, NextRequest } from "next/server";
-import { createServer } from "tls";
+import { NextRequest, NextResponse } from "next/server";
 
 // GET ALL SUBJECTS
 export async function GET(req: NextRequest) {
@@ -52,14 +50,15 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { name, certType, certId, issueDate, admin, owner } = await req.json();
+    const { name, certType, certId, issueDate, admin, owner } =
+      await req.json();
 
     const newCertData = {
       name: name,
       certType: certType,
       certId: certId,
       issueDate: issueDate,
-      adimn: admin, 
+      adimn: admin,
       owner: owner,
     };
 

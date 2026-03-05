@@ -58,8 +58,12 @@
 //   return <ResourceClient resource={serializable} />;
 // }
 
-import connectDB from "@/libs/mongodb";
-import resources2Data from "@/models/resources2Data";
+import {
+  getResource,
+  getResourceForGenerateMetadata,
+  getResourceForStaticParams,
+} from "@/controller/resourceController";
+import connectDB from "@/lib/mongodb";
 import { notFound } from "next/navigation";
 import ResourceClient from "./ResourceClient";
 
@@ -71,7 +75,7 @@ export const revalidate = 864000;
 export async function generateStaticParams() {
   await connectDB();
 
-  const docs = await resources2Data.find({}, { slug: 1, _id: 0 }).lean();
+  const docs = await getResourceForStaticParams();
 
   return docs.map((d: any) => ({
     slug: d.slug,
@@ -91,9 +95,7 @@ export async function generateMetadata({
   const { slug } = await params; // ✅ REQUIRED in Next 15
   await connectDB();
 
-  const doc = await resources2Data
-    .findOne({ slug: slug }, { subject: 1, _id: 0 })
-    .lean<ResourceMeta>();
+  const doc = await getResourceForGenerateMetadata(slug);
 
   if (!doc) {
     return { title: "Resource not found" };
@@ -121,11 +123,11 @@ export default async function Page({
 
   await connectDB();
 
-  const resource = await resources2Data.findOne({ slug }).lean();
+  const resource = await getResource(slug);
 
   if (!resource) {
     notFound();
   }
 
-  return <ResourceClient resource={JSON.parse(JSON.stringify(resource))} />;
+  return <ResourceClient resource={resource} />;
 }

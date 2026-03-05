@@ -1,7 +1,7 @@
 import { confirmationEmail } from "@/lib/emails/confirmationEmail";
+import connectDB from "@/lib/mongodb";
 import { uploadFileToR2 } from "@/lib/r2Upload";
 import { enforceRateLimit } from "@/lib/rateLimit";
-import connectDB from "@/libs/mongodb";
 import Form from "@/models/Form";
 import FormSubmission from "@/models/FormSubmission";
 import crypto from "crypto";
@@ -48,6 +48,7 @@ export async function POST(
 
   let body: any = {};
   let uploadedFiles: any[] = [];
+  let pendingFiles: { fieldId: string; file: File }[] = [];
 
   const contentType = req.headers.get("content-type") || "";
 
@@ -56,6 +57,11 @@ export async function POST(
   // -------------------------
   if (contentType.includes("multipart/form-data")) {
     const formData = await req.formData();
+    // Honeypot anti-spam check
+    const honeypot = formData.get("website");
+    if (honeypot) {
+      return NextResponse.json({ error: "Spam detected" }, { status: 400 });
+    }
     const responsesRaw = formData.get("responses");
     if (responsesRaw) {
       try {
@@ -70,17 +76,21 @@ export async function POST(
 
     const submissionId = new mongoose.Types.ObjectId().toString();
 
-    const rawFiles = formData.getAll("files");
+    const rawEntries = Array.from(formData.entries()).filter(([key]) =>
+      key.startsWith("files:")
+    );
 
-    if (rawFiles.length > MAX_FILES_PER_SUBMISSION) {
+    if (rawEntries.length > MAX_FILES_PER_SUBMISSION) {
       return NextResponse.json(
         { error: `Too many files. Maximum is ${MAX_FILES_PER_SUBMISSION}.` },
         { status: 400 }
       );
     }
 
-    for (const file of rawFiles) {
+    for (const [fieldKey, file] of rawEntries) {
       if (!(file instanceof File)) continue;
+
+      const fieldId = fieldKey.replace("files:", "");
 
       if (file.size > MAX_FILE_SIZE_BYTES) {
         return NextResponse.json(
@@ -104,24 +114,12 @@ export async function POST(
         );
       }
 
-      const buffer = Buffer.from(await file.arrayBuffer());
-
-      const ext = file.name.split(".").pop();
-      const safeName = crypto.randomUUID();
-
-      const key = `forms/${slug}/${form?.cycleId}/${submissionId}/${safeName}.${ext}`;
-
-      const uploaded = await uploadFileToR2(buffer, key, file.type);
-      uploadedFiles.push({
-        originalName: file.name,
-        mimeType: file.type,
-        size: file.size,
-        key,
-        url: uploaded.url,
+      pendingFiles.push({
+        fieldId,
+        file,
       });
     }
 
-    body.__uploadedFiles = uploadedFiles;
     body.__submissionId = submissionId;
   }
   // -------------------------
@@ -130,6 +128,10 @@ export async function POST(
   else {
     try {
       body = await req.json();
+      // Honeypot anti-spam check
+      if (body.website) {
+        return NextResponse.json({ error: "Spam detected" }, { status: 400 });
+      }
     } catch {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
@@ -249,6 +251,41 @@ export async function POST(
     if (Object.keys(sanitizedResponses[section.id]).length === 0) {
       delete sanitizedResponses[section.id];
     }
+  }
+
+  if (pendingFiles.length > 0) {
+    const submissionId =
+      body.__submissionId || new mongoose.Types.ObjectId().toString();
+
+    body.__submissionId = submissionId;
+
+    for (const { fieldId, file } of pendingFiles) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+
+      const ext = file.name.split(".").pop();
+      const safeName = crypto.randomUUID();
+
+      const key = `forms/${slug}/${submissionId}/${safeName}.${ext}`;
+
+      const uploaded = await uploadFileToR2(
+        buffer,
+        key,
+        file.type,
+        process.env.R2_FORMS_BUCKET_NAME!,
+        process.env.R2_FORMS_PUBLIC_URL!
+      );
+
+      uploadedFiles.push({
+        fieldId,
+        originalName: file.name,
+        mimeType: file.type,
+        size: file.size,
+        key,
+        url: uploaded.url,
+      });
+    }
+
+    body.__uploadedFiles = uploadedFiles;
   }
 
   let submission;

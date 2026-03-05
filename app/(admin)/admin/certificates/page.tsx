@@ -1,4 +1,4 @@
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import CertData from "@/models/certsData";
 import CertificatesAdminPage from "./certificateClient";
 

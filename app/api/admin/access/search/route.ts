@@ -1,6 +1,6 @@
+import { authOptions } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
 import { requireRoles } from "@/lib/requireRoles";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
 import UserData from "@/models/userData";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";

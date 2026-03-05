@@ -22,6 +22,14 @@ type Submission = {
   responses: Record<string, any>;
   createdAt: string;
   votes?: Vote[];
+  files?: {
+    fieldId: string;
+    originalName: string;
+    mimeType: string;
+    size?: number;
+    key: string;
+    url: string;
+  }[];
 };
 
 function formatDate(date: string) {
@@ -124,13 +132,45 @@ export default function SubmissionPageClient({ submission, form }: Props) {
               <div className="space-y-4">
                 {section.fields.map((field: any) => {
                   const value = sectionResponses[field.id];
-                  if (value === undefined || value === null) return null;
+                  const fieldFiles = submission.files?.filter(
+                    (f) => f.fieldId === field.id
+                  );
+                  if (
+                    (value === undefined || value === null) &&
+                    field.type !== "file"
+                  )
+                    return null;
 
                   return (
                     <div key={field.id} className="space-y-1">
                       <p className="text-sm font-medium">{field.label}</p>
 
-                      {field.type === "textarea" ? (
+                      {field.type === "file" ? (
+                        <div className="space-y-2">
+                          {fieldFiles?.length ? (
+                            fieldFiles.map((file, i) => (
+                              <a
+                                key={i}
+                                href={file.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-between rounded-lg border px-4 py-3 text-sm hover:bg-muted/50"
+                              >
+                                <span className="truncate">
+                                  {file.originalName}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  Open
+                                </span>
+                              </a>
+                            ))
+                          ) : (
+                            <p className="text-sm text-muted-foreground">
+                              No files uploaded
+                            </p>
+                          )}
+                        </div>
+                      ) : field.type === "textarea" ? (
                         <div className="rounded-lg border bg-muted/40 px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap">
                           {value}
                         </div>

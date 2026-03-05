@@ -9,10 +9,10 @@
 //   return <BlogsClient data={data} />; // ✅ PASS TO CLIENT
 // }
 
-import getBlogs from "@/lib/db/getBlogs";
+import getBlogs from "@/controller/blogController";
 import BlogsClient from "./BlogsClient";
 
-export const revalidate = 60;
+// export const revalidate = 60;
 
 export default async function BlogsPage() {
   const blogs = await getBlogs();

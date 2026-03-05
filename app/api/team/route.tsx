@@ -94,9 +94,9 @@
 //   }
 // }
 
+import { authOptions } from "@/lib/auth";
+import mongoDBConnect from "@/lib/mongodb";
 import { requireRoles } from "@/lib/requireRoles";
-import { authOptions } from "@/libs/auth";
-import mongoDBConnect from "@/libs/mongodb";
 import TeamData from "@/models/teamData";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";

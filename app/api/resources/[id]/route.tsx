@@ -1,11 +1,11 @@
+import { authOptions } from "@/lib/auth";
 import { enforceSameOrigin } from "@/lib/csrf";
+import mongoDBConnect from "@/lib/mongodb";
 import { enforceRateLimit } from "@/lib/rateLimit";
 import { requireRoles } from "@/lib/requireRoles";
-import { authOptions } from "@/libs/auth";
-import mongoDBConnect from "@/libs/mongodb";
 import ResourcesData from "@/models/resourcesData";
 import { getServerSession } from "next-auth";
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // GET ALL SUBJECTS
 export async function GET(

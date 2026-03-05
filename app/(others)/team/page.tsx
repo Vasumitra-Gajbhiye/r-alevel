@@ -630,8 +630,8 @@ export default function Team() {
 
 "use client";
 
-import getAllTeam from "@/app/controller/getAllTeam";
 import Skeleton from "@/app/skeleton";
+import getAllTeam from "@/controller/getAllTeam";
 import { motion, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import { FaDiscord, FaLinkedin } from "react-icons/fa";

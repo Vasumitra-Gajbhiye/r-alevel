@@ -1,8 +1,8 @@
+import { authOptions } from "@/lib/auth";
 import { enforceSameOrigin } from "@/lib/csrf";
+import connectDB from "@/lib/mongodb";
 import { enforceRateLimit } from "@/lib/rateLimit";
 import { requireRoles } from "@/lib/requireRoles";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
 import ResourcesData from "@/models/resourcesData";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";

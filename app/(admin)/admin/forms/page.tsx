@@ -82,7 +82,7 @@
 //   );
 // }
 import { Badge } from "@/components/ui/badge";
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import FormIndex from "@/models/FormIndex";
 import FormSubmission from "@/models/FormSubmission";
 import { ChevronRight } from "lucide-react";

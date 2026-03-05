@@ -1,6 +1,6 @@
+import { authOptions } from "@/lib/auth";
 import { enforceSameOrigin } from "@/lib/csrf";
-import { authOptions } from "@/libs/auth";
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import FormSubmission from "@/models/FormSubmission";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";

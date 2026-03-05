@@ -429,9 +429,9 @@
 //   }
 // }
 
-import { enforceRateLimit } from "@/lib/rateLimit";
+import connectDB from "@/lib/mongodb";
 import { uploadFileToR2 } from "@/lib/r2Upload";
-import connectDB from "@/libs/mongodb";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import Contributor from "@/models/Contributor";
 import ResourceSubmission from "@/models/ResourceSubmission";
 import crypto from "crypto";
@@ -581,7 +581,9 @@ export async function POST(req: Request) {
       if (res.files.length > MAX_FILES_PER_RESOURCE) {
         return NextResponse.json(
           {
-            error: `Too many files for resource ${i + 1}. Maximum is ${MAX_FILES_PER_RESOURCE}.`,
+            error: `Too many files for resource ${
+              i + 1
+            }. Maximum is ${MAX_FILES_PER_RESOURCE}.`,
           },
           { status: 400 }
         );
@@ -593,7 +595,9 @@ export async function POST(req: Request) {
         if (file.size > MAX_FILE_SIZE_BYTES) {
           return NextResponse.json(
             {
-              error: `File "${file.name}" is too large. Maximum size is ${Math.floor(
+              error: `File "${
+                file.name
+              }" is too large. Maximum size is ${Math.floor(
                 MAX_FILE_SIZE_BYTES / (1024 * 1024)
               )}MB.`,
             },
@@ -619,7 +623,13 @@ export async function POST(req: Request) {
           i + 1
         }/${safeName}.${ext}`;
 
-        const uploaded = await uploadFileToR2(buffer, key, file.type);
+        const uploaded = await uploadFileToR2(
+          buffer,
+          key,
+          file.type,
+          process.env.R2_BUCKET_NAME!,
+          process.env.R2_PUBLIC_URL!
+        );
 
         uploadedFiles.push({
           fieldId: "files",
