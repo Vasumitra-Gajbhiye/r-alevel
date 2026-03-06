@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 type Resource = {
   id: string;
@@ -36,9 +37,7 @@ export default function ResourceFormPageClient() {
       files: [],
     },
   ]);
-  useEffect(() => {
-    console.log("TABLE RESOURCES:", resources);
-  }, [resources]);
+
   const onSubmit = async () => {
     try {
       if (!resources.length) {
@@ -64,14 +63,49 @@ export default function ResourceFormPageClient() {
 
       // =============================
       // Resources (MULTI SUPPORT)
-      // =============================
-      console.log("RESOURCES STATE:", resources);
+      // =============================]
       let validIndex = 0;
 
       for (const resource of resources) {
-        if (!resource.title) continue;
+        if (!resource.title || !resource.title.trim()) {
+          toast.error(`Resource ${validIndex + 1}: Please add a title.`);
+          setIsSubmitting(false);
+          return;
+        }
+
+        const rawLinks = Array.isArray(resource.links) ? resource.links : [];
+
+        const cleanedLinks = rawLinks
+          .map((l) => (typeof l === "string" ? l.trim() : ""))
+          .filter((l) => l.length > 0 && /^https?:\/\//i.test(l));
+        const files = resource.files || [];
+
+        // Require at least one link or file
+        if (cleanedLinks.length === 0 && files.length === 0) {
+          toast.error(
+            `Resource "${resource.title}" must include at least one link or file.`
+          );
+          setIsSubmitting(false);
+          return;
+        }
 
         formData.append(`resources[${validIndex}][title]`, resource.title);
+
+        // Levels
+        for (const level of resource.levels || []) {
+          formData.append(`resources[${validIndex}][levels][]`, level);
+        }
+
+        // Boards
+        for (const board of resource.boards || []) {
+          formData.append(`resources[${validIndex}][boards][]`, board);
+        }
+
+        // Made by me flag
+        formData.append(
+          `resources[${validIndex}][madeByMe]`,
+          resource.madeByMe ? "true" : "false"
+        );
 
         formData.append(
           `resources[${validIndex}][description]`,
@@ -79,28 +113,24 @@ export default function ResourceFormPageClient() {
         );
 
         const resourceType =
-          resource.files.length && resource.links.length
+          files.length && cleanedLinks.length
             ? "Files + Links"
-            : resource.files.length
+            : files.length
             ? "Files"
             : "Links";
 
         formData.append(`resources[${validIndex}][resourceType]`, resourceType);
 
-        resource.links.forEach((link) => {
-          if (link) {
-            formData.append(`resources[${validIndex}][links][]`, link);
-          }
+        cleanedLinks.forEach((link) => {
+          formData.append(`resources[${validIndex}][links][]`, link);
         });
 
-        for (const file of resource.files) {
+        for (const file of files) {
           formData.append(`resources[${validIndex}][files][]`, file);
         }
 
         validIndex++;
       }
-
-      console.log(Array.from(formData.entries()));
 
       const res = await fetch("/api/resources/submit", {
         method: "POST",
@@ -226,9 +256,10 @@ export default function ResourceFormPageClient() {
               size="lg"
               onClick={onSubmit}
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700"
+              className="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 flex items-center justify-center gap-2"
             >
-              Submit Resource
+              {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+              {isSubmitting ? "Submitting..." : "Submit Resource"}
             </Button>
 
             <p className="mt-3 text-center text-sm text-muted-foreground">

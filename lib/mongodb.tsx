@@ -16,7 +16,7 @@
 
 // export default async function connectDB() {
 //   if (isConnected) return;
-  
+
 //   try {
 //     await mongoose.connect(`${process.env.MONGODB_URI}`);
 //     isConnected = true;
@@ -25,7 +25,6 @@
 //     console.log("❌ MongoDB connection failed:", error);
 //   }
 // }
-
 
 // Load the URI from environment variables
 // import mongoose from "mongoose";
@@ -59,18 +58,25 @@
 // }
 
 // export default clientPromise;
+
+// lib/mongodb.tsx
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
-  throw new Error("❌ Please define the MONGODB_URI environment variable inside .env.local");
+  throw new Error(
+    "❌ Please define the MONGODB_URI environment variable inside .env.local"
+  );
 }
 
 // Extend NodeJS global type to include cached mongoose connection
 declare global {
   // eslint-disable-next-line no-var
-  var mongooseCache: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null };
+  var mongooseCache: {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+  };
 }
 
 let cached = global.mongooseCache;
@@ -86,10 +92,12 @@ export default async function connectDB() {
 
   if (!cached.promise) {
     const opts = {
-  bufferCommands: false,
-};
+      bufferCommands: false,
+    };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => mongoose);
+    cached.promise = mongoose
+      .connect(MONGODB_URI, opts)
+      .then((mongoose) => mongoose);
   }
 
   cached.conn = await cached.promise;

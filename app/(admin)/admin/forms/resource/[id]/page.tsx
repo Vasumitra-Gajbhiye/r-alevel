@@ -132,6 +132,52 @@ export default function SubmissionDetailPage() {
               <p className="text-sm text-muted-foreground">{r.description}</p>
             )}
 
+            {/* Levels */}
+            {r.levels?.length > 0 && (
+              <div className="space-y-1">
+                <p className="text-xs font-semibold uppercase text-muted-foreground">
+                  Level
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {r.levels.map((lvl: string, idx: number) => (
+                    <Badge key={idx} variant="secondary">
+                      {lvl}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Boards */}
+            {r.boards?.length > 0 && (
+              <div className="space-y-1">
+                <p className="text-xs font-semibold uppercase text-muted-foreground">
+                  Board
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {r.boards.map((b: string, idx: number) => (
+                    <Badge key={idx} variant="secondary">
+                      {b}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Made by contributor */}
+            {typeof r.madeByMe === "boolean" && (
+              <div className="space-y-1">
+                <p className="text-xs font-semibold uppercase text-muted-foreground">
+                  Authorship
+                </p>
+                <Badge variant={r.madeByMe ? "default" : "outline"}>
+                  {r.madeByMe
+                    ? "Created by contributor"
+                    : "Third‑party resource"}
+                </Badge>
+              </div>
+            )}
+
             {r.links?.length > 0 && (
               <div className="space-y-1">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">

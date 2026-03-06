@@ -114,7 +114,10 @@ function buildStructuredResponses(form: any, data: any) {
   return structured;
 }
 
-export default function FormPageClient({ form }: { form: any }) {
+type FormPageProps = {
+  form: any;
+};
+export default function FormPageClient({ form }: FormPageProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [showFileErrorModal, setShowFileErrorModal] = useState(false);

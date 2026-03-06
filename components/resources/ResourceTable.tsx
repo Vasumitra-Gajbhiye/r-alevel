@@ -1,6 +1,7 @@
 "use client";
 
 import { Link2, Plus, Trash2, Upload, X } from "lucide-react";
+import { useState } from "react";
 
 type Resource = {
   id: string;
@@ -23,19 +24,6 @@ export default function ResourceTable({
   resources: Resource[];
   setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
 }) {
-  //   const [resources, setResources] = useState<Resource[]>([
-  //     {
-  //       id: crypto.randomUUID(),
-  //       title: "",
-  //       description: "",
-  //       levels: [],
-  //       boards: [],
-  //       madeByMe: false,
-  //       links: [],
-  //       files: [],
-  //     },
-  //   ]);
-
   const update = (id: string, patch: Partial<Resource>) => {
     setResources((r) =>
       r.map((res) => (res.id === id ? { ...res, ...patch } : res))
@@ -94,6 +82,21 @@ function ResourceRow({
   onUpdate: (p: Partial<Resource>) => void;
   onRemove: () => void;
 }) {
+  const [linkDraft, setLinkDraft] = useState("");
+
+  const commitLink = () => {
+    const cleaned = linkDraft.trim();
+    if (!cleaned) return;
+
+    if (!resource.links.includes(cleaned)) {
+      onUpdate({
+        links: [...resource.links, cleaned],
+      });
+    }
+
+    setLinkDraft("");
+  };
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
       <div className="grid gap-3 p-4">
@@ -155,7 +158,11 @@ function ResourceRow({
         </div>
 
         {/* Files & Links section */}
-        <div className="space-y-2 px-2">
+        <div className="space-y-3 px-2">
+          <p className="text-xs text-gray-500">
+            Add a resource link <span className="font-medium">OR</span> upload a
+            file.
+          </p>
           {/* Show added links */}
           {resource.links.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -207,39 +214,75 @@ function ResourceRow({
 
           {/* Add link/file actions */}
           <div className="flex gap-2">
-            <div className="flex-1 flex items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm hover:border-gray-300 transition-colors">
-              <Link2 className="h-4 w-4 text-gray-400" />
-              <input
-                placeholder="Paste a link and press Enter"
-                className="flex-1 outline-none placeholder:text-gray-400"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && e.currentTarget.value) {
-                    onUpdate({
-                      links: [...resource.links, e.currentTarget.value],
-                    });
-                    e.currentTarget.value = "";
-                  }
-                }}
-              />
-            </div>
+            {/* Link input — hidden if a file exists */}
+            {resource.files.length === 0 && (
+              <div className="flex gap-2">
+                <div className="flex-1 flex items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm hover:border-gray-300 transition-colors">
+                  <Link2 className="h-4 w-4 text-gray-400" />
+                  <input
+                    value={linkDraft}
+                    placeholder="Paste a resource link"
+                    className="flex-1 outline-none placeholder:text-gray-400"
+                    onChange={(e) => setLinkDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        commitLink();
+                      }
+                    }}
+                    onBlur={() => {
+                      commitLink();
+                    }}
+                    onPaste={(e) => {
+                      const text = e.clipboardData.getData("text");
+                      if (text && text.startsWith("http")) {
+                        e.preventDefault();
+                        setLinkDraft(text);
+                        setTimeout(commitLink, 0);
+                      }
+                    }}
+                  />
+                </div>
 
-            <label className="flex cursor-pointer items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm hover:border-gray-300 hover:bg-gray-50 transition-colors whitespace-nowrap">
-              <Upload className="h-4 w-4 text-gray-400" />
-              Upload files
-              <input
-                type="file"
-                multiple
-                hidden
-                onChange={(e) =>
-                  onUpdate({
-                    files: [
-                      ...resource.files,
-                      ...Array.from(e.target.files || []),
-                    ],
-                  })
-                }
-              />
-            </label>
+                <button
+                  type="button"
+                  onClick={commitLink}
+                  className="px-3 py-2 text-sm rounded-md border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                >
+                  Add
+                </button>
+              </div>
+            )}
+
+            {/* OR divider */}
+            {resource.links.length === 0 && linkDraft.trim() === "" && (
+              <div className="flex items-center gap-3 text-xs text-gray-400">
+                <div className="flex-1 h-px bg-gray-200" />
+                OR
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+            )}
+
+            {/* File upload — hidden if link exists */}
+            {resource.links.length === 0 && linkDraft.trim() === "" && (
+              <label className="flex cursor-pointer items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm hover:border-gray-300 hover:bg-gray-50 transition-colors whitespace-nowrap">
+                <Upload className="h-4 w-4 text-gray-400" />
+                Upload PDF / Image
+                <input
+                  type="file"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    onUpdate({
+                      files: [file], // replace instead of append
+                      links: [], // ensure link removed
+                    });
+                  }}
+                />
+              </label>
+            )}
           </div>
         </div>
       </div>

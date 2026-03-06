@@ -1,7 +1,10 @@
+import { authOptions } from "@/lib/auth";
 import connectDB from "@/lib/mongodb";
 import Form from "@/models/Form";
 import { FormDocument } from "@/types/form";
+import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
+import LoginRequiredCard from "./components/LoginRequiredCard";
 import FormPageClient from "./pageClient";
 
 export default async function FormPage({
@@ -14,9 +17,14 @@ export default async function FormPage({
   await connectDB();
 
   const form = (await Form.findOne({ slug }).lean()) as FormDocument | null;
+  const session = await getServerSession(authOptions);
 
   if (!form) {
     notFound();
+  }
+
+  if (!session) {
+    return <LoginRequiredCard />;
   }
 
   if (form.status !== "open") {
