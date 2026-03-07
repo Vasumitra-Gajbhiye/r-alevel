@@ -40,6 +40,7 @@ export async function PATCH(
 
     const body = await req.json();
 
+    console.log(body, id);
     const staff = await StaffMember.findById(id);
     if (!staff) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
