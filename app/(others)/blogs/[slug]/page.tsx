@@ -1,9 +1,9 @@
 // app/(others)/blogs/[slug]/page.tsx
-import { notFound } from "next/navigation";
-import BlogPostLayout from "./BlogPostLayout";
-
 import fs from "fs";
+import { notFound } from "next/navigation";
 import path from "path";
+import { Suspense } from "react";
+import BlogPostLayout from "./BlogPostLayout";
 
 export async function generateStaticParams() {
   const postsDir = path.join(process.cwd(), "app/(others)/blogs/posts");
@@ -81,13 +81,15 @@ export default async function Page({
     // const meta = await generateMetadata(metadata);
 
     return (
-      <BlogPostLayout metadata={metadata}>
-        <Post />
-      </BlogPostLayout>
+      <Suspense fallback={null}>
+        <BlogPostLayout metadata={metadata}>
+          <Post />
+        </BlogPostLayout>
+      </Suspense>
     );
   } catch {
     return notFound();
   }
 }
-
+export const dynamic = "force-dynamic";
 export const dynamicParams = false;

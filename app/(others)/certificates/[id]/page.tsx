@@ -1,8 +1,9 @@
 import { CertImgSkeleton } from "@/app/skeleton";
 import { cldImage, cldRaw } from "@/lib/cloudinary";
+import { AlertCircle } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Suspense } from "react";
-
 const Skeleton = function () {
   return (
     <div
@@ -60,6 +61,45 @@ interface Certificate {
   owner: string;
 }
 
+function InvalidCertificate({ id }: { id: string }) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+      <div className="max-w-md w-full">
+        <div className="flex justify-center mb-6">
+          <div className="p-4 rounded-full bg-cy-100">
+            <AlertCircle className="w-8 h-8 text-cy-600" />
+          </div>
+        </div>
+
+        <h1 className="text-3xl font-semibold text-gray-900 mb-3">
+          Invalid Certificate
+        </h1>
+
+        <p className="text-gray-600 mb-6">
+          We couldn’t find a certificate with ID{" "}
+          <span className="font-medium text-cy-600">{id}</span>.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            href="/certificates"
+            className="px-5 py-2 rounded-full bg-cy-500 text-white font-medium hover:bg-cy-600 transition"
+          >
+            Try Again
+          </Link>
+
+          <Link
+            href="/"
+            className="px-5 py-2 rounded-full border border-gray-200 hover:bg-gray-50 transition"
+          >
+            Go Home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 async function CertificateDisplay({ id }: { id: string }) {
   let cert: Certificate | null = null;
 
@@ -68,7 +108,7 @@ async function CertificateDisplay({ id }: { id: string }) {
     const res = await fetch(`${apiLink}/${id}`);
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch certificate with ID ${id}`);
+      return <InvalidCertificate id={id} />;
     }
 
     const certi = await res.json();
@@ -77,7 +117,9 @@ async function CertificateDisplay({ id }: { id: string }) {
   } catch (err) {
     console.error("Error loading certificate:", err);
   }
-
+  if (!cert) {
+    return <InvalidCertificate id={id} />;
+  }
   // 🔹 SKELETON PLACEHOLDER
 
   ///////////////////

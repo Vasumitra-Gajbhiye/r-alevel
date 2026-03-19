@@ -1,9 +1,11 @@
+import GoogleAnalyticsTracker from "@/components/GoogleAnalyticsTracker";
 import { Analytics } from "@vercel/analytics/next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
+import { Suspense } from "react";
 import { Toaster } from "sonner";
-import "./globals.css";
 
+import "./globals.css";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -40,7 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Ezoic Privacy Scripts - MUST BE FIRST */}
-        <Script
+        {/* <Script
           id="ezoic-privacy-1"
           strategy="beforeInteractive"
           data-cfasync="false"
@@ -52,10 +54,10 @@ export default function RootLayout({
           strategy="beforeInteractive"
           data-cfasync="false"
           src="https://the.gatekeeperconsent.com/cmp.min.js"
-        />
+        /> */}
 
         {/* Ezoic Header Script */}
-        <Script
+        {/* <Script
           id="ezoic-header"
           strategy="beforeInteractive"
           async
@@ -73,7 +75,7 @@ export default function RootLayout({
           id="ezoic-analytics"
           strategy="beforeInteractive"
           src="//ezoicanalytics.com/analytics.js"
-        />
+        /> */}
         {/* Google Analytics */}
         <Script
           strategy="afterInteractive"
@@ -92,6 +94,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.png" />
       </head>
       <body className={poppins.className + " tracking-widest	"}>
+        <Suspense fallback={null}>
+          <GoogleAnalyticsTracker />
+        </Suspense>
         {/* <Navigation /> */}
         {children}
         <Toaster richColors position="top-right" />

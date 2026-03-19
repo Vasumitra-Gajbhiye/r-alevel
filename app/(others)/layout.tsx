@@ -1,9 +1,9 @@
+import "katex/dist/katex.min.css";
 import { Poppins } from "next/font/google";
 import "../globals.css";
 import SessionProviderWrapper from "../SessionProviderWrapper";
 import ContactUs from "./layout ui/contact-us";
 import Navigation from "./layout ui/navigation";
-
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -40,7 +40,7 @@ export default function RootLayout({
     <main className={poppins.className + " tracking-widest	"}>
       <SessionProviderWrapper>
         <Navigation />
-        <div className="pt-11">{children}</div>
+        <div className="pt-11 min-h-screen">{children}</div>
         <ContactUs />
       </SessionProviderWrapper>
     </main>

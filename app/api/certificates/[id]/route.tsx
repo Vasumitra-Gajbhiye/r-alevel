@@ -1,9 +1,6 @@
-import { authOptions } from "@/lib/auth";
 import mongoDBConnect from "@/lib/mongodb";
 import { enforceRateLimit } from "@/lib/rateLimit";
-import { requireRoles } from "@/lib/requireRoles";
 import CertsData from "@/models/certsData";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 // import { useSearchParams } from "next/navigation";
 
@@ -28,6 +25,7 @@ export async function GET(
     await mongoDBConnect();
 
     const cert = await CertsData.findOne({ certId: id });
+    console.log("cert", cert);
 
     return NextResponse.json(
       {
@@ -51,58 +49,58 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const session = await getServerSession(authOptions);
-  try {
-    requireRoles(session, ["owner", "admin"]);
-  } catch {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-  }
+// export async function PUT(
+//   req: NextRequest,
+//   { params }: { params: Promise<{ id: string }> }
+// ) {
+//   const session = await getServerSession(authOptions);
+//   try {
+//     requireRoles(session, ["owner", "admin"]);
+//   } catch {
+//     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+//   }
 
-  const { id } = await params;
+//   const { id } = await params;
 
-  console.log(id);
-  let pramasID = id;
-  try {
-    const {
-      newName: name,
-      newCertType: certType,
-      newCertId: certId,
-      newIssueDate: issueDate,
-      newAdmin: admin,
-      newOwner: owner,
-    } = await req.json();
+//   console.log(id);
+//   let pramasID = id;
+//   try {
+//     const {
+//       newName: name,
+//       newCertType: certType,
+//       newCertId: certId,
+//       newIssueDate: issueDate,
+//       newAdmin: admin,
+//       newOwner: owner,
+//     } = await req.json();
 
-    const newCertsData = {
-      name: name,
-      certType: certType,
-      certId: certId,
-      issueDate: issueDate,
-      admin: admin,
-      owner: owner,
-    };
-    console.log(pramasID);
+//     const newCertsData = {
+//       name: name,
+//       certType: certType,
+//       certId: certId,
+//       issueDate: issueDate,
+//       admin: admin,
+//       owner: owner,
+//     };
+//     console.log(pramasID);
 
-    await mongoDBConnect();
+//     await mongoDBConnect();
 
-    await CertsData.findByIdAndUpdate(pramasID, newCertsData);
+//     await CertsData.findByIdAndUpdate(pramasID, newCertsData);
 
-    return NextResponse.json(
-      {
-        message: "Successfully updated a new cert",
-        data: newCertsData,
-      },
-      {
-        status: 201,
-      }
-    );
-  } catch (error) {
-    return NextResponse.json({
-      message: "Cannot update a cert",
-      error: error,
-    });
-  }
-}
+//     return NextResponse.json(
+//       {
+//         message: "Successfully updated a new cert",
+//         data: newCertsData,
+//       },
+//       {
+//         status: 201,
+//       }
+//     );
+//   } catch (error) {
+//     return NextResponse.json({
+//       message: "Cannot update a cert",
+//       error: error,
+//     });
+//   }
+// }
