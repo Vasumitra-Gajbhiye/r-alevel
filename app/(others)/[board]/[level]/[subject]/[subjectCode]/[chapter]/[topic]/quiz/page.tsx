@@ -1,5 +1,5 @@
+import connectDB from "@/lib/mongodb";
 import Topic from "@/models/Topic";
-import mongoose from "mongoose";
 import Link from "next/link";
 
 import {
@@ -14,10 +14,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-async function connectDB() {
-  if (mongoose.connection.readyState === 1) return;
-  await mongoose.connect(process.env.MONGODB_URI as string);
-}
+// async function connectDB() {
+//   if (mongoose.connection.readyState === 1) return;
+//   await mongoose.connect(process.env.MONGODB_URI as string);
+// }
 
 type Params = {
   board: string;

@@ -148,12 +148,17 @@ const MD_PROPS = {
       </h2>
     ),
     h3: ({ children }: any) => (
-      <h3 className="text-xl font-semibold mt-10 mb-4 text-cyan-700">
+      <h3 className="text-2xl font-semibold mt-10 mb-4 text-cyan-700">
         {children}
       </h3>
     ),
+    // h4: ({ children }: any) => (
+    //   <h4 className="text-lg font-semibold mt-8 mb-3 text-cyan-800 bg-cyan-50 border border-cyan-100 px-4 py-2 rounded-lg">
+    //     {children}
+    //   </h4>
+    // ),
     h4: ({ children }: any) => (
-      <h4 className="text-lg font-semibold mt-8 mb-3 text-cyan-800 bg-cyan-50 border border-cyan-100 px-4 py-2 rounded-lg">
+      <h4 className="text-lg font-semibold mt-8 mb-3 text-neutral-700 py-2 rounded-lg">
         {children}
       </h4>
     ),

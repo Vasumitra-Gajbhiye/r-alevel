@@ -4,7 +4,7 @@
 
 .main-cert-con {
   margin-top: -1250px;
-  margin-bottom: -1150px; 
+  margin-bottom: -1150px;
 }
 
 @media (min-width: 460px) {
@@ -19,7 +19,6 @@
     margin-top: -1090px;
     margin-bottom: -990px;
   }
-
 }
 
 @media (min-width: 1280px) {
@@ -39,16 +38,10 @@
 }
 
 .animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    #e0e0e0 25%,
-    #f5f5f5 50%,
-    #e0e0e0 75%
-  );
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
   background-size: 400px 100%;
   animation: shimmer 1.5s infinite linear;
 }
-
 
 /* Auto-numbered blog section headings */
 article {
@@ -87,7 +80,7 @@ article h2 .counter-h2::before {
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem; 
+    --radius: 0.5rem;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -113,15 +106,15 @@ article h2 .counter-h2::before {
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%; 
-  } 
+    --chart-5: 340 75% 55%;
+  }
 }
 
 @layer base {
   * {
-    @apply border-border; 
+    @apply border-border;
   }
   body {
-    @apply bg-background text-foreground; 
-  } 
+    @apply bg-background text-foreground;
+  }
 }

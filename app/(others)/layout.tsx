@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className={poppins.className + " tracking-widest	"}>
+    <main className={poppins.className + " tracking-widest pt-5	"}>
       <SessionProviderWrapper>
         <Navigation />
         <div className="pt-11 min-h-screen">{children}</div>

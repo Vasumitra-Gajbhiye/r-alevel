@@ -1,0 +1,17 @@
+.optionBtn {
+  @apply w-full rounded-md border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-700 transition duration-150 hover:border-sky-500/50 hover:bg-sky-500/10;
+}
+
+/* quiz.module.css */
+
+.correct {
+  @apply border-emerald-500/50 bg-emerald-500/10 text-emerald-700;
+}
+
+.wrong {
+  @apply border-red-500/50 bg-red-500/10 text-red-700;
+}
+
+.selected {
+  @apply border-neutral-500/50 bg-neutral-500/10 text-neutral-700;
+}
