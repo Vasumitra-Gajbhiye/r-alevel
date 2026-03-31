@@ -330,7 +330,7 @@ export default function CertificatesPage() {
                 link: "https://discord.gg/r-alevel-1114437735692902481",
               },
               { label: "Answer questions and support peers regularly" },
-              { label: "Earn 50 reputation points on Discord" },
+              { label: "Earn 100 reputation points on Discord" },
               {
                 label:
                   "Admins verify your impact before issuing the certificate",
@@ -353,7 +353,7 @@ export default function CertificatesPage() {
                 label: "Apply as a writer via Google Form",
                 link: "https://docs.google.com/forms/d/e/1FAIpQLSeQ7LAYUjRtWunMRPPwdZyAtBN1lCXZt2A-tbcz_psc-DTC8Q/viewform?usp=sf_link",
               },
-              { label: "Publish 10 approved posts on r/alevel Blogs" },
+              { label: "Publish 5 approved posts on r/alevel Blogs" },
               {
                 label:
                   "Receive a Writer Certificate after your 10th publication",
@@ -376,15 +376,17 @@ export default function CertificatesPage() {
               },
               {
                 label: "Submit your resources using our official form",
-                link: "https://forms.gle/hAaHLimxKMB5WN4w9",
+                link: `/forms/resource`,
               },
-              { label: "Wait for moderator approval" },
+              {
+                label: "Wait for moderator approval.",
+              },
               {
                 label:
                   "Earn a Contributor Certificate for accepted submissions",
               },
             ]}
-            actionLink="https://forms.gle/hAaHLimxKMB5WN4w9"
+            actionLink={`/forms/resource`}
             actionText="Submit a Resource"
           />
         </motion.div>
